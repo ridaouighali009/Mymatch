@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1A5276" />
+  <meta name="description" content="MyMatch — Revivez vos plus belles actions. Accédez à votre match filmé en quelques secondes." />
+  <title>MyMatch — Revivez vos plus belles actions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER : logo MyMatch + nom de la marque
+       ============================================================ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="MyMatch — accueil">
+        <!-- Logo SVG : carré arrondi bleu avec triangle play et accent vert -->
+        <svg class="logo-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="url(#logoGradient)"/>
+          <path d="M16 13.5L27 20L16 26.5V13.5Z" fill="white"/>
+          <circle cx="31" cy="11" r="3.5" fill="#059669" stroke="white" stroke-width="1.5"/>
+          <defs>
+            <linearGradient id="logoGradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#1A5276"/>
+              <stop offset="100%" stop-color="#2563EB"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">MyMatch</span>
+      </a>
+
+      <!-- Petite mention discrète à droite (durée de conservation) -->
+      <span class="header-badge" aria-label="Vidéos disponibles 14 jours">
+        <span class="header-badge-dot"></span>
+        Vidéos · 14 jours
+      </span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         HERO : titre principal + sous-titre
+         ============================================================ -->
+    <section class="hero">
+      <div class="container">
+        <p class="hero-eyebrow">Football amateur · Casablanca</p>
+        <h1 class="hero-title">
+          Revivez vos plus belles <span class="hero-accent">actions</span>
+        </h1>
+        <p class="hero-subtitle">Accédez à votre match en quelques secondes</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SÉLECTION EN 4 ÉTAPES
+         Inspiré de urbansoccer.fr/videos/
+         Étapes : Club → Terrain → Date → Heure → Voir mon match
+         ============================================================ -->
+    <section class="selection" aria-label="Sélection de votre match">
+      <div class="container">
+
+        <!-- ---------- Étape 1 : Choisir le club ---------- -->
+        <article class="step is-active" data-step="1" id="step-1">
+          <header class="step-header">
+            <span class="step-number" aria-hidden="true">1</span>
+            <div class="step-titles">
+              <h2 class="step-title">Choisir le club</h2>
+              <p class="step-hint" id="step-1-hint">Sélectionnez le centre où vous avez joué</p>
+            </div>
+            <span class="step-status" data-step-status="1" aria-live="polite"></span>
+          </header>
+          <div class="step-body">
+            <div class="club-grid" id="club-grid" role="radiogroup" aria-labelledby="step-1-hint">
+              <!-- Les cartes de clubs sont injectées par main.js -->
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- Étape 2 : Choisir le terrain ---------- -->
+        <article class="step is-locked" data-step="2" id="step-2" aria-disabled="true">
+          <header class="step-header">
+            <span class="step-number" aria-hidden="true">2</span>
+            <div class="step-titles">
+              <h2 class="step-title">Choisir le terrain</h2>
+              <p class="step-hint" id="step-2-hint">Terrains filmés du club sélectionné</p>
+            </div>
+            <span class="step-status" data-step-status="2" aria-live="polite"></span>
+          </header>
+          <div class="step-body">
+            <div class="terrain-grid" id="terrain-grid" role="radiogroup" aria-labelledby="step-2-hint">
+              <!-- Les terrains sont injectés par main.js après sélection du club -->
+              <p class="empty-state" id="terrain-empty">Sélectionnez d'abord un club ci-dessus.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- Étape 3 : Choisir la date ---------- -->
+        <article class="step is-locked" data-step="3" id="step-3" aria-disabled="true">
+          <header class="step-header">
+            <span class="step-number" aria-hidden="true">3</span>
+            <div class="step-titles">
+              <h2 class="step-title">Choisir la date</h2>
+              <p class="step-hint" id="step-3-hint">Vidéos conservées 14 jours</p>
+            </div>
+            <span class="step-status" data-step-status="3" aria-live="polite"></span>
+          </header>
+          <div class="step-body">
+            <div class="date-scroller" id="date-scroller" role="radiogroup" aria-labelledby="step-3-hint">
+              <!-- Les pastilles de dates (14 derniers jours) sont injectées par main.js -->
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- Étape 4 : Choisir l'heure ---------- -->
+        <article class="step is-locked" data-step="4" id="step-4" aria-disabled="true">
+          <header class="step-header">
+            <span class="step-number" aria-hidden="true">4</span>
+            <div class="step-titles">
+              <h2 class="step-title">Choisir l'heure</h2>
+              <p class="step-hint" id="step-4-hint">Créneau de début du match</p>
+            </div>
+            <span class="step-status" data-step-status="4" aria-live="polite"></span>
+          </header>
+          <div class="step-body">
+            <div class="time-grid" id="time-grid" role="radiogroup" aria-labelledby="step-4-hint">
+              <!-- Les créneaux horaires sont injectés par main.js -->
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- Bouton final : Voir mon match ---------- -->
+        <div class="cta-wrapper">
+          <p class="cta-summary" id="cta-summary" aria-live="polite">Complétez les 4 étapes ci-dessus</p>
+          <button type="button" class="cta-button" id="cta-button" disabled>
+            <span class="cta-button-label">Voir mon match</span>
+            <svg class="cta-button-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <p class="cta-reassurance">
+            Aucune inscription requise · Accès en moins de 10 secondes
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER simple
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">© 2026 MyMatch · Casablanca</p>
+      <p class="footer-meta">Captation vidéo automatique · Football amateur 5v5</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
