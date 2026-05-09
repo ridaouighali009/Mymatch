@@ -78,6 +78,8 @@
     header: document.getElementById('site-header'),
     burger: document.getElementById('burger'),
     mobileMenu: document.getElementById('mobile-menu'),
+    menuBackdrop: document.getElementById('menu-backdrop'),
+    menuClose: document.getElementById('menu-close'),
     steps: {
       1: document.getElementById('step-1'),
       2: document.getElementById('step-2'),
@@ -404,22 +406,49 @@
 
 
   /* ------------------------------------------------------------
-     13. MENU MOBILE (burger)
+     13. MENU DRAWER (burger à gauche, ouverture latérale)
+         - Ouvre/ferme au clic sur le burger
+         - Ferme au clic sur le backdrop, sur la croix, sur un lien,
+           ou sur la touche Échap
+         - Bloque le scroll du body quand ouvert
      ------------------------------------------------------------ */
-  function toggleMobileMenu() {
-    const ouvert = el.burger.classList.toggle('is-open');
-    el.burger.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
-    if (ouvert) {
-      el.mobileMenu.hidden = false;
-    } else {
-      el.mobileMenu.hidden = true;
-    }
+  function ouvrirMenu() {
+    el.burger.classList.add('is-open');
+    el.burger.setAttribute('aria-expanded', 'true');
+    el.burger.setAttribute('aria-label', 'Fermer le menu');
+
+    el.mobileMenu.hidden = false;
+    el.menuBackdrop.hidden = false;
+
+    // Force un reflow pour que la transition CSS s'applique correctement.
+    void el.mobileMenu.offsetWidth;
+
+    el.mobileMenu.classList.add('is-open');
+    el.menuBackdrop.classList.add('is-visible');
+    document.body.classList.add('menu-open');
   }
 
-  function fermerMobileMenu() {
+  function fermerMenu() {
     el.burger.classList.remove('is-open');
     el.burger.setAttribute('aria-expanded', 'false');
-    el.mobileMenu.hidden = true;
+    el.burger.setAttribute('aria-label', 'Ouvrir le menu');
+
+    el.mobileMenu.classList.remove('is-open');
+    el.menuBackdrop.classList.remove('is-visible');
+    document.body.classList.remove('menu-open');
+
+    // Cache après la transition pour rester accessible.
+    setTimeout(() => {
+      if (!el.mobileMenu.classList.contains('is-open')) {
+        el.mobileMenu.hidden = true;
+        el.menuBackdrop.hidden = true;
+      }
+    }, 320);
+  }
+
+  function toggleMenu() {
+    if (el.burger.classList.contains('is-open')) fermerMenu();
+    else ouvrirMenu();
   }
 
 
@@ -437,10 +466,17 @@
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    // Menu mobile.
-    el.burger.addEventListener('click', toggleMobileMenu);
+    // Menu drawer (burger / backdrop / close / liens / Échap).
+    el.burger.addEventListener('click', toggleMenu);
+    el.menuClose.addEventListener('click', fermerMenu);
+    el.menuBackdrop.addEventListener('click', fermerMenu);
     el.mobileMenu.querySelectorAll('.mobile-link').forEach((link) => {
-      link.addEventListener('click', fermerMobileMenu);
+      link.addEventListener('click', fermerMenu);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && el.burger.classList.contains('is-open')) {
+        fermerMenu();
+      }
     });
   }
 

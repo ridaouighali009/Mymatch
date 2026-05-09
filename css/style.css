@@ -183,15 +183,17 @@ h1, h2, h3, h4, p { margin: 0; }
 .header-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 100%;
-  gap: var(--s-4);
+  gap: var(--s-3);
 }
 
+/* Le logo prend l'espace dispo après le burger pour pousser
+   le live-badge à droite (pattern : burger | logo | badge) */
 .logo {
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
+  margin-right: auto;
   transition: transform var(--t);
 }
 
@@ -220,46 +222,6 @@ h1, h2, h3, h4, p { margin: 0; }
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-/* Navigation desktop */
-.nav-desktop {
-  display: none;
-  align-items: center;
-  gap: var(--s-2);
-}
-
-.nav-link {
-  position: relative;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--gray-200);
-  border-radius: var(--r-pill);
-  transition: color var(--t), background var(--t);
-}
-
-.nav-link:hover { color: var(--white); background: rgba(255, 255, 255, 0.05); }
-
-.nav-link.is-current {
-  color: var(--white);
-}
-.nav-link.is-current::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 4px;
-  transform: translateX(-50%);
-  width: 16px;
-  height: 2px;
-  background: var(--red);
-  border-radius: 1px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
 }
 
 .live-badge {
@@ -294,23 +256,26 @@ h1, h2, h3, h4, p { margin: 0; }
   .live-badge { display: inline-flex; }
 }
 
-@media (min-width: 1024px) {
-  .nav-desktop { display: flex; }
-}
-
-/* Burger menu mobile */
+/* Burger : icône menu (toujours visible, à gauche) */
 .burger {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   gap: 5px;
-  border-radius: var(--r-sm);
-  transition: background var(--t);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background var(--t), border-color var(--t), transform var(--t);
+  flex-shrink: 0;
 }
-.burger:hover { background: rgba(255, 255, 255, 0.06); }
+.burger:hover {
+  background: rgba(225, 6, 0, 0.12);
+  border-color: rgba(225, 6, 0, 0.4);
+}
+.burger:active { transform: scale(0.96); }
 .burger span {
   display: block;
   width: 20px;
@@ -323,41 +288,142 @@ h1, h2, h3, h4, p { margin: 0; }
 .burger.is-open span:nth-child(2) { opacity: 0; }
 .burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-@media (min-width: 1024px) {
-  .burger { display: none; }
+/* Backdrop semi-transparent quand le menu est ouvert */
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity var(--t);
 }
+.menu-backdrop.is-visible { opacity: 1; }
 
-/* Menu mobile déroulant */
+/* Drawer latéral gauche */
 .mobile-menu {
-  position: absolute;
-  top: var(--header-h);
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
-  background: rgba(10, 10, 10, 0.98);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--gray-800);
-  padding: var(--s-4) var(--s-5);
+  bottom: 0;
+  z-index: 95;
+  width: min(86vw, 340px);
+  background: linear-gradient(180deg, var(--gray-900) 0%, var(--black) 100%);
+  border-right: 1px solid var(--gray-800);
+  box-shadow: 8px 0 40px rgba(0, 0, 0, 0.5);
+  transform: translateX(-100%);
+  transition: transform var(--t);
   display: flex;
   flex-direction: column;
-  gap: var(--s-1);
-  animation: slide-down var(--t);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-@keyframes slide-down {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+.mobile-menu.is-open { transform: translateX(0); }
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-5) var(--s-5);
+  border-bottom: 1px solid var(--gray-800);
+}
+
+.mobile-menu-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+}
+
+.menu-close {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--gray-200);
+  transition: background var(--t), color var(--t), transform var(--t);
+}
+.menu-close:hover {
+  background: rgba(225, 6, 0, 0.12);
+  color: var(--white);
+  transform: rotate(90deg);
+}
+.menu-close svg { width: 22px; height: 22px; }
+
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--s-4) var(--s-3);
+  flex: 1;
 }
 
 .mobile-link {
-  padding: 14px var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 16px var(--s-4);
   font-size: 16px;
   font-weight: 600;
   color: var(--gray-100);
   border-radius: var(--r-md);
-  transition: background var(--t), color var(--t);
+  transition: background var(--t), color var(--t), padding-left var(--t);
+  position: relative;
 }
-.mobile-link:hover { background: rgba(225, 6, 0, 0.1); color: var(--white); }
+
+/* Petite barre rouge qui glisse au survol */
+.mobile-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background: var(--red);
+  border-radius: 2px;
+  transition: transform var(--t);
+}
+
+.mobile-link:hover {
+  background: rgba(225, 6, 0, 0.08);
+  color: var(--white);
+  padding-left: var(--s-5);
+}
+
+.mobile-link:hover::before { transform: translateY(-50%) scaleY(1); }
+
+.mobile-link-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--red-bright);
+}
+
+.mobile-menu-footer {
+  padding: var(--s-5);
+  border-top: 1px solid var(--gray-800);
+}
+
+.mobile-menu-tagline {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+
+.mobile-menu-meta {
+  font-size: 11px;
+  color: var(--gray-400);
+}
+
+/* Quand le menu est ouvert : on bloque le scroll du body */
+body.menu-open { overflow: hidden; }
 
 
 /* ============================================================
