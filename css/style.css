@@ -193,12 +193,15 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 
 /* Le logo prend l'espace dispo après le burger pour pousser
-   le live-badge à droite (pattern : burger | logo | badge) */
+   le live-badge à droite (pattern : burger | logo | badge).
+   `flex-shrink: 0` évite que "MyMatch" soit tronqué sur mobile. */
 .logo {
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
   margin-right: auto;
+  flex-shrink: 0;
+  min-width: 0;
   transition: transform var(--t);
 }
 
@@ -223,9 +226,11 @@ h1, h2, h3, h4, p { margin: 0; }
   font-weight: 800;
   letter-spacing: 0.1em;
   color: var(--white);
-  background: rgba(26, 82, 118, 0.12);
-  border: 1px solid rgba(26, 82, 118, 0.4);
+  background: rgba(37, 99, 235, 0.14);
+  border: 1px solid rgba(37, 99, 235, 0.4);
   border-radius: var(--r-pill);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .live-dot {
@@ -242,16 +247,20 @@ h1, h2, h3, h4, p { margin: 0; }
   50%      { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
 }
 
-@media (min-width: 480px) {
+/* Le badge n'apparaît qu'à partir de 640px : avant, il pousserait
+   le mot "MyMatch" hors de l'écran sur les téléphones étroits. */
+@media (min-width: 640px) {
   .live-badge { display: inline-flex; }
 }
 
-/* Burger : icône menu (toujours visible, à gauche) */
+/* Burger : icône menu (toujours visible, à gauche).
+   flex-shrink: 0 pour qu'il ne se réduise jamais. */
 .burger {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   gap: 5px;
@@ -259,7 +268,6 @@ h1, h2, h3, h4, p { margin: 0; }
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: background var(--t), border-color var(--t), transform var(--t);
-  flex-shrink: 0;
 }
 .burger:hover {
   background: rgba(26, 82, 118, 0.12);
@@ -450,14 +458,22 @@ body.menu-open { overflow: hidden; }
   to   { transform: scale(1); }
 }
 
-/* Overlay sombre + halos bleus (image plus visible que la version précédente) */
+/* Overlay sombre — assez léger pour qu'on voie nettement le terrain.
+   Dégradé : un peu plus dense en haut (lisibilité du titre), allégé
+   au milieu (la photo respire), puis fond progressif vers le noir
+   tout en bas pour faire la jonction avec la section suivante. */
 .hero-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(10, 10, 10, 0.42) 0%, rgba(10, 10, 10, 0.72) 70%, var(--bg) 100%),
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(37, 99, 235, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(5, 150, 105, 0.16) 0%, transparent 60%);
+    linear-gradient(180deg,
+      rgba(10, 10, 10, 0.42) 0%,
+      rgba(10, 10, 10, 0.22) 35%,
+      rgba(10, 10, 10, 0.30) 65%,
+      rgba(10, 10, 10, 0.85) 95%,
+      var(--bg) 100%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(37, 99, 235, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(5, 150, 105, 0.14) 0%, transparent 60%);
 }
 
 /* Couche d'animation : dégradé qui dérive lentement */
@@ -571,14 +587,20 @@ body.menu-open { overflow: hidden; }
 }
 
 .hero-title {
-  font-size: clamp(40px, 9vw, 96px);
+  font-size: clamp(36px, 8.5vw, 92px);
   font-weight: 900;
   line-height: 1.0;
   letter-spacing: -0.04em;
   color: var(--white);
   margin-bottom: var(--s-5);
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-  max-width: 14ch;
+  /* Légère ombre portée pour rester lisible sur la photo désormais
+     plus visible. */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7), 0 6px 32px rgba(0, 0, 0, 0.55);
+  max-width: min(14ch, 100%);
+  /* Réserve à droite pour absorber le débord de l'italique 'actions' */
+  padding-right: 0.15em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .hero-title-accent {
@@ -589,6 +611,9 @@ body.menu-open { overflow: hidden; }
   -webkit-text-fill-color: transparent;
   font-style: italic;
   display: inline-block;
+  /* L'italique avance la dernière lettre : on ajoute un peu d'air à droite */
+  padding-right: 0.12em;
+  margin-right: -0.05em;
   /* Apparition au chargement + pulsation continue */
   animation: accent-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both,
              accent-glow 3.5s ease-in-out 1.5s infinite;
