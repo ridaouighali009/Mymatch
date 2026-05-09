@@ -17,25 +17,25 @@
   --blue-dark: #134059;
   --blue-deep: #0E2D40;
 
-  /* Verts (CTA principal + indicateurs de validation) */
-  --green: #059669;
-  --green-bright: #10B981;
-  --green-dark: #047857;
+  /* Verts (CTA principal + indicateurs de validation — alignés logo) */
+  --green: #00C060;
+  --green-bright: #00E676;
+  --green-dark: #009950;
 
-  /* Noirs / gris (fond et surfaces) */
-  --black: #0A0A0A;
-  --black-soft: #111111;
-  --gray-900: #1A1A1A;
-  --gray-800: #222222;
-  --gray-700: #2D2D2D;
-  --gray-600: #3A3A3A;
-  --gray-500: #4A4A4A;
-  --gray-400: #6B6B6B;
-  --gray-300: #8E8E8E;
-  --gray-200: #B5B5B5;
-  --gray-100: #E5E5E5;
+  /* Fond violet-nuit + surfaces (palette MyMatch 2.0) */
+  --black: #0F0A1E;
+  --black-soft: #130D24;
+  --gray-900: #18122E;
+  --gray-800: #201840;
+  --gray-700: #2A2050;
+  --gray-600: #3A3060;
+  --gray-500: #504570;
+  --gray-400: #6B5F8A;
+  --gray-300: #9080B0;
+  --gray-200: #C0B0D8;
+  --gray-100: #EDE8F5;
   --white: #FFFFFF;
-  --off-white: #F5F5F5;
+  --off-white: #F0EBF8;
 
   /* Sémantique */
   --bg: var(--black);
@@ -204,29 +204,14 @@ h1, h2, h3, h4, p { margin: 0; }
 
 .logo:hover { transform: translateY(-1px); }
 
-.logo-mark {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 4px 12px rgba(26, 82, 118, 0.45));
+.logo-svg {
+  display: block;
+  filter: drop-shadow(0 4px 16px rgba(0, 230, 118, 0.2));
+  transition: filter var(--t);
 }
 
-.logo-mark svg { width: 100%; height: 100%; }
-
-.logo-text {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: var(--white);
-  line-height: 1;
-}
-
-.logo-text-accent {
-  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-bright) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.logo:hover .logo-svg {
+  filter: drop-shadow(0 4px 20px rgba(0, 230, 118, 0.4));
 }
 
 .live-badge {
