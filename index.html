@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0A0A0A" />
+  <meta name="color-scheme" content="dark" />
   <meta name="description" content="MyMatch — Revivez vos plus belles actions. Vidéos automatiques de vos matchs de foot 5v5 à Casablanca." />
 
   <meta property="og:title" content="MyMatch — Revivez vos plus belles actions" />
@@ -37,11 +38,11 @@
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="44" height="44" rx="11" fill="url(#logoGrad)"/>
             <path d="M17 14L31 22L17 30V14Z" fill="white"/>
-            <circle cx="34.5" cy="11.5" r="3.5" fill="#FF1A1A" stroke="#0A0A0A" stroke-width="1.5"/>
+            <circle cx="34.5" cy="11.5" r="3.5" fill="#10B981" stroke="#0A0A0A" stroke-width="1.5"/>
             <defs>
               <linearGradient id="logoGrad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#E10600"/>
-                <stop offset="100%" stop-color="#8B0000"/>
+                <stop offset="0%" stop-color="#2563EB"/>
+                <stop offset="100%" stop-color="#1A5276"/>
               </linearGradient>
             </defs>
           </svg>
@@ -127,6 +128,8 @@
         </picture>
         <div class="hero-overlay"></div>
         <div class="hero-grid"></div>
+        <div class="hero-gradient-anim"></div>
+        <div class="hero-particles" id="hero-particles"></div>
       </div>
 
       <div class="container hero-content">
@@ -155,16 +158,54 @@
         </div>
 
         <ul class="hero-stats" aria-label="Chiffres clés MyMatch">
-          <li><strong>3</strong><span>clubs partenaires</span></li>
-          <li><strong>13</strong><span>terrains filmés</span></li>
-          <li><strong>4K</strong><span>caméras grand angle</span></li>
-          <li><strong>10s</strong><span>pour voir votre match</span></li>
+          <li><strong data-count="3">0</strong><span>clubs partenaires</span></li>
+          <li><strong data-count="13">0</strong><span>terrains filmés</span></li>
+          <li><strong data-count="4" data-suffix="K">0</strong><span>caméras grand angle</span></li>
+          <li><strong data-count="10" data-suffix="s">0</strong><span>pour voir votre match</span></li>
         </ul>
       </div>
 
       <a href="#selection" class="hero-scroll" aria-label="Aller à la sélection">
         <span></span>
       </a>
+    </section>
+
+    <!-- ============================================================
+         SECTION VIDÉO DÉMO — Aperçu du résultat final
+         ============================================================ -->
+    <section class="video-demo" aria-labelledby="demo-title">
+      <div class="container">
+        <header class="section-header">
+          <span class="section-eyebrow">Aperçu</span>
+          <h2 class="section-title" id="demo-title">
+            Voilà ce que vous allez <span class="text-accent">recevoir</span>
+          </h2>
+          <p class="section-lead">Une vidéo HD complète de votre match, prête à être partagée.</p>
+        </header>
+
+        <div class="demo-player" role="button" tabindex="0" aria-label="Lecture de la vidéo de démonstration">
+          <span class="demo-quality-badge">
+            <span class="demo-rec-dot"></span>
+            HD · 4K
+          </span>
+          <button type="button" class="demo-play-btn" aria-label="Lecture">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 5L19 12L8 19V5Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <span class="demo-time">12:34 / 32:18</span>
+          <div class="demo-progress" aria-hidden="true"></div>
+        </div>
+
+        <div class="demo-caption-wrapper">
+          <p class="demo-caption">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12L10 17L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Vidéo HD complète, accessible en moins de 10 secondes après votre match
+          </p>
+        </div>
+      </div>
     </section>
 
     <!-- ============================================================
@@ -374,8 +415,8 @@
               <path d="M17 14L31 22L17 30V14Z" fill="white"/>
               <defs>
                 <linearGradient id="footerLogoGrad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#E10600"/>
-                  <stop offset="100%" stop-color="#8B0000"/>
+                  <stop offset="0%" stop-color="#2563EB"/>
+                  <stop offset="100%" stop-color="#1A5276"/>
                 </linearGradient>
               </defs>
             </svg>

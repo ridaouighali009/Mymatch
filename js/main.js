@@ -185,19 +185,36 @@
       btn.dataset.terrainId = terrain.id;
       btn.style.setProperty('--i', String(index));
       btn.innerHTML = `
+        <span class="terrain-card-check" aria-hidden="true">✓</span>
         <span class="terrain-card-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>
             <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" stroke-width="1.8"/>
             <circle cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.8"/>
           </svg>
         </span>
         <span class="terrain-card-name">${terrain.nom}</span>
-        <span class="terrain-card-code">${terrain.code}</span>
+        <span class="terrain-card-meta">
+          <span class="terrain-card-dot"></span>
+          Filmé · ${terrain.code}
+        </span>
       `;
       btn.addEventListener('click', () => selectTerrain(terrain.id));
       el.terrainGrid.appendChild(btn);
     });
+  }
+
+
+  /* ------------------------------------------------------------
+     6b. Faire défiler vers une étape (smooth, sans déborder).
+     ------------------------------------------------------------ */
+  function scrollVersEtape(numEtape) {
+    const stepEl = el.steps[numEtape];
+    if (!stepEl) return;
+    const headerOffset = 88;
+    const rect = stepEl.getBoundingClientRect();
+    const ciblesY = window.scrollY + rect.top - headerOffset;
+    window.scrollTo({ top: ciblesY, behavior: 'smooth' });
   }
 
 
@@ -272,6 +289,9 @@
 
     renderTerrains(club);
     updateUI();
+
+    // On amène l'utilisateur sur l'étape 2 si elle est en dessous de la vue.
+    if (aChange) scrollVersEtape(2);
   }
 
   function selectTerrain(terrainId) {
@@ -453,7 +473,82 @@
 
 
   /* ------------------------------------------------------------
-     14. INITIALISATION
+     14. PARTICULES — étincelles flottantes dans le hero
+         Génère une vingtaine de petits points lumineux avec des
+         positions, tailles, et trajectoires aléatoires.
+     ------------------------------------------------------------ */
+  function genererParticules() {
+    const container = document.getElementById('hero-particles');
+    if (!container) return;
+
+    // Respect du paramètre système : pas de particules si réduction d'animation.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const NB_PARTICULES = 22;
+    for (let i = 0; i < NB_PARTICULES; i++) {
+      const p = document.createElement('span');
+      p.className = i % 5 === 0 ? 'particle particle-green' : 'particle';
+      // Position de départ + déplacement total + taille + timing aléatoires.
+      p.style.setProperty('--x', `${Math.random() * 100}%`);
+      p.style.setProperty('--y', `${Math.random() * 100}%`);
+      p.style.setProperty('--dx', `${(Math.random() - 0.5) * 120}px`);
+      p.style.setProperty('--dy', `${-Math.random() * 140 - 40}px`);
+      p.style.setProperty('--size', `${Math.random() * 4 + 2}px`);
+      p.style.setProperty('--delay', `${Math.random() * 8}s`);
+      p.style.setProperty('--duration', `${Math.random() * 8 + 10}s`);
+      container.appendChild(p);
+    }
+  }
+
+
+  /* ------------------------------------------------------------
+     15. STATS ANIMÉES — compte de 0 jusqu'à la valeur cible
+         quand la zone des stats entre dans le viewport.
+     ------------------------------------------------------------ */
+  function animerCompteurs() {
+    const compteurs = document.querySelectorAll('.hero-stats strong[data-count]');
+    if (!compteurs.length) return;
+
+    // Si réduction d'animation : on affiche directement les valeurs finales.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      compteurs.forEach((el) => {
+        el.textContent = el.dataset.count + (el.dataset.suffix || '');
+      });
+      return;
+    }
+
+    const lancerCompte = (el) => {
+      const cible = parseInt(el.dataset.count, 10) || 0;
+      const suffixe = el.dataset.suffix || '';
+      const duree = 1400;
+      const debut = performance.now();
+
+      function tick(now) {
+        const t = Math.min((now - debut) / duree, 1);
+        // Easing out cubic pour une décélération naturelle.
+        const eased = 1 - Math.pow(1 - t, 3);
+        const valeur = Math.round(cible * eased);
+        el.textContent = valeur + suffixe;
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          lancerCompte(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    compteurs.forEach((c) => observer.observe(c));
+  }
+
+
+  /* ------------------------------------------------------------
+     16. INITIALISATION
      ------------------------------------------------------------ */
   function init() {
     renderClubs();
@@ -461,6 +556,9 @@
     renderDates();
     renderHoraires();
     updateUI();
+
+    genererParticules();
+    animerCompteurs();
 
     // Header au scroll (avec passive listener pour les perfs mobiles).
     onScroll();
