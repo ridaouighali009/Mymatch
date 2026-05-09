@@ -1,8 +1,7 @@
 /* ============================================================
    MyMatch — Logique de la page d'accueil (sélection vidéo)
    Page : index.html
-   Rôle : gérer les 4 étapes (club → terrain → date → heure)
-          et activer le bouton "Voir mon match" quand tout est rempli.
+   Rôle : 4 étapes interactives + header au scroll + menu mobile.
    Stack : JavaScript vanilla, aucun framework.
    ============================================================ */
 
@@ -51,25 +50,24 @@
     }
   ];
 
-  // Plage active : 8h → 1h du matin (Claude.md). Ici on propose 09:00 → 23:00.
   const HORAIRES = [
     '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
     '15:00', '16:00', '17:00', '18:00', '19:00', '20:00',
     '21:00', '22:00', '23:00'
   ];
 
-  // Vidéos conservées 14 jours → on propose 14 dates (aujourd'hui + 13 jours antérieurs).
+  // Vidéos conservées 14 jours.
   const NB_JOURS = 14;
 
 
   /* ------------------------------------------------------------
-     2. ÉTAT — Sélection courante de l'utilisateur
+     2. ÉTAT DE SÉLECTION
      ------------------------------------------------------------ */
   const state = {
-    club: null,     // objet club
-    terrain: null,  // objet terrain
-    date: null,     // objet Date
-    heure: null     // string "HH:MM"
+    club: null,
+    terrain: null,
+    date: null,
+    heure: null
   };
 
 
@@ -77,6 +75,9 @@
      3. RÉFÉRENCES DOM
      ------------------------------------------------------------ */
   const el = {
+    header: document.getElementById('site-header'),
+    burger: document.getElementById('burger'),
+    mobileMenu: document.getElementById('mobile-menu'),
     steps: {
       1: document.getElementById('step-1'),
       2: document.getElementById('step-2'),
@@ -85,7 +86,6 @@
     },
     clubGrid: document.getElementById('club-grid'),
     terrainGrid: document.getElementById('terrain-grid'),
-    terrainEmpty: document.getElementById('terrain-empty'),
     dateScroller: document.getElementById('date-scroller'),
     timeGrid: document.getElementById('time-grid'),
     ctaButton: document.getElementById('cta-button'),
@@ -100,12 +100,11 @@
 
 
   /* ------------------------------------------------------------
-     4. UTILITAIRES
+     4. UTILITAIRES DE DATE
      ------------------------------------------------------------ */
   const JOURS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-  const MOIS = ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'];
+  const MOIS  = ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'];
 
-  /** Renvoie une clé YYYY-MM-DD pour comparer deux dates sans tenir compte de l'heure. */
   function dateKey(date) {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -113,12 +112,10 @@
     return `${y}-${m}-${d}`;
   }
 
-  /** Format d'affichage long (ex : "Jeu 9 mai"). */
   function formatDateLong(date) {
     return `${JOURS[date.getDay()]} ${date.getDate()} ${MOIS[date.getMonth()]}`;
   }
 
-  /** Génère la liste des 14 derniers jours (du plus récent au plus ancien). */
   function genererDates() {
     const dates = [];
     const aujourdhui = new Date();
@@ -164,6 +161,8 @@
 
   /* ------------------------------------------------------------
      6. RENDU — Étape 2 : grille des terrains
+        Chaque carte reçoit une variable CSS --i pour le délai
+        d'animation (effet d'apparition en cascade).
      ------------------------------------------------------------ */
   function renderTerrains(club) {
     el.terrainGrid.innerHTML = '';
@@ -175,13 +174,14 @@
       return;
     }
 
-    club.terrains.forEach((terrain) => {
+    club.terrains.forEach((terrain, index) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'terrain-card';
       btn.setAttribute('role', 'radio');
       btn.setAttribute('aria-checked', 'false');
       btn.dataset.terrainId = terrain.id;
+      btn.style.setProperty('--i', String(index));
       btn.innerHTML = `
         <span class="terrain-card-icon" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -258,18 +258,14 @@
     const club = CLUBS.find((c) => c.id === clubId);
     if (!club) return;
 
-    // Si on change de club, on remet à zéro le terrain sélectionné.
     const aChange = state.club?.id !== club.id;
     state.club = club;
-    if (aChange) {
-      state.terrain = null;
-    }
+    if (aChange) state.terrain = null;
 
-    // Mise à jour visuelle des cartes club.
     el.clubGrid.querySelectorAll('.club-card').forEach((card) => {
-      const estSelectionne = card.dataset.clubId === clubId;
-      card.classList.toggle('is-selected', estSelectionne);
-      card.setAttribute('aria-checked', estSelectionne ? 'true' : 'false');
+      const sel = card.dataset.clubId === clubId;
+      card.classList.toggle('is-selected', sel);
+      card.setAttribute('aria-checked', sel ? 'true' : 'false');
     });
 
     renderTerrains(club);
@@ -283,9 +279,9 @@
     state.terrain = terrain;
 
     el.terrainGrid.querySelectorAll('.terrain-card').forEach((card) => {
-      const estSelectionne = Number(card.dataset.terrainId) === terrainId;
-      card.classList.toggle('is-selected', estSelectionne);
-      card.setAttribute('aria-checked', estSelectionne ? 'true' : 'false');
+      const sel = Number(card.dataset.terrainId) === terrainId;
+      card.classList.toggle('is-selected', sel);
+      card.setAttribute('aria-checked', sel ? 'true' : 'false');
     });
 
     updateUI();
@@ -295,9 +291,9 @@
     state.date = date;
 
     el.dateScroller.querySelectorAll('.date-pill').forEach((pill) => {
-      const estSelectionne = pill.dataset.dateKey === key;
-      pill.classList.toggle('is-selected', estSelectionne);
-      pill.setAttribute('aria-checked', estSelectionne ? 'true' : 'false');
+      const sel = pill.dataset.dateKey === key;
+      pill.classList.toggle('is-selected', sel);
+      pill.setAttribute('aria-checked', sel ? 'true' : 'false');
     });
 
     updateUI();
@@ -307,9 +303,9 @@
     state.heure = heure;
 
     el.timeGrid.querySelectorAll('.time-pill').forEach((pill) => {
-      const estSelectionne = pill.dataset.heure === heure;
-      pill.classList.toggle('is-selected', estSelectionne);
-      pill.setAttribute('aria-checked', estSelectionne ? 'true' : 'false');
+      const sel = pill.dataset.heure === heure;
+      pill.classList.toggle('is-selected', sel);
+      pill.setAttribute('aria-checked', sel ? 'true' : 'false');
     });
 
     updateUI();
@@ -318,8 +314,6 @@
 
   /* ------------------------------------------------------------
      10. MISE À JOUR DE L'INTERFACE GLOBALE
-         (verrouillage / déverrouillage des étapes,
-          libellés de statut, état du bouton CTA)
      ------------------------------------------------------------ */
   function updateUI() {
     const completion = {
@@ -329,7 +323,7 @@
       4: !!state.heure
     };
 
-    // Pour chaque étape : on définit son état (verrouillée / active / complétée).
+    // Verrouillage / déverrouillage des étapes selon la complétion.
     for (let i = 1; i <= 4; i++) {
       const stepEl = el.steps[i];
       stepEl.classList.remove('is-locked', 'is-active', 'is-completed');
@@ -348,13 +342,11 @@
       }
     }
 
-    // Libellés de statut à droite de chaque en-tête d'étape.
     el.statuses[1].textContent = state.club    ? state.club.nom    : '';
     el.statuses[2].textContent = state.terrain ? state.terrain.nom : '';
     el.statuses[3].textContent = state.date    ? formatDateLong(state.date) : '';
     el.statuses[4].textContent = state.heure   ? state.heure       : '';
 
-    // Bouton CTA + résumé.
     const tousChoisis = completion[1] && completion[2] && completion[3] && completion[4];
     el.ctaButton.disabled = !tousChoisis;
 
@@ -374,8 +366,6 @@
 
   /* ------------------------------------------------------------
      11. CTA — clic sur "Voir mon match"
-         Pour l'instant on redirige vers player.html avec les
-         paramètres en query string. Cette page sera créée plus tard.
      ------------------------------------------------------------ */
   el.ctaButton.addEventListener('click', () => {
     if (el.ctaButton.disabled) return;
@@ -387,8 +377,8 @@
       heure: state.heure
     });
 
-    // Redirection prévue : window.location.href = `player.html?${params}`;
-    // En attendant que player.html soit développé, on logue + alerte.
+    // À brancher quand player.html sera développé :
+    // window.location.href = `player.html?${params}`;
     console.log('[MyMatch] Lecture vidéo demandée :', params.toString());
     alert(
       `Lecture du match :\n` +
@@ -402,7 +392,39 @@
 
 
   /* ------------------------------------------------------------
-     12. INITIALISATION
+     12. HEADER — devient opaque au scroll
+     ------------------------------------------------------------ */
+  function onScroll() {
+    if (window.scrollY > 24) {
+      el.header.classList.add('is-scrolled');
+    } else {
+      el.header.classList.remove('is-scrolled');
+    }
+  }
+
+
+  /* ------------------------------------------------------------
+     13. MENU MOBILE (burger)
+     ------------------------------------------------------------ */
+  function toggleMobileMenu() {
+    const ouvert = el.burger.classList.toggle('is-open');
+    el.burger.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+    if (ouvert) {
+      el.mobileMenu.hidden = false;
+    } else {
+      el.mobileMenu.hidden = true;
+    }
+  }
+
+  function fermerMobileMenu() {
+    el.burger.classList.remove('is-open');
+    el.burger.setAttribute('aria-expanded', 'false');
+    el.mobileMenu.hidden = true;
+  }
+
+
+  /* ------------------------------------------------------------
+     14. INITIALISATION
      ------------------------------------------------------------ */
   function init() {
     renderClubs();
@@ -410,6 +432,16 @@
     renderDates();
     renderHoraires();
     updateUI();
+
+    // Header au scroll (avec passive listener pour les perfs mobiles).
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Menu mobile.
+    el.burger.addEventListener('click', toggleMobileMenu);
+    el.mobileMenu.querySelectorAll('.mobile-link').forEach((link) => {
+      link.addEventListener('click', fermerMobileMenu);
+    });
   }
 
   if (document.readyState === 'loading') {
