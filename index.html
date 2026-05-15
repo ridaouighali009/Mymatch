@@ -46,7 +46,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .nav-cta:hover{opacity:.85}
 
 .hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;padding-top:62px;overflow:hidden}
-.h-bg{position:absolute;inset:0;background-size:cover;background-position:45% 80%;opacity:0.5;filter:brightness(1.2) contrast(1.05) saturate(1.05)}
+.h-bg{position:absolute;inset:0;background-size:70%;background-position:62% 90%;opacity:0.5;filter:brightness(1.2) contrast(1.05) saturate(1.05)}
 .h-fade{position:absolute;inset:0;background:linear-gradient(175deg,rgba(6,6,6,0) 0%,rgba(6,6,6,0.4) 45%,rgba(6,6,6,1) 82%)}
 .h-fade2{position:absolute;inset:0;background:linear-gradient(to right,rgba(6,6,6,0.82) 0%,transparent 65%)}
 .h-body{position:relative;z-index:2;padding:0 32px 90px;max-width:680px}
@@ -415,13 +415,15 @@ footer{padding:36px 32px;border-top:1px solid var(--line);display:flex;align-ite
     <div class="fpanel" id="p3">
       <div class="flbl"><strong>Quel jour ?</strong> Les vidéos sont disponibles 14 jours après le match.</div>
       <div class="drow" id="dateRow"></div>
-      <button class="btn-p" onclick="showResult()">Voir mon match</button>
+      <div class="flbl" style="margin-top:20px"><strong>Quelle heure ?</strong> Sélectionne le créneau de ton match.</div>
+      <div class="tgrid" id="heureGrid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px"></div>
+      <button class="btn-p" id="btnVoir" style="opacity:.35;cursor:not-allowed" disabled onclick="showResult()">Voir mon match</button>
     </div>
     <div class="fpanel" id="p4">
       <div class="rbox show" id="rBox">
         <div class="rt" id="rTitle">Vidéo disponible</div>
         <div class="rd" id="rDet"></div>
-        <button class="btn-p">Accéder à ma vidéo</button>
+        <button class="btn-p" id="btnAcceder" onclick="goToPlayer()">Accéder à ma vidéo</button>
       </div>
     </div>
   </div>
@@ -560,7 +562,7 @@ function goTab(n){
     document.getElementById('p'+i).classList.toggle('active',i===n);
   });
 }
-let selT=null,selD=null;
+let selT=null,selD=null,selH=null;
 const filmed=[1,2,3,4,5,6];
 const grid=document.getElementById('terrainGrid');
 for(let i=1;i<=13;i++){
@@ -571,6 +573,7 @@ for(let i=1;i<=13;i++){
   if(f){(function(num,el){el.onclick=function(){document.querySelectorAll('.tbtn.f').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selT=num;setTimeout(()=>goTab(3),280);};})(i,btn);}
   grid.appendChild(btn);
 }
+
 const days=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 const dr=document.getElementById('dateRow');
@@ -581,15 +584,56 @@ for(let i=13;i>=0;i--){
   p.className='dpill'+(i===0?' sel':'');
   if(i===0)selD=d;
   p.innerHTML='<div class="dday">'+days[d.getDay()]+'</div><div class="dnum">'+d.getDate()+'</div><div class="dmon">'+months[d.getMonth()]+'</div>'+(i===0?'<div class="tdot"></div>':'');
-  (function(date,el){el.onclick=function(){document.querySelectorAll('.dpill').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');selD=date;};})(d,p);
+  (function(date,el){el.onclick=function(){
+    document.querySelectorAll('.dpill').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel');selD=date;
+    checkBtnVoir();
+  };})(d,p);
   dr.appendChild(p);
 }
+
+const heures=['09:00','10:00','11:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+const hg=document.getElementById('heureGrid');
+heures.forEach(h=>{
+  const btn=document.createElement('button');
+  btn.className='tbtn f';
+  btn.style.aspectRatio='auto';
+  btn.style.padding='10px 4px';
+  btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
+  btn.onclick=function(){
+    document.querySelectorAll('#heureGrid .tbtn').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');selH=h;
+    checkBtnVoir();
+  };
+  hg.appendChild(btn);
+});
+
+function checkBtnVoir(){
+  const btn=document.getElementById('btnVoir');
+  const ok=selD&&selH;
+  btn.disabled=!ok;
+  btn.style.opacity=ok?'1':'0.35';
+  btn.style.cursor=ok?'pointer':'not-allowed';
+}
+
 function showResult(){
+  if(!selT||!selD||!selH)return;
   goTab(4);
-  const t=selT||3,d=selD||today;
-  const ds=days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
-  document.getElementById('rTitle').textContent='Vidéo trouvée — Terrain '+t;
-  document.getElementById('rDet').innerHTML='<strong>City Foot 5</strong> · Terrain '+t+' · '+ds+'<br>Vidéo 4K · 60 minutes · Disponible encore <strong>14 jours</strong>';
+  const ds=days[selD.getDay()]+' '+selD.getDate()+' '+months[selD.getMonth()]+' '+selD.getFullYear();
+  document.getElementById('rTitle').textContent='Vidéo trouvée — Terrain '+selT;
+  document.getElementById('rDet').innerHTML='<strong>City Foot 5</strong> · Terrain '+selT+' · '+ds+' · '+selH+'<br>Vidéo 4K · 60 minutes · Disponible encore <strong>14 jours</strong>';
+}
+
+function goToPlayer(){
+  if(!selT||!selD||!selH)return;
+  const ds=days[selD.getDay()]+' '+selD.getDate()+' '+months[selD.getMonth()];
+  const params=new URLSearchParams({
+    club:'City Foot 5',
+    terrain:'Terrain '+selT,
+    date:ds,
+    heure:selH
+  });
+  window.location.href='player.html?'+params.toString();
 }
 </script>
 </body>
