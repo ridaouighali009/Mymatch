@@ -610,7 +610,7 @@ heures.forEach(h=>{
 
 function checkBtnVoir(){
   const btn=document.getElementById('btnVoir');
-  const ok=selD&&selH;
+  const ok=selT&&selD&&selH;
   btn.disabled=!ok;
   btn.style.opacity=ok?'1':'0.35';
   btn.style.cursor=ok?'pointer':'not-allowed';
