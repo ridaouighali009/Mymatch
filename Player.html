@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyMatch — Ton match</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --jaune: #C8FF00;
@@ -34,17 +34,15 @@ header {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(200,255,0,0.1);
 }
+/* Logo identique à index.html (Bebas Neue + SVG terrain stylisé) */
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.logo-icon {
-  width: 32px; height: 32px; background: var(--jaune);
-  border-radius: 6px; display: flex; align-items: center; justify-content: center;
+.logo-t {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--blanc);
 }
-.logo-icon svg { width: 18px; height: 18px; }
-.logo-text {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800; font-size: 22px; letter-spacing: 0.05em; color: var(--blanc);
-}
-.logo-text span { color: var(--jaune); }
+.logo-t span { color: #D4FF00; }
 .btn-retour {
   display: flex; align-items: center; gap: 8px;
   background: transparent; border: 1px solid rgba(255,255,255,0.15);
@@ -88,9 +86,20 @@ main {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 900; font-size: clamp(32px, 6vw, 64px);
   line-height: 0.9; text-transform: uppercase;
-  letter-spacing: -0.01em; margin-bottom: 16px;
+  letter-spacing: -0.01em; margin-bottom: 10px;
 }
 .match-titre .accent { color: var(--jaune); font-style: italic; }
+/* Sous-titre jaune fluo italique : style identique au "Matensach"
+   d'index.html (.h-darija) */
+.match-sub-fluo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 3.2vw, 34px);
+  color: rgba(212,255,0,0.6);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-style: italic;
+  margin-bottom: 20px;
+}
 .match-meta { display: flex; flex-wrap: wrap; gap: 24px; }
 .meta-item { display: flex; flex-direction: column; gap: 3px; }
 .meta-label {
@@ -192,15 +201,28 @@ main {
 .btn-whatsapp:hover { border-color: #25D366; background: rgba(37,211,102,0.06); }
 .btn-icon { width: 20px; height: 20px; flex-shrink: 0; }
 
+/* Bandeau fixe collé en bas de l'écran (n'est plus dans le flux
+   du contenu — toujours visible quel que soit le scroll). */
 .footer-info {
-  margin: 0 24px 24px; padding: 16px;
-  background: rgba(200,255,0,0.04); border: 1px solid rgba(200,255,0,0.1);
-  border-radius: 3px; display: flex; align-items: flex-start; gap: 12px;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 90;
+  padding: 12px 24px;
+  margin: 0;
+  background: rgba(10,10,10,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(200,255,0,0.18);
+  display: flex; align-items: center; justify-content: center; gap: 12px;
 }
-.footer-info-icon { width: 20px; height: 20px; color: var(--jaune); flex-shrink: 0; margin-top: 1px; }
-.footer-info-text { font-size: 13px; color: var(--gris-texte); line-height: 1.5; }
+.footer-info-icon { width: 18px; height: 18px; color: var(--jaune); flex-shrink: 0; }
+.footer-info-text { font-size: 13px; color: var(--gris-texte); line-height: 1.4; text-align: center; }
 .footer-info-text strong { color: var(--blanc); font-weight: 600; }
-.divider { margin: 0 24px 24px; height: 1px; background: rgba(255,255,255,0.06); }
+/* Le divider n'est plus utile maintenant que le bandeau est fixé en bas */
+.divider { display: none; }
+/* Réserve de l'espace en bas du body pour que le contenu ne soit
+   pas masqué par le bandeau fixe (≈ 60px de hauteur) */
+body { padding-bottom: 60px; }
 
 /* ── ANIMATIONS ── */
 .fade-in { opacity: 0; transform: translateY(16px); animation: fadeIn 0.5s ease forwards; }
@@ -234,7 +256,7 @@ main {
     border-left: none;
   }
   .actions-section { padding: 28px 24px; }
-  .footer-info { margin: 0 24px 24px; }
+  /* .footer-info reste fixed bottom — pas de margin */
 }
 
 /* ── DESKTOP 1100px+ ── */
@@ -252,8 +274,7 @@ main {
   .meta-value { font-size: 20px; }
   .player-bar { padding: 16px 32px; }
   .actions-section { padding: 36px 32px; }
-  .footer-info { margin: 0 32px 32px; }
-  .divider { margin: 0 32px 32px; }
+  /* .footer-info reste fixed bottom — pas de margin */
   .btn-primary { font-size: 17px; padding: 18px 28px; }
   .btn-secondary { font-size: 15px; padding: 15px 28px; }
 }
@@ -274,10 +295,17 @@ main {
 
 <header>
   <a href="index.html" class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M5 3L19 12L5 21V3Z" fill="#0A0A0A"/></svg>
-    </div>
-    <span class="logo-text">MY<span>MATCH</span></span>
+    <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="6" fill="#111"/>
+      <rect width="32" height="32" rx="6" fill="none" stroke="#D4FF00" stroke-width=".7" opacity=".4"/>
+      <rect x="4" y="9" width="24" height="15" rx="1.5" fill="none" stroke="#2a2a2a" stroke-width="1.1"/>
+      <line x1="16" y1="9" x2="16" y2="24" stroke="#2a2a2a" stroke-width="1.1"/>
+      <circle cx="16" cy="16.5" r="4" fill="none" stroke="#2a2a2a" stroke-width="1.1"/>
+      <circle cx="16" cy="16.5" r="1.7" fill="#D4FF00"/>
+      <circle cx="16" cy="16.5" r="3.3" fill="none" stroke="#D4FF00" stroke-width="1" opacity=".55"/>
+      <circle cx="23" cy="10.5" r="1.6" fill="#D4FF00"/>
+    </svg>
+    <span class="logo-t">MY<span>MATCH</span></span>
   </a>
   <a href="index.html" class="btn-retour">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -290,8 +318,8 @@ main {
 <main>
 
   <div class="match-infos">
-    <div class="match-tag fade-in">Ton match</div>
-    <h1 class="match-titre fade-in">Tu viens de<br><span class="accent">jouer.</span></h1>
+    <h1 class="match-titre fade-in">TON MATCH.<br>TA VIDÉO.</h1>
+    <div class="match-sub-fluo fade-in">Disponible maintenant.</div>
     <div class="match-meta fade-in">
       <div class="meta-item">
         <span class="meta-label">Club</span>
@@ -357,20 +385,21 @@ main {
         Partager sur WhatsApp
       </button>
     </div>
-    <div class="divider"></div>
-    <div class="footer-info">
-      <svg class="footer-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <p class="footer-info-text">
-        <strong>Vos vidéos sont disponibles pendant 14 jours</strong> après la date du match, puis supprimées automatiquement.
-      </p>
-    </div>
   </div>
 
 </main>
+
+<!-- Bandeau d'information fixe en bas de l'écran -->
+<div class="footer-info">
+  <svg class="footer-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  <p class="footer-info-text">
+    <strong>Vos vidéos sont disponibles pendant 14 jours</strong> après la date du match, puis supprimées automatiquement.
+  </p>
+</div>
 
 <script>
 function getParams() {
