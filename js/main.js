@@ -393,23 +393,13 @@
     if (el.ctaButton.disabled) return;
 
     const params = new URLSearchParams({
-      club: state.club.id,
-      terrain: state.terrain.code,
-      date: dateKey(state.date),
+      club: state.club.nom,
+      terrain: state.terrain.nom,
+      date: formatDateLong(state.date),
       heure: state.heure
     });
 
-    // À brancher quand player.html sera développé :
-    // window.location.href = `player.html?${params}`;
-    console.log('[MyMatch] Lecture vidéo demandée :', params.toString());
-    alert(
-      `Lecture du match :\n` +
-      `Club : ${state.club.nom}\n` +
-      `Terrain : ${state.terrain.nom}\n` +
-      `Date : ${formatDateLong(state.date)}\n` +
-      `Heure : ${state.heure}\n\n` +
-      `(player.html sera développé à l'étape suivante)`
-    );
+    window.location.href = `Player.html?${params}`;
   });
 
 
