@@ -24,7 +24,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-
+ 
 header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
@@ -53,9 +53,9 @@ header {
   text-transform: uppercase; cursor: pointer; text-decoration: none; transition: all 0.2s;
 }
 .btn-retour:hover { border-color: var(--jaune); color: var(--jaune); }
-
+ 
 main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: column; }
-
+ 
 .match-infos {
   padding: 28px 24px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -90,7 +90,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 16px; color: var(--blanc); letter-spacing: 0.02em;
 }
-
+ 
 .player-section { flex: 1; display: flex; flex-direction: column; }
 .player-wrapper {
   position: relative; width: 100%; background: #000;
@@ -128,7 +128,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
   letter-spacing: 0.1em; color: var(--blanc); margin-bottom: 6px;
 }
 .placeholder-sub { font-size: 13px; color: var(--gris-texte); letter-spacing: 0.05em; }
-
+ 
 .player-bar {
   width: 100%; background: rgba(255,255,255,0.04);
   padding: 12px 16px; display: flex; align-items: center; gap: 12px;
@@ -152,7 +152,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
   font-size: 13px; font-weight: 600; color: var(--gris-texte);
   white-space: nowrap; letter-spacing: 0.05em;
 }
-
+ 
 .actions-section { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
 .btn-primary {
   width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -175,7 +175,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
 .btn-whatsapp { border-color: rgba(37,211,102,0.3); color: #25D366; }
 .btn-whatsapp:hover { border-color: #25D366; background: rgba(37,211,102,0.06); }
 .btn-icon { width: 20px; height: 20px; flex-shrink: 0; }
-
+ 
 .footer-info {
   margin: 0 24px 24px; padding: 16px;
   background: rgba(200,255,0,0.04); border: 1px solid rgba(200,255,0,0.1);
@@ -185,7 +185,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
 .footer-info-text { font-size: 13px; color: var(--gris-texte); line-height: 1.5; }
 .footer-info-text strong { color: var(--blanc); font-weight: 600; }
 .divider { margin: 0 24px 24px; height: 1px; background: rgba(255,255,255,0.06); }
-
+ 
 @media (min-width: 768px) {
   main { flex-direction: row; flex-wrap: wrap; }
   .match-infos { width: 100%; padding: 40px 48px 32px; }
@@ -223,7 +223,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
 </style>
 </head>
 <body>
-
+ 
 <header>
   <a href="index.html" class="logo">
     <div class="logo-icon">
@@ -238,9 +238,9 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
     Retour
   </a>
 </header>
-
+ 
 <main>
-
+ 
   <div class="match-infos">
     <div class="match-tag fade-in">Ton match</div>
     <h1 class="match-titre fade-in">Tu viens de<br><span class="accent">jouer.</span></h1>
@@ -263,7 +263,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
       </div>
     </div>
   </div>
-
+ 
   <div class="player-section">
     <div class="player-wrapper" id="playerWrapper">
       <div class="player-placeholder">
@@ -292,7 +292,7 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
       </button>
     </div>
   </div>
-
+ 
   <div class="sidebar">
     <div class="actions-section">
       <button class="btn-primary" onclick="telecharger()">
@@ -321,9 +321,9 @@ main { padding-top: 65px; min-height: 100vh; display: flex; flex-direction: colu
       </p>
     </div>
   </div>
-
+ 
 </main>
-
+ 
 <script>
 function getParams() {
   const params = new URLSearchParams(window.location.search);
@@ -334,16 +334,16 @@ function getParams() {
     heure:   params.get('heure')   || '21:00'
   };
 }
-
+ 
 const p = getParams();
 document.getElementById('meta-club').textContent    = p.club;
 document.getElementById('meta-terrain').textContent = p.terrain;
 document.getElementById('meta-date').textContent    = p.date;
 document.getElementById('meta-heure').textContent   = p.heure;
 document.title = 'MyMatch — ' + p.club + ' · ' + p.terrain;
-
+ 
 let isPlaying = false, progress = 0, interval;
-
+ 
 function simulatePlay() {
   isPlaying = !isPlaying;
   const btn = document.querySelector('.play-btn svg');
@@ -360,14 +360,14 @@ function simulatePlay() {
     clearInterval(interval);
   }
 }
-
+ 
 function seekVideo(e) {
   const rect = e.currentTarget.getBoundingClientRect();
   progress = ((e.clientX - rect.left) / rect.width) * 100;
   document.getElementById('progressFill').style.width = progress + '%';
   document.getElementById('progressDot').style.left  = progress + '%';
 }
-
+ 
 function toggleFullscreen() {
   const w = document.getElementById('playerWrapper');
   if (!document.fullscreenElement) {
@@ -376,16 +376,16 @@ function toggleFullscreen() {
     document.exitFullscreen?.() || document.webkitExitFullscreen?.();
   }
 }
-
+ 
 function telecharger() {
   alert('La vidéo va être téléchargée sur votre appareil.');
 }
-
+ 
 function partagerWhatsApp() {
   const text = 'Mon match à ' + p.club + ' — ' + p.terrain + ' — ' + p.date + ' à ' + p.heure + '\nRegarde ma vidéo sur MyMatch !';
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
-
+ 
 screen.orientation?.addEventListener('change', () => {
   if (screen.orientation.type.includes('landscape')) {
     document.getElementById('playerWrapper').requestFullscreen?.();
