@@ -224,6 +224,66 @@ footer{padding:36px 32px;border-top:1px solid var(--line);display:flex;align-ite
   .cf-cont{flex-direction:column;align-items:flex-start;padding:0 20px}
   footer{flex-direction:column;text-align:center}
 }
+
+/* ============================================================
+   ANIMATIONS — Ajout pur (aucun changement de design, contenu,
+   couleurs ou photo). Compositions :
+     1. Slide-up ligne par ligne du titre hero
+     2. Ken Burns (zoom doux 12s en boucle alternée) sur la photo
+     3. Parallax 30% sur la photo (translateY mis à jour par JS)
+     4. Stats : comptage de 0 à la valeur finale via IntersectionObserver
+     5. Nav : variation d'opacité / bordure / ombre au-delà de 80px
+   ============================================================ */
+
+/* 1. Slide-up du titre hero. Chaque .blk devient un "clipper"
+   (overflow:hidden) et son contenu (.blk-inner ajouté en JS) glisse
+   depuis le bas vers sa position naturelle, avec délai en cascade. */
+.h-h1 .blk{overflow:hidden;padding-bottom:.04em}
+.h-h1 .blk-inner{
+  display:block;
+  opacity:0;
+  transform:translateY(105%);
+  animation:hero-line-up .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+.h-h1 .blk:nth-child(1) .blk-inner{animation-delay:.15s}
+.h-h1 .blk:nth-child(2) .blk-inner{animation-delay:.45s}
+.h-h1 .blk:nth-child(3) .blk-inner{animation-delay:.75s}
+@keyframes hero-line-up{
+  from{opacity:0;transform:translateY(105%)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* 2 + 3. Ken Burns + parallax fusionnés dans le même `transform`
+   pour ne pas se voler la propriété. JS pousse --parallax-y, et les
+   DEUX keyframes le reprennent ; le navigateur ré-évalue la variable
+   à chaque frame, donc l'offset de scroll suit en continu pendant
+   que la scale fait son zoom de 1 → 1.08 sur 12s en alternance. */
+.h-bg{
+  transform:translateY(var(--parallax-y,0px)) scale(1);
+  will-change:transform;
+  animation:ken-burns 12s ease-in-out infinite alternate;
+}
+@keyframes ken-burns{
+  from{transform:translateY(var(--parallax-y,0px)) scale(1)}
+  to  {transform:translateY(var(--parallax-y,0px)) scale(1.08)}
+}
+
+/* 5. Nav au scroll : devient plus opaque + bordure inférieure
+   plus marquée + petite ombre, avec une transition de 0.4s. */
+nav{transition:background .4s ease,border-bottom-color .4s ease,box-shadow .4s ease}
+nav.is-scrolled{
+  background:rgba(6,6,6,.98);
+  border-bottom-color:rgba(212,255,0,.16);
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
+}
+
+/* Respect prefers-reduced-motion : on désactive les boucles et
+   on rend le titre immédiatement visible. Le compteur stats sera
+   également court-circuité côté JS (valeur finale directe). */
+@media (prefers-reduced-motion: reduce){
+  .h-bg{animation:none}
+  .h-h1 .blk-inner{animation:none;opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -635,6 +695,107 @@ function goToPlayer(){
   });
   window.location.href='Player.html?'+params.toString();
 }
+
+/* ============================================================
+   ANIMATIONS — JS associé (slide-up wrap, parallax, header au
+   scroll, compteurs animés). Aucune modification du contenu ;
+   on lit les valeurs existantes des stats et on les anime de 0
+   jusqu'à elles via IntersectionObserver.
+   ============================================================ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* 1. Slide-up : on enveloppe le texte de chaque .blk dans un span
+     .blk-inner que le CSS animera. Le DOM reste identique côté
+     contenu, on ajoute juste un wrapper inerte. */
+  document.querySelectorAll('.h-h1 .blk').forEach(function(blk){
+    if (blk.querySelector('.blk-inner')) return; // déjà wrappé
+    var inner = document.createElement('span');
+    inner.className = 'blk-inner';
+    while (blk.firstChild) inner.appendChild(blk.firstChild);
+    blk.appendChild(inner);
+  });
+
+  /* 3 + 5. Une seule boucle scroll, debouncée via requestAnimationFrame :
+     - parallax : translateY = 0.7 * scrollY → la photo se déplace
+       à 30% de la vitesse de scroll (effet de profondeur).
+     - nav : ajoute/retire .is-scrolled selon le seuil de 80px. */
+  var hbg = document.querySelector('.h-bg');
+  var navEl = document.querySelector('nav');
+  var ticking = false;
+
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (hbg && !reduced) {
+        hbg.style.setProperty('--parallax-y', (y * 0.7) + 'px');
+      }
+      if (navEl) {
+        if (y > 80) navEl.classList.add('is-scrolled');
+        else navEl.classList.remove('is-scrolled');
+      }
+      ticking = false;
+    });
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* 4. Compteurs animés sur .stat-v : on parse la valeur (ex: "60",
+     "4K", "10s", "14j"), on remet à 0 dans le DOM, puis on anime
+     dès que l'élément entre dans le viewport. */
+  var compteurs = document.querySelectorAll('.stat-v');
+  if (compteurs.length){
+    compteurs.forEach(function(el){
+      var raw = (el.textContent || '').trim();
+      var m = raw.match(/^(\d+)(.*)$/);
+      el.dataset.final = raw;
+      if (m){
+        el.dataset.cible  = m[1];
+        el.dataset.suffix = m[2] || '';
+        if (!reduced) el.textContent = '0' + (m[2] || '');
+      }
+    });
+
+    function lancerCompte(el){
+      if (el.dataset.done === '1') return;
+      var cible = parseInt(el.dataset.cible || '0', 10);
+      var suffixe = el.dataset.suffix || '';
+      if (!cible){ el.textContent = el.dataset.final; el.dataset.done = '1'; return; }
+      var duree = 1400;
+      var t0 = performance.now();
+      function tick(now){
+        var t = Math.min((now - t0) / duree, 1);
+        var eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        el.textContent = Math.round(cible * eased) + suffixe;
+        if (t < 1) requestAnimationFrame(tick);
+        else el.dataset.done = '1';
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (reduced){
+      // Pas d'animation : on rétablit directement les valeurs finales.
+      compteurs.forEach(function(el){
+        el.textContent = el.dataset.final;
+      });
+    } else if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){
+            lancerCompte(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      compteurs.forEach(function(el){ io.observe(el); });
+    } else {
+      // Fallback si pas d'IntersectionObserver : lancement immédiat.
+      compteurs.forEach(lancerCompte);
+    }
+  }
+})();
 </script>
 </body>
 </html>
