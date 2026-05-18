@@ -261,20 +261,21 @@ footer{padding:36px 32px;border-top:1px solid var(--line);display:flex;align-ite
 .h-bg{
   transform:translateY(var(--parallax-y,0px)) scale(1);
   will-change:transform;
-  animation:ken-burns 12s ease-in-out infinite alternate;
+  animation:ken-burns 14s ease-in-out infinite alternate;
 }
 @keyframes ken-burns{
   from{transform:translateY(var(--parallax-y,0px)) scale(1)}
-  to  {transform:translateY(var(--parallax-y,0px)) scale(1.08)}
+  to  {transform:translateY(var(--parallax-y,0px)) scale(1.09)}
 }
 
-/* 5. Nav au scroll : devient plus opaque + bordure inférieure
-   plus marquée + petite ombre, avec une transition de 0.4s. */
-nav{transition:background .4s ease,border-bottom-color .4s ease,box-shadow .4s ease}
-nav.is-scrolled{
-  background:rgba(6,6,6,.98);
-  border-bottom-color:rgba(212,255,0,.16);
-  box-shadow:0 4px 20px rgba(0,0,0,.35);
+/* 4. Header au scroll : devient plus opaque + bordure verte fluo
+   + flou backdrop, transition fluide 0.4s sur toutes les props. */
+nav, header { transition: background .4s ease, border-bottom .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease, box-shadow .4s ease; }
+nav.scrolled, header.scrolled, nav.is-scrolled {
+  background: rgba(8, 8, 8, 0.97);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* Respect prefers-reduced-motion : on désactive les boucles et
@@ -283,7 +284,18 @@ nav.is-scrolled{
 @media (prefers-reduced-motion: reduce){
   .h-bg{animation:none}
   .h-h1 .blk-inner{animation:none;opacity:1;transform:none}
+  .darija-cursor{animation:none}
 }
+
+/* 1. Curseur clignotant pour l'effet machine à écrire sur "Matensach." */
+.darija-cursor{
+  display:inline-block;
+  margin-left:2px;
+  font-weight:inherit;
+  color:rgba(212,255,0,0.7);
+  animation:darija-blink .85s steps(2,start) infinite;
+}
+@keyframes darija-blink{ to { visibility:hidden; } }
 </style>
 </head>
 <body>
@@ -719,7 +731,9 @@ function goToPlayer(){
   /* 3 + 5. Une seule boucle scroll, debouncée via requestAnimationFrame :
      - parallax : translateY = 0.7 * scrollY → la photo se déplace
        à 30% de la vitesse de scroll (effet de profondeur).
-     - nav : ajoute/retire .is-scrolled selon le seuil de 80px. */
+     - nav  : translateY = scrollY * 0.28 → la photo glisse à 28%
+              de la vitesse de scroll (parallax doux, combiné Ken Burns).
+     - nav  : ajoute/retire .scrolled au-delà de 80px de scroll. */
   var hbg = document.querySelector('.h-bg');
   var navEl = document.querySelector('nav');
   var ticking = false;
@@ -730,11 +744,11 @@ function goToPlayer(){
     requestAnimationFrame(function(){
       var y = window.scrollY || window.pageYOffset || 0;
       if (hbg && !reduced) {
-        hbg.style.setProperty('--parallax-y', (y * 0.7) + 'px');
+        hbg.style.setProperty('--parallax-y', (y * 0.28) + 'px');
       }
       if (navEl) {
-        if (y > 80) navEl.classList.add('is-scrolled');
-        else navEl.classList.remove('is-scrolled');
+        if (y > 80) navEl.classList.add('scrolled');
+        else navEl.classList.remove('scrolled');
       }
       ticking = false;
     });
@@ -788,13 +802,55 @@ function goToPlayer(){
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.4 });
+      }, { threshold: 0.3 });
       compteurs.forEach(function(el){ io.observe(el); });
     } else {
       // Fallback si pas d'IntersectionObserver : lancement immédiat.
       compteurs.forEach(lancerCompte);
     }
   }
+})();
+
+/* ============================================================
+   ANIMATION 1 — Machine à écrire sur le sous-titre "Matensach."
+   Vide l'élément, attend 1100 ms, puis ré-écrit le texte caractère
+   par caractère (90 ms entre chaque lettre) avec un curseur "|" qui
+   clignote pendant l'écriture et disparaît une fois terminé.
+   ============================================================ */
+(function(){
+  var el = document.querySelector('.h-darija');
+  if (!el) return;
+
+  // Si l'utilisateur préfère réduire les animations, on garde le texte
+  // tel quel et on n'enclenche pas la machine à écrire.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var text = (el.textContent || '').trim();
+  if (!text) return;
+
+  // Vide l'élément et insère un curseur clignotant en attente.
+  el.textContent = '';
+  var cursor = document.createElement('span');
+  cursor.className = 'darija-cursor';
+  cursor.textContent = '|';
+  el.appendChild(cursor);
+
+  // Écriture caractère par caractère, 90 ms entre chaque lettre,
+  // démarrage 1100 ms après le chargement.
+  setTimeout(function startTyping(){
+    var i = 0;
+    function step(){
+      if (i < text.length){
+        cursor.insertAdjacentText('beforebegin', text.charAt(i));
+        i++;
+        setTimeout(step, 90);
+      } else {
+        // Fin : on retire le curseur.
+        if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+      }
+    }
+    step();
+  }, 1100);
 })();
 </script>
 </body>
