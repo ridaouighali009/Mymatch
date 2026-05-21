@@ -18,7 +18,7 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;line-height:1.65;overflow-x:hidden}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(6,6,6,0.92);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+body > nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(6,6,6,0.92);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .nav-left{display:flex;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-t{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--text)}
@@ -660,10 +660,10 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
   </div>
   <div class="footer-bottom">
     <div class="fcopy">© 2026 MyMatch · Casablanca</div>
-    <nav class="flinks-leg" aria-label="Liens légaux">
+    <div class="flinks-leg" role="navigation" aria-label="Liens légaux">
       <a href="#" rel="nofollow">Mentions légales</a>
       <a href="#" rel="nofollow">Politique de confidentialité</a>
-    </nav>
+    </div>
   </div>
 </footer>
 
