@@ -317,6 +317,22 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
 @media (prefers-reduced-motion: reduce){
   .reveal, .reveal-left, .reveal-right { opacity: 1; transform: none; transition: none; }
 }
+
+/* Bloc d'infos discret sous la description de City Foot 5
+   (adresse, horaires, captation) — même typographie sobre que .cf-d. */
+.cf-info{list-style:none;margin:14px 0 0;padding:0;max-width:380px;display:flex;flex-direction:column;gap:4px}
+.cf-info li{display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6}
+.cf-info li span{color:var(--green);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;font-size:10px;min-width:78px;display:inline-block;padding-top:2px;flex-shrink:0}
+
+/* Liens légaux + icônes réseaux dans le footer (ajouts cohérents
+   avec la palette : muted par défaut, vert au survol). */
+.flinks-leg{display:flex;gap:18px;flex-wrap:wrap}
+.flinks-leg a{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;letter-spacing:.5px;transition:color .2s}
+.flinks-leg a:hover{color:var(--green)}
+.fsocial{display:flex;gap:10px;align-items:center}
+.fsocial a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s,border-color .2s,background .2s}
+.fsocial a:hover{color:var(--green);border-color:rgba(212,255,0,.4);background:rgba(212,255,0,.05)}
+.fsocial svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -386,10 +402,11 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
     </h1>
     <div class="h-darija">Matensach.</div>
     <p class="h-desc">Chaque match joué à City Foot 5 est enregistré automatiquement en 4K. <strong>Accède à ta vidéo en 10 secondes</strong> — sans app, sans compte.</p>
-    <div class="h-launch"><span class="l-dot"></span>Lancement prévu 2026</div>
+    <div class="h-launch"><span class="l-dot"></span>Disponible à City Foot 5</div>
     <div class="h-btns">
       <button class="btn-p" onclick="sc('selection')">Voir mon match</button>
       <button class="btn-g" onclick="sc('how')">Comment ça marche</button>
+      <button class="btn-g" onclick="partagerMyMatch()" aria-label="Partager MyMatch sur WhatsApp">Partager MyMatch</button>
     </div>
   </div>
 </div>
@@ -445,8 +462,8 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4FF00" stroke-width="2" opacity=".6"><polygon points="5,3 19,12 5,21"/></svg>
         </div>
         <div class="mph-text">
-          <strong>Moments forts</strong>
-          Disponibles une fois le service activé sur le terrain
+          <strong>Bientôt disponible</strong>
+          Découpe automatique de tes meilleurs moments.
         </div>
       </div>
     </div>
@@ -462,6 +479,11 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
       <div class="cf-lbl reveal delay-1">Terrain partenaire · Casablanca</div>
       <div class="cf-ttl reveal delay-2">City Foot 5</div>
       <div class="cf-d reveal delay-3">Le plus grand complexe de foot 5v5 à Casablanca. 13 terrains, 6 filmés. Ouvert tous les jours de 9h à minuit.</div>
+      <ul class="cf-info reveal delay-3" aria-label="Informations City Foot 5">
+        <li><span>Adresse</span>Hay Mohammadi · Casablanca centre</li>
+        <li><span>Horaires</span>9h – minuit · 7j/7</li>
+        <li><span>Captation</span>Seuls quelques terrains sont filmés</li>
+      </ul>
     </div>
   </div>
 </div>
@@ -510,7 +532,7 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
       <div class="drow" id="dateRow"></div>
       <div class="flbl" style="margin-top:20px"><strong>Quelle heure ?</strong> Sélectionne le créneau de ton match.</div>
       <div class="tgrid" id="heureGrid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px"></div>
-      <button class="btn-p" id="btnVoir" style="opacity:.35;cursor:not-allowed" disabled onclick="showResult()">Voir mon match</button>
+      <button class="btn-p" id="btnVoir" style="opacity:.35;cursor:not-allowed" disabled onclick="goToPlayer()">Voir mon match</button>
     </div>
     <div class="fpanel" id="p4">
       <div class="rbox show" id="rBox">
@@ -611,6 +633,31 @@ nav.scrolled, header.scrolled, nav.is-scrolled {
     <div class="fl">MY<span>MATCH</span></div>
   </div>
   <div class="fcopy">© 2026 MyMatch · Casablanca</div>
+  <nav class="flinks-leg" aria-label="Liens légaux">
+    <a href="#mentions">Mentions légales</a>
+    <a href="#confidentialite">Politique de confidentialité</a>
+  </nav>
+  <div class="fsocial" aria-label="Réseaux sociaux">
+    <a href="#" aria-label="Instagram" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+    <a href="#" aria-label="TikTok" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5c.35 0 .68.05 1 .14" stroke-linecap="round"/>
+        <path d="M14 4c0 2.76 2.24 5 5 5" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <a href="#" aria-label="WhatsApp" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M3 21l1.65-4.55A8.5 8.5 0 1 1 8.45 19.4L3 21Z" stroke-linejoin="round"/>
+        <path d="M8.5 9.5c.4 1.5 1.5 3.2 3 4.5 1.3 1.2 2.7 1.6 3.5 1.5l1-1c.3-.3.8-.4 1.1-.2l1.4.8c.3.2.4.6.3.9-.4 1-1.3 1.8-2.4 2-1.7.3-3.9-.3-6-2.3-2-2.1-2.6-4.3-2.3-6 .2-1.1 1-2 2-2.4.3-.1.7 0 .9.3l.8 1.4c.2.3.1.8-.2 1.1l-1 1c-.1.1-.1.3-.1.4Z" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
 </footer>
 
 <script>
@@ -727,6 +774,13 @@ function goToPlayer(){
     heure:selH
   });
   window.location.href='Player.html?'+params.toString();
+}
+
+/* Partage MyMatch : ouvre WhatsApp avec un message pré-rempli.
+   wa.me/?text= fonctionne sur mobile (app native) et desktop (web). */
+function partagerMyMatch(){
+  const message = 'Découvre MyMatch — revois tes matchs à City Foot 5 en 10 secondes, sans app ni compte. mymatch.ma';
+  window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener');
 }
 
 /* ============================================================
