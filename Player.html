@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyMatch — Ton match</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
 <style>
 :root {
   --jaune: #C8FF00;
-  --noir: #0A0A0A;
+  --noir: #080808;
   --gris-fonce: #111111;
   --gris-moyen: #1A1A1A;
   --gris-texte: #888888;
@@ -20,7 +20,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--noir);
   color: var(--blanc);
-  font-family: 'Barlow', sans-serif;
+  font-family: 'Barlow Condensed', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -34,15 +34,22 @@ header {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(200,255,0,0.1);
 }
-/* Logo identique à index.html (Bebas Neue + SVG terrain stylisé) */
-.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+/* Logo wordmark + 3 barres jaunes en cascade (aligné sur index.html) */
+.logo { display: flex; align-items: center; gap: 11px; text-decoration: none; transition: opacity .25s ease; }
+.logo:hover { opacity: .78; }
+.logo-mark { flex-shrink: 0; display: block; }
+.logo-mark rect { transition: opacity .25s ease; }
+.logo:hover .logo-mark rect:nth-child(2) { opacity: .8; }
+.logo:hover .logo-mark rect:nth-child(3) { opacity: .5; }
 .logo-t {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
   font-size: 22px;
-  letter-spacing: 3px;
+  letter-spacing: .16em;
   color: var(--blanc);
+  line-height: 1;
 }
-.logo-t span { color: #D4FF00; }
+.logo-t span { color: #C8FF00; }
 .btn-retour {
   display: flex; align-items: center; gap: 8px;
   background: transparent; border: 1px solid rgba(255,255,255,0.15);
@@ -92,7 +99,7 @@ main {
 /* Sous-titre jaune fluo italique : style identique au "Matensach"
    d'index.html (.h-darija) */
 .match-sub-fluo {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: clamp(20px, 3.2vw, 34px);
   color: rgba(212,255,0,0.6);
   letter-spacing: 3px;
@@ -121,7 +128,7 @@ main {
   width: 100%; height: 100%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0A0A0A 0%, #111 50%, #0A0A0A 100%);
+  background: linear-gradient(135deg, #080808 0%, #111 50%, #080808 100%);
   position: relative;
 }
 .terrain-grid {
@@ -186,7 +193,7 @@ main {
   font-weight: 800; font-size: 16px; letter-spacing: 0.12em;
   text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s;
 }
-.btn-primary:hover { background: #d4ff1a; transform: translateY(-1px); }
+.btn-primary:hover { background: #D6FF1A; transform: translateY(-1px); }
 .btn-primary:active { transform: translateY(0); }
 .btn-secondary {
   width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -289,21 +296,52 @@ body { padding-bottom: 60px; }
 /* ── PLEIN ÉCRAN ── */
 .player-wrapper:-webkit-full-screen { width: 100%; height: 100%; }
 .player-wrapper:fullscreen { width: 100%; height: 100%; }
+
+/* Rideau d'entrée cinématique : présent au chargement (page noire +
+   wordmark MyMatch) puis se rétracte vers le haut pour révéler la
+   page. Côté pair avec la transition de sortie de index.html. */
+.enter-curtain{
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--noir);
+  display: flex; align-items: center; justify-content: center;
+  transform: translateY(0);
+  transition: transform .8s cubic-bezier(.85,0,.15,1) .2s;
+}
+.enter-curtain.is-done{ transform: translateY(-100%); pointer-events: none; }
+.ec-mark{ display: flex; align-items: center; gap: 14px; opacity: 1; transition: opacity .35s ease; }
+.enter-curtain.is-done .ec-mark{ opacity: 0; }
+.ec-mark span{
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: 34px;
+  letter-spacing: .18em; color: var(--blanc); line-height: 1;
+}
+.ec-mark span .ac{ color: var(--jaune); }
+
+@media (prefers-reduced-motion: reduce){
+  .enter-curtain{ transition: none; }
+}
 </style>
 </head>
 <body>
 
+<!-- Rideau cinématique d'entrée : retiré par JS au load -->
+<div class="enter-curtain" id="enterCurtain">
+  <div class="ec-mark">
+    <svg width="22" height="24" viewBox="0 0 20 22" fill="none" aria-hidden="true">
+      <rect x="0" y="0" width="4" height="22" fill="#C8FF00"/>
+      <rect x="8" y="0" width="4" height="22" fill="#C8FF00" opacity=".55"/>
+      <rect x="16" y="0" width="4" height="22" fill="#C8FF00" opacity=".22"/>
+    </svg>
+    <span>MY<span class="ac">MATCH</span></span>
+  </div>
+</div>
+
 <header>
-  <a href="index.html" class="logo">
-    <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
-      <rect width="32" height="32" rx="6" fill="#111"/>
-      <rect width="32" height="32" rx="6" fill="none" stroke="#D4FF00" stroke-width=".7" opacity=".4"/>
-      <rect x="4" y="9" width="24" height="15" rx="1.5" fill="none" stroke="#2a2a2a" stroke-width="1.1"/>
-      <line x1="16" y1="9" x2="16" y2="24" stroke="#2a2a2a" stroke-width="1.1"/>
-      <circle cx="16" cy="16.5" r="4" fill="none" stroke="#2a2a2a" stroke-width="1.1"/>
-      <circle cx="16" cy="16.5" r="1.7" fill="#D4FF00"/>
-      <circle cx="16" cy="16.5" r="3.3" fill="none" stroke="#D4FF00" stroke-width="1" opacity=".55"/>
-      <circle cx="23" cy="10.5" r="1.6" fill="#D4FF00"/>
+  <a href="index.html" class="logo" aria-label="MyMatch">
+    <svg class="logo-mark" width="20" height="22" viewBox="0 0 20 22" fill="none" aria-hidden="true">
+      <rect x="0" y="0" width="4" height="22" fill="#C8FF00"/>
+      <rect x="8" y="0" width="4" height="22" fill="#C8FF00" opacity=".55"/>
+      <rect x="16" y="0" width="4" height="22" fill="#C8FF00" opacity=".22"/>
     </svg>
     <span class="logo-t">MY<span>MATCH</span></span>
   </a>
@@ -425,7 +463,7 @@ function simulatePlay() {
   isPlaying = !isPlaying;
   const btn = document.querySelector('.play-btn svg');
   if (isPlaying) {
-    btn.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="#0A0A0A"/><rect x="14" y="4" width="4" height="16" fill="#0A0A0A"/>';
+    btn.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="#080808"/><rect x="14" y="4" width="4" height="16" fill="#080808"/>';
     interval = setInterval(() => {
       progress = Math.min(progress + 0.037, 100);
       document.getElementById('progressFill').style.width = progress + '%';
@@ -468,6 +506,19 @@ screen.orientation?.addEventListener('change', () => {
     document.getElementById('playerWrapper').requestFullscreen?.();
   }
 });
+
+/* Retire le rideau d'entrée une fois la page chargée. */
+(function(){
+  const curtain = document.getElementById('enterCurtain');
+  if (!curtain) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    curtain.remove(); return;
+  }
+  window.addEventListener('load', function(){
+    setTimeout(function(){ curtain.classList.add('is-done'); }, 60);
+    setTimeout(function(){ curtain.remove(); }, 1200);
+  });
+})();
 </script>
 </body>
 </html>
