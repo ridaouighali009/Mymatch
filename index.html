@@ -10,6 +10,12 @@
 <title>MyMatch — City Foot 5, Casablanca</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&display=swap" rel="stylesheet">
+
+<!-- GSAP + ScrollTrigger + Lenis (cinematic scrolling stack) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -275,14 +281,13 @@ footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex
    DEUX keyframes le reprennent ; le navigateur ré-évalue la variable
    à chaque frame, donc l'offset de scroll suit en continu pendant
    que la scale fait son zoom de 1 → 1.08 sur 12s en alternance. */
-.h-bg{
-  transform:translateY(var(--parallax-y,0px)) scale(1);
-  will-change:transform;
-  animation:ken-burns 14s ease-in-out infinite alternate;
-}
+/* Transform piloté par GSAP (Ken Burns + parallax via ScrollTrigger).
+   Fallback CSS si GSAP ne charge pas : on garde la boucle ken-burns. */
+.h-bg{will-change:transform;animation:ken-burns 14s ease-in-out infinite alternate}
+.gsap-ready .h-bg{animation:none}
 @keyframes ken-burns{
-  from{transform:translateY(var(--parallax-y,0px)) scale(1)}
-  to  {transform:translateY(var(--parallax-y,0px)) scale(1.09)}
+  from{transform:scale(1)}
+  to  {transform:scale(1.09)}
 }
 
 /* 4. Header au scroll : devient plus opaque + bordure verte fluo
@@ -384,6 +389,37 @@ img{image-rendering:auto;-webkit-backface-visibility:hidden}
 .fsocial a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s,border-color .2s,background .2s}
 .fsocial a:hover{color:var(--green);border-color:rgba(200,255,0,.4);background:rgba(200,255,0,.05)}
 .fsocial svg{width:16px;height:16px}
+
+/* ============================================================
+   GSAP / LENIS — couches dédiées
+   ============================================================ */
+/* Lenis active : applique le smooth-scroll via transform sur <html> */
+html.lenis{height:auto}
+html.lenis,html.lenis body{overflow:hidden}
+html.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+
+/* Lettres splittées du titre hero (display inline-block pour permettre
+   le translateY de GSAP, le parent .blk garde overflow:hidden pour clipper
+   la slide-from-below). */
+.h-h1 .h-letter{display:inline-block;will-change:transform;line-height:.92}
+.h-h1 .h-letter.space{width:.35em}
+
+/* Mode horizontal de la liste "Comment ça marche" — activé dès qu'on
+   passe en tablette / desktop. La section #how est épinglée par GSAP
+   pendant le défilement horizontal. */
+@media (min-width:768px){
+  .how-list-h{display:flex;flex-direction:row;flex-wrap:nowrap;gap:48px;width:max-content;max-width:none;align-items:stretch;padding:0 8vw}
+  .how-list-h .how-item{flex:0 0 min(560px,72vw);max-width:none;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:6px;padding:34px 30px;align-items:flex-start}
+  .how-list-h .how-n{font-size:20px;letter-spacing:.22em}
+  #how.is-horizontal{position:relative;padding-top:84px;padding-bottom:96px;overflow:hidden}
+  #how.is-horizontal .ey,#how.is-horizontal .sh2,#how.is-horizontal .sp{padding-left:8vw}
+}
+
+/* Mobile : remonte la phrase "Le talent casablancais" tout en bas
+   de la photo pour qu'on voie clairement la mosquée Hassan II au-dessus. */
+@media (max-width:768px){
+  .casa-cont{align-items:flex-end;padding:0 20px 36px}
+}
 </style>
 </head>
 <body>
@@ -706,7 +742,12 @@ img{image-rendering:auto;-webkit-backface-visibility:hidden}
 </footer>
 
 <script>
-function sc(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'})}
+function sc(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(window.__lenis){ window.__lenis.scrollTo(el, { offset:-60, duration:1.4 }); }
+  else el.scrollIntoView({behavior:'smooth'});
+}
 function toggleDrawer(){
   const d=document.getElementById('drawer'),h=document.getElementById('ham'),o=document.getElementById('drawerOv');
   const open=d.classList.toggle('open');
@@ -834,6 +875,7 @@ function cinematicTransitionTo(href){
     wipe.innerHTML = '<div class="pw-mark"><svg width="22" height="24" viewBox="0 0 20 22" fill="none"><rect x="0" y="0" width="4" height="22" fill="#C8FF00"/><rect x="8" y="0" width="4" height="22" fill="#C8FF00" opacity=".55"/><rect x="16" y="0" width="4" height="22" fill="#C8FF00" opacity=".22"/></svg><span>MY<span class="ac">MATCH</span></span></div>';
     document.body.appendChild(wipe);
   }
+  if (window.__lenis && window.__lenis.stop) window.__lenis.stop();
   requestAnimationFrame(()=>{ wipe.classList.add('is-active'); });
   setTimeout(()=>{ window.location.href = href; }, 720);
 }
@@ -846,106 +888,161 @@ function partagerMyMatch(){
 }
 
 /* ============================================================
-   ANIMATIONS — JS associé (slide-up wrap, parallax, header au
-   scroll, compteurs animés). Aucune modification du contenu ;
-   on lit les valeurs existantes des stats et on les anime de 0
-   jusqu'à elles via IntersectionObserver.
+   LENIS + GSAP + ScrollTrigger — pile cinématique.
+   ============================================================
+   - Lenis : smooth scrolling natif, synchronisé avec gsap.ticker.
+   - GSAP : entrée letter-by-letter du titre, compteurs, parallax
+            d'arrière-plan, header scrollé, horizontal scroll sur
+            les 3 cards "Comment ça marche".
    ============================================================ */
 (function(){
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* 1. Slide-up : on enveloppe le texte de chaque .blk dans un span
-     .blk-inner que le CSS animera. Le DOM reste identique côté
-     contenu, on ajoute juste un wrapper inerte. */
+  /* 1. SPLIT du titre hero en lettres individuelles pour le stagger. */
   document.querySelectorAll('.h-h1 .blk').forEach(function(blk){
-    if (blk.querySelector('.blk-inner')) return; // déjà wrappé
-    var inner = document.createElement('span');
-    inner.className = 'blk-inner';
-    while (blk.firstChild) inner.appendChild(blk.firstChild);
-    blk.appendChild(inner);
+    if (blk.dataset.split === '1') return;
+    var text = (blk.textContent || '').trim();
+    blk.textContent = '';
+    text.split('').forEach(function(ch){
+      var sp = document.createElement('span');
+      sp.className = 'h-letter' + (ch === ' ' ? ' space' : '');
+      sp.innerHTML = ch === ' ' ? '' : ch;
+      blk.appendChild(sp);
+    });
+    blk.dataset.split = '1';
   });
 
-  /* 3 + 5. Une seule boucle scroll, debouncée via requestAnimationFrame :
-     - parallax : translateY = 0.7 * scrollY → la photo se déplace
-       à 30% de la vitesse de scroll (effet de profondeur).
-     - nav  : translateY = scrollY * 0.28 → la photo glisse à 28%
-              de la vitesse de scroll (parallax doux, combiné Ken Burns).
-     - nav  : ajoute/retire .scrolled au-delà de 80px de scroll. */
-  var hbg = document.querySelector('.h-bg');
-  var navEl = document.querySelector('nav');
-  var ticking = false;
+  /* 2. Attend que GSAP, ScrollTrigger ET Lenis soient chargés (defer). */
+  function ready(){ return window.gsap && window.ScrollTrigger && window.Lenis; }
+  function start(){
+    if (!ready()){ return setTimeout(start, 60); }
+    var gsap = window.gsap, ScrollTrigger = window.ScrollTrigger, Lenis = window.Lenis;
+    gsap.registerPlugin(ScrollTrigger);
+    document.documentElement.classList.add('gsap-ready');
 
-  function onScroll(){
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function(){
-      var y = window.scrollY || window.pageYOffset || 0;
-      if (hbg && !reduced) {
-        hbg.style.setProperty('--parallax-y', (y * 0.28) + 'px');
-      }
-      if (navEl) {
-        if (y > 80) navEl.classList.add('scrolled');
-        else navEl.classList.remove('scrolled');
-      }
-      ticking = false;
-    });
-  }
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+    /* Lenis : smooth-scroll. Désactivé si reduced-motion. */
+    var lenis = null;
+    if (!reduced){
+      lenis = new Lenis({
+        duration: 1.15,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true,
+        smoothTouch: false,
+        touchMultiplier: 1.2,
+      });
+      // Synchronise Lenis avec ScrollTrigger pour que les triggers
+      // restent en phase avec le scroll fluide.
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      // Exposé globalement pour les ancres internes (sc()) qui appellent
+      // scrollIntoView — on les redirige sur lenis.scrollTo.
+      window.__lenis = lenis;
+    }
 
-  /* 4. Compteurs animés sur .stat-v : on parse la valeur (ex: "60",
-     "4K", "10s", "14j"), on remet à 0 dans le DOM, puis on anime
-     dès que l'élément entre dans le viewport. */
-  var compteurs = document.querySelectorAll('.stat-v');
-  if (compteurs.length){
-    compteurs.forEach(function(el){
+    /* 3. ENTRÉE TITRE HERO — letter by letter, line by line. */
+    if (!reduced){
+      gsap.set('.h-h1 .h-letter', { yPercent: 110, opacity: 0 });
+      gsap.to('.h-h1 .h-letter', {
+        yPercent: 0, opacity: 1,
+        duration: 0.95, ease: 'power3.out',
+        stagger: { each: 0.035 },
+        delay: 0.25,
+      });
+    }
+
+    /* 4. STATS — compteurs GSAP from 0 → valeur finale. */
+    document.querySelectorAll('.stat-v').forEach(function(el){
       var raw = (el.textContent || '').trim();
       var m = raw.match(/^(\d+)(.*)$/);
-      el.dataset.final = raw;
-      if (m){
-        el.dataset.cible  = m[1];
-        el.dataset.suffix = m[2] || '';
-        if (!reduced) el.textContent = '0' + (m[2] || '');
-      }
+      if (!m){ return; }
+      var target = parseInt(m[1], 10);
+      var suffix = m[2] || '';
+      if (reduced){ return; } // garde la valeur affichée
+      var obj = { v: 0 };
+      el.textContent = '0' + suffix;
+      ScrollTrigger.create({
+        trigger: el, start: 'top 85%', once: true,
+        onEnter: function(){
+          gsap.to(obj, {
+            v: target, duration: 1.6, ease: 'power2.out',
+            onUpdate: function(){ el.textContent = Math.round(obj.v) + suffix; }
+          });
+        }
+      });
     });
 
-    function lancerCompte(el){
-      if (el.dataset.done === '1') return;
-      var cible = parseInt(el.dataset.cible || '0', 10);
-      var suffixe = el.dataset.suffix || '';
-      if (!cible){ el.textContent = el.dataset.final; el.dataset.done = '1'; return; }
-      var duree = 1400;
-      var t0 = performance.now();
-      function tick(now){
-        var t = Math.min((now - t0) / duree, 1);
-        var eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-        el.textContent = Math.round(cible * eased) + suffixe;
-        if (t < 1) requestAnimationFrame(tick);
-        else el.dataset.done = '1';
-      }
-      requestAnimationFrame(tick);
+    /* 5. PARALLAX — hero image + photos de section. */
+    if (!reduced){
+      gsap.to('.h-bg', {
+        yPercent: 28, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+      gsap.to('.h-bg', {
+        scale: 1.09, duration: 14, ease: 'sine.inOut',
+        repeat: -1, yoyo: true,
+      });
+      ['.cf-bg','.night-bg','.casa-bg','.mural-bg','.vp-thumb'].forEach(function(sel){
+        var el = document.querySelector(sel);
+        if (!el) return;
+        gsap.fromTo(el,
+          { yPercent: -8 },
+          { yPercent: 8, ease: 'none',
+            scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }
+        );
+      });
     }
 
-    if (reduced){
-      // Pas d'animation : on rétablit directement les valeurs finales.
-      compteurs.forEach(function(el){
-        el.textContent = el.dataset.final;
+    /* 6. HEADER — toggle .scrolled au-delà de 80px de scroll. */
+    ScrollTrigger.create({
+      start: 80, end: 'max',
+      toggleClass: { className: 'scrolled', targets: 'nav' }
+    });
+
+    /* 7. HORIZONTAL SCROLL — les 3 cards #how défilent latéralement
+       pendant que la section est épinglée. Désactivé sur mobile et
+       reduced-motion (fallback : disposition verticale d'origine). */
+    var howSec = document.getElementById('how');
+    var howList = howSec && howSec.querySelector('.how-list');
+    if (howList && !reduced && window.matchMedia('(min-width: 768px)').matches){
+      howSec.classList.add('is-horizontal');
+      howList.classList.add('how-list-h');
+      var distance = function(){
+        return Math.max(0, howList.scrollWidth - window.innerWidth + 80);
+      };
+      gsap.to(howList, {
+        x: function(){ return -distance(); },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: howSec,
+          start: 'top top',
+          end: function(){ return '+=' + distance(); },
+          pin: true,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
       });
-    } else if ('IntersectionObserver' in window){
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-          if (entry.isIntersecting){
-            lancerCompte(entry.target);
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.3 });
-      compteurs.forEach(function(el){ io.observe(el); });
-    } else {
-      // Fallback si pas d'IntersectionObserver : lancement immédiat.
-      compteurs.forEach(lancerCompte);
+    }
+
+    /* 8. REVEALS — pour les éléments déjà classés .reveal*, on ajoute
+       .visible via ScrollTrigger plutôt que via IntersectionObserver,
+       ce qui les rend smoothly liés au scroll de Lenis. */
+    var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    revealEls.forEach(function(el){
+      // Évite le double-set si l'IO d'origine a déjà visé l'élément.
+      ScrollTrigger.create({
+        trigger: el, start: 'top 88%', once: true,
+        onEnter: function(){ el.classList.add('visible'); }
+      });
+    });
+
+    // Force un refresh une fois les fonts chargées (mesures stables).
+    if (document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
     }
   }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
 })();
 
 /* ============================================================
@@ -991,28 +1088,37 @@ function partagerMyMatch(){
 })();
 
 /* ============================================================
-   SCROLL REVEAL — observer toutes les classes .reveal*
+   FALLBACK — si GSAP/Lenis ne sont pas chargés au bout d'1.5s,
+   on rétablit l'IntersectionObserver des reveals + un mini scroll
+   handler pour le state .scrolled du nav.
    ============================================================ */
 (function(){
-  if (!('IntersectionObserver' in window)) {
-    // Fallback : on rend tout visible immédiatement.
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){
-      el.classList.add('visible');
-    });
-    return;
+  function gsapReady(){ return window.gsap && window.ScrollTrigger; }
+  function activate(){
+    if (gsapReady()) return;
+    // Reveals
+    if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){ entry.target.classList.add('visible'); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){ io.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){ el.classList.add('visible'); });
+    }
+    // Header scroll state
+    var navEl = document.querySelector('nav');
+    function onSc(){
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (navEl){ if (y > 80) navEl.classList.add('scrolled'); else navEl.classList.remove('scrolled'); }
+    }
+    onSc();
+    window.addEventListener('scroll', onSc, { passive: true });
+    // Lettres du titre : si pas splittées par GSAP, on les rend visibles
+    document.querySelectorAll('.h-h1 .blk').forEach(function(blk){ blk.style.opacity = '1'; });
   }
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
-    revealObserver.observe(el);
-  });
+  setTimeout(activate, 1500);
 })();
 </script>
 </body>
