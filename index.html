@@ -393,10 +393,15 @@ img{image-rendering:auto;-webkit-backface-visibility:hidden}
 /* ============================================================
    GSAP / LENIS — couches dédiées
    ============================================================ */
-/* Lenis active : applique le smooth-scroll via transform sur <html> */
-html.lenis{height:auto}
-html.lenis,html.lenis body{overflow:hidden}
-html.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+/* Lenis : seules ces règles sont nécessaires. Surtout PAS overflow:hidden
+   sur html/body : ça bloquerait le scroll. overflow:hidden ne doit
+   s'appliquer qu'au moment où Lenis est explicitement en pause
+   (classe .lenis-stopped). */
+html.lenis, html.lenis body { height: auto; }
+html.lenis.lenis-smooth { scroll-behavior: auto !important; }
+html.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+html.lenis.lenis-stopped { overflow: hidden; }
+html.lenis.lenis-scrolling iframe { pointer-events: none; }
 
 /* Lettres splittées du titre hero (display inline-block pour permettre
    le translateY de GSAP, le parent .blk garde overflow:hidden pour clipper
