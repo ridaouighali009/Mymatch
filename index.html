@@ -229,15 +229,59 @@ section.alt{background:var(--s1);border-top:1px solid var(--line);border-bottom:
 .casa-q{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(30px,4.2vw,48px);text-transform:uppercase;letter-spacing:-.005em;line-height:1}
 .casa-q .acc{color:var(--green)}
 
-.founders{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);max-width:880px}
-.fc{padding:40px 36px;background:var(--bg);position:relative}
-.fc::after{content:'';position:absolute;top:0;left:0;width:28px;height:2px;background:var(--green)}
-.fc-role{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.24em;color:var(--green);text-transform:uppercase;margin-bottom:24px;opacity:.7}
-.fc-open{font-family:'Barlow Condensed',sans-serif;font-size:56px;color:var(--green);line-height:.6;margin-bottom:16px;opacity:.18}
-.fc-q{font-size:14px;color:var(--muted2);line-height:1.78;margin-bottom:28px}
+/* Section fondateurs — deux cartes côte à côte sur desktop, séparées
+   par une fine ligne jaune. Chaque carte a un fond légèrement plus clair
+   que la page pour s'en détacher, un grand guillemet en filigrane, un
+   nom en jaune fluo, et un badge pill "800+ MATCHS · CASABLANCA". */
+.founders{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;background:transparent;border:none;
+  max-width:1100px;margin-top:8px;
+}
+.fc{
+  padding:64px 56px 56px;
+  background:#0d0d0d;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.fc:first-child{border-right:1px solid rgba(200,255,0,0.2)}
+.fc-role{
+  position:relative;z-index:1;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.24em;color:var(--green);text-transform:uppercase;
+  margin-bottom:32px;opacity:.7;
+}
+/* Grand guillemet décoratif en filigrane, derrière le contenu */
+.fc-open{
+  position:absolute;top:-44px;right:18px;z-index:0;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:200px;line-height:1;
+  color:var(--green);opacity:.10;
+  pointer-events:none;user-select:none;
+}
+.fc-q{
+  position:relative;z-index:1;
+  font-size:14.5px;color:var(--muted2);line-height:1.78;margin-bottom:32px;
+  flex:1;
+}
 .fc-q b{color:var(--text);font-weight:600}
-.fc-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:4px}
-.fc-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:500;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase}
+.fc-name{
+  position:relative;z-index:1;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:38px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);line-height:1;margin-bottom:14px;
+}
+.fc-sub{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;align-self:flex-start;
+  padding:6px 13px;
+  border:1px solid rgba(200,255,0,0.3);border-radius:999px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--green);background:rgba(200,255,0,0.04);
+}
+/* Petit trait vert en haut-gauche de chaque carte (accent visuel) */
+.fc::after{content:'';position:absolute;top:0;left:0;width:32px;height:2px;background:var(--green);z-index:1}
 
 .mural-s{position:relative;height:320px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .mural-bg{width:100%;height:100%;object-fit:cover;object-position:center 48%;opacity:.45;display:block;filter:brightness(1.4) contrast(1.05)}
@@ -261,7 +305,13 @@ footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex
   .nav-cta{font-size:9px;padding:7px 10px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
   .h-body{padding:0 20px 70px}
   .ap-grid{grid-template-columns:1fr;gap:36px}
+  /* Cartes fondateurs : empilées verticalement, séparées par une fine
+     ligne jaune horizontale (au lieu de verticale en desktop). */
   .founders{grid-template-columns:1fr}
+  .fc{padding:44px 28px 36px}
+  .fc:first-child{border-right:none;border-bottom:1px solid rgba(200,255,0,0.2)}
+  .fc-open{font-size:140px;top:-32px;right:8px}
+  .fc-name{font-size:30px;letter-spacing:.1em}
   .stats{grid-template-columns:repeat(2,1fr)}
   .stat:nth-child(2){border-right:none}
   .tgrid{grid-template-columns:repeat(5,1fr)}
