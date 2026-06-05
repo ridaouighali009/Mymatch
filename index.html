@@ -303,22 +303,33 @@ footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex
   /* Bouton CTA du header : version compacte sur mobile pour qu'il
      reste sur une ligne et ne mange pas la moitié du header. */
   .nav-cta{font-size:9px;padding:7px 10px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
-  .h-body{padding:0 20px 70px}
+  .h-body{padding:0 20px 70px;max-width:100%}
   .ap-grid{grid-template-columns:1fr;gap:36px}
   /* Cartes fondateurs : empilées verticalement, séparées par une fine
      ligne jaune horizontale (au lieu de verticale en desktop). */
-  .founders{grid-template-columns:1fr}
-  .fc{padding:44px 28px 36px}
+  .founders{grid-template-columns:1fr;max-width:100%}
+  .fc{padding:44px 24px 36px}
   .fc:first-child{border-right:none;border-bottom:1px solid rgba(200,255,0,0.2)}
   .fc-open{font-size:140px;top:-32px;right:8px}
-  .fc-name{font-size:30px;letter-spacing:.1em}
+  .fc-name{font-size:28px;letter-spacing:.1em;word-break:break-word}
+  .fc-q{font-size:14px;line-height:1.7}
   .stats{grid-template-columns:repeat(2,1fr)}
   .stat:nth-child(2){border-right:none}
   .tgrid{grid-template-columns:repeat(5,1fr)}
   section{padding:70px 20px}
-  .cf-cont{flex-direction:column;align-items:flex-start;padding:0 20px}
+  .cf-cont{flex-direction:column;align-items:flex-start;padding:0 20px;gap:20px}
+  .cf-bg, .night-bg, .casa-img, .mural-bg{height:100%;object-position:center}
   footer{text-align:center}
   .footer-top,.footer-bottom{flex-direction:column;align-items:center;justify-content:center}
+  /* Empêche tout débordement horizontal résiduel */
+  html, body{max-width:100vw;overflow-x:hidden}
+  /* Titre hero : marge serrée pour qu'il rentre sur iPhone SE */
+  .h-h1{font-size:clamp(48px,12vw,80px);max-width:100%;word-wrap:break-word}
+  .h-darija{font-size:clamp(20px,4.5vw,28px)}
+  .h-desc{font-size:14px;max-width:100%}
+  .h-launch{font-size:10px;padding:6px 12px}
+  .h-btns{flex-direction:column;width:100%}
+  .h-btns .btn-p, .h-btns .btn-g{width:100%;padding:14px 24px}
 }
 
 /* ============================================================
@@ -486,7 +497,7 @@ html.lenis.lenis-scrolling iframe { pointer-events: none; }
 /* Mode horizontal de la liste "Comment ça marche" — activé dès qu'on
    passe en tablette / desktop. La section #how est épinglée par GSAP
    pendant le défilement horizontal. */
-@media (min-width:768px){
+@media (min-width:1024px){
   .how-list-h{display:flex;flex-direction:row;flex-wrap:nowrap;gap:48px;width:max-content;max-width:none;align-items:stretch;padding:0 8vw}
   .how-list-h .how-item{flex:0 0 min(560px,72vw);max-width:none;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:6px;padding:34px 30px;align-items:flex-start}
   .how-list-h .how-n{font-size:20px;letter-spacing:.22em}
@@ -1078,9 +1089,14 @@ function partagerMyMatch(){
     gsap.registerPlugin(ScrollTrigger);
     document.documentElement.classList.add('gsap-ready');
 
-    /* Lenis : smooth-scroll. Désactivé si reduced-motion. */
+    /* Lenis : smooth-scroll. Désactivé si reduced-motion OU sur écran
+       tactile (pointer:coarse) — sur mobile/tablette tactile, Lenis
+       provoque des sauts / décalages de scroll, le scroll natif iOS/
+       Android reste bien plus fiable. ScrollTrigger fonctionne sans
+       lui. */
     var lenis = null;
-    if (!reduced){
+    var canSmooth = !reduced && window.matchMedia('(pointer: fine)').matches;
+    if (canSmooth){
       lenis = new Lenis({
         duration: 1.15,
         easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
@@ -1130,25 +1146,32 @@ function partagerMyMatch(){
       });
     });
 
-    /* 5. PARALLAX — hero image + photos de section. */
+    /* 5. PARALLAX — hero image + photos de section.
+       Sur tactile (canSmooth=false), on garde le Ken Burns (cosmetic
+       seulement) mais on supprime tout effet scrub-bound : ça évite
+       les décalages liés au scroll natif rapide d'iOS. */
     if (!reduced){
-      gsap.to('.h-bg', {
-        yPercent: 28, ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
-      });
+      if (canSmooth){
+        gsap.to('.h-bg', {
+          yPercent: 28, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+        });
+      }
       gsap.to('.h-bg', {
         scale: 1.09, duration: 14, ease: 'sine.inOut',
         repeat: -1, yoyo: true,
       });
-      ['.cf-bg','.night-bg','.casa-bg','.mural-bg','.vp-thumb'].forEach(function(sel){
-        var el = document.querySelector(sel);
-        if (!el) return;
-        gsap.fromTo(el,
-          { yPercent: -8 },
-          { yPercent: 8, ease: 'none',
-            scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }
-        );
-      });
+      if (canSmooth){
+        ['.cf-bg','.night-bg','.casa-bg','.mural-bg','.vp-thumb'].forEach(function(sel){
+          var el = document.querySelector(sel);
+          if (!el) return;
+          gsap.fromTo(el,
+            { yPercent: -8 },
+            { yPercent: 8, ease: 'none',
+              scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }
+          );
+        });
+      }
     }
 
     /* 6. HEADER — toggle .scrolled au-delà de 80px de scroll. */
@@ -1162,7 +1185,7 @@ function partagerMyMatch(){
        reduced-motion (fallback : disposition verticale d'origine). */
     var howSec = document.getElementById('how');
     var howList = howSec && howSec.querySelector('.how-list');
-    if (howList && !reduced && window.matchMedia('(min-width: 768px)').matches){
+    if (howList && !reduced && window.matchMedia('(min-width: 1024px)').matches){
       howSec.classList.add('is-horizontal');
       howList.classList.add('how-list-h');
       var distance = function(){
@@ -1225,6 +1248,32 @@ function partagerMyMatch(){
     if (document.fonts && document.fonts.ready){
       document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
     }
+
+    /* Refresh sur changement d'orientation / address bar iOS.
+       Évite les positions "gelées" qui laissent des reveals invisibles. */
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){ ScrollTrigger.refresh(); }, 150);
+    }, { passive: true });
+    window.addEventListener('orientationchange', function(){
+      setTimeout(function(){ ScrollTrigger.refresh(); }, 200);
+    });
+
+    /* Filet de sécurité : si après 2.5s un .reveal* n'est toujours pas
+       visible mais est déjà dans le viewport, on force la révélation.
+       Couvre les cas iOS où l'address bar redimensionne juste avant
+       que le ScrollTrigger ne fire. */
+    setTimeout(function(){
+      var vh = window.innerHeight;
+      document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)').forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if (r.top < vh && r.bottom > 0){
+          el.classList.add('visible');
+          gsap.set(el, { autoAlpha: 1, y: 0, x: 0, clearProps: 'transform,opacity,visibility' });
+        }
+      });
+    }, 2500);
   }
   if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
 })();
