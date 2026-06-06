@@ -305,19 +305,22 @@ footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex
   .nav-cta{font-size:9px;padding:7px 10px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
   .h-body{padding:0 20px 70px;max-width:100%}
   .ap-grid{grid-template-columns:1fr;gap:36px}
+  /* Sur mobile, tous les .reveal-left / .reveal-right héritent d'un
+     translateX(±40px) qui pousse les éléments hors-écran à droite ou
+     à gauche → ça coupe le texte (.casa-q) et décale le lecteur
+     vidéo (.vcard) et la card Ghali (.fc). On force un reveal
+     vertical uniforme — pas de translateX du tout sur ces écrans. */
+  .reveal-left, .reveal-right{
+    transform:translateY(40px) !important;
+  }
+  .reveal-left.visible, .reveal-right.visible{
+    transform:translateY(0) !important;
+  }
+
   /* Cartes fondateurs : empilées verticalement, séparées par une fine
-     ligne jaune horizontale (au lieu de verticale en desktop). Les deux
-     cards (Mohamed = .reveal-left, Ghali = .reveal-right) sont forcées
-     à un alignement identique : pas de margin-left, et le reveal
-     horizontal hérité est neutralisé en faveur d'un slide vertical. */
+     ligne jaune horizontale (au lieu de verticale en desktop). */
   .founders{grid-template-columns:1fr;max-width:100%;margin:0}
   .fc{padding:44px 24px 36px;margin:0 !important}
-  .fc.reveal-left, .fc.reveal-right{
-    transform:translateY(40px);
-  }
-  .fc.reveal-left.visible, .fc.reveal-right.visible{
-    transform:translateY(0);
-  }
   .fc:first-child{border-right:none;border-bottom:1px solid rgba(200,255,0,0.2)}
   .fc-open{font-size:140px;top:-32px;right:8px}
   .fc-name{font-size:28px;letter-spacing:.1em;word-break:break-word}
