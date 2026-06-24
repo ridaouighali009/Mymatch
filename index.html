@@ -986,7 +986,7 @@ for(let i=1;i<=13;i++){
   const btn=document.createElement('button');
   btn.className='tbtn'+(f?' f':'');
   btn.innerHTML='<span style="font-size:18px;font-weight:700">'+i+'</span><span class="ts">'+(f?'Filmé':'Std')+'</span>';
-  if(f){(function(num,el){el.onclick=function(){document.querySelectorAll('.tbtn.f').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selT=num;setTimeout(()=>goTab(3),280);};})(i,btn);}
+  if(f){(function(num,el){el.onclick=function(){document.querySelectorAll('.tbtn.f').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selT=num;fetchCreneaux();setTimeout(()=>goTab(3),280);};})(i,btn);}
   grid.appendChild(btn);
 }
 
@@ -1003,26 +1003,46 @@ for(let i=13;i>=0;i--){
   (function(date,el){el.onclick=function(){
     document.querySelectorAll('.dpill').forEach(x=>x.classList.remove('sel'));
     el.classList.add('sel');selD=date;
-    checkBtnVoir();
+    if(selT){fetchCreneaux();setTimeout(()=>goTab(4),280);}
   };})(d,p);
   dr.appendChild(p);
 }
 
-const heures=['09:00','10:00','11:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
 const hg=document.getElementById('heureGrid');
-heures.forEach(h=>{
-  const btn=document.createElement('button');
-  btn.className='tbtn f';
-  btn.style.aspectRatio='auto';
-  btn.style.padding='10px 4px';
-  btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
-  btn.onclick=function(){
-    document.querySelectorAll('#heureGrid .tbtn').forEach(b=>b.classList.remove('sel'));
-    btn.classList.add('sel');selH=h;
-    checkBtnVoir();
-  };
-  hg.appendChild(btn);
-});
+async function fetchCreneaux(){
+  if(!selT||!selD)return;
+  const y=selD.getFullYear();
+  const mo=String(selD.getMonth()+1).padStart(2,'0');
+  const dd=String(selD.getDate()).padStart(2,'0');
+  const dateStr=y+'-'+mo+'-'+dd;
+  selH=null;checkBtnVoir();
+  hg.innerHTML='<div style="grid-column:1/-1;padding:20px 0;text-align:center;color:var(--muted2);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px;font-size:15px">Chargement…</div>';
+  try{
+    const url='http://91.99.78.242/api/creneaux?club='+encodeURIComponent('City Foot 5')+'&terrain='+encodeURIComponent(selT)+'&date='+dateStr;
+    const res=await fetch(url);
+    const data=await res.json();
+    hg.innerHTML='';
+    if(!data||!data.length){
+      hg.innerHTML='<div style="grid-column:1/-1;padding:16px 0;color:var(--muted2);font-family:\'Barlow Condensed\',sans-serif;font-size:15px;letter-spacing:.5px">Aucune vidéo disponible pour ce terrain à cette date.</div>';
+      return;
+    }
+    data.forEach(function(c){
+      const h=typeof c==='string'?c:(c.heure||c.debut||c.time||String(c));
+      const btn=document.createElement('button');
+      btn.className='tbtn f';
+      btn.style.aspectRatio='auto';
+      btn.style.padding='10px 4px';
+      btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
+      btn.onclick=function(){
+        document.querySelectorAll('#heureGrid .tbtn').forEach(b=>b.classList.remove('sel'));
+        btn.classList.add('sel');selH=h;checkBtnVoir();
+      };
+      hg.appendChild(btn);
+    });
+  }catch(e){
+    hg.innerHTML='<div style="grid-column:1/-1;padding:16px 0;color:var(--muted2);font-family:\'Barlow Condensed\',sans-serif;font-size:15px;letter-spacing:.5px">Erreur de connexion. Réessaie.</div>';
+  }
+}
 
 function checkBtnVoir(){
   const btn=document.getElementById('btnVoir');
