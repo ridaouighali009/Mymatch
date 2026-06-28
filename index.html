@@ -1018,6 +1018,7 @@ async function fetchCreneaux(){
   hg.innerHTML='';
   try{
     const url='https://mymatch.ma/api/creneaux?club='+encodeURIComponent('City Foot 5')+'&terrain='+encodeURIComponent(selT)+'&date='+dateStr;
+    console.log('[MyMatch] fetchCreneaux →', url);
     const res=await fetch(url);
     const data=await res.json();
     if(!data||!data.length){
