@@ -1018,7 +1018,7 @@ async function fetchCreneaux(){
   selH=null;checkBtnVoir();
   hg.innerHTML='<div style="grid-column:1/-1;padding:20px 0;text-align:center;color:var(--muted2);font-family:\'Barlow Condensed\',sans-serif;letter-spacing:1px;font-size:15px">Chargement…</div>';
   try{
-    const url='http://91.99.78.242/api/creneaux?club='+encodeURIComponent('City Foot 5')+'&terrain='+encodeURIComponent(selT)+'&date='+dateStr;
+    const url='https://mymatch.ma/api/creneaux?club='+encodeURIComponent('City Foot 5')+'&terrain='+encodeURIComponent(selT)+'&date='+dateStr;
     const res=await fetch(url);
     const data=await res.json();
     hg.innerHTML='';
