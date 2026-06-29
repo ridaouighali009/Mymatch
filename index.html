@@ -1024,6 +1024,7 @@ async function fetchCreneaux(){
     console.log('[MyMatch] fetchCreneaux →', url);
     const res=await fetch(url);
     const data=await res.json();
+    console.log('[MyMatch] réponse API →', data);
     if(!data||!data.length){
       dateMsg.textContent='Aucune vidéo disponible pour ce terrain à cette date.';
       return;
@@ -1031,7 +1032,7 @@ async function fetchCreneaux(){
     dateMsg.style.display='none';
     hg.innerHTML='';
     data.forEach(function(c){
-      const h=typeof c==='string'?c:(c.heure||c.debut||c.time||String(c));
+      const h=typeof c==='string'?c:(c.heure_debut||c.heure||c.debut||c.time||String(c));
       const btn=document.createElement('button');
       btn.className='tbtn f';
       btn.style.aspectRatio='auto';
