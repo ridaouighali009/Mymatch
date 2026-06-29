@@ -1017,7 +1017,10 @@ async function fetchCreneaux(){
   dateMsg.style.display='block';
   hg.innerHTML='';
   try{
-    const url='https://mymatch.ma/api/creneaux?club='+encodeURIComponent('City Foot 5')+'&terrain='+encodeURIComponent(selT)+'&date='+dateStr;
+    const clubIds={'City Foot 5':'city-foot-5','Arena Bouskoura':'arena-bouskoura','Green Sports Park':'green-sports-park'};
+    const clubId=clubIds['City Foot 5'];
+    const terrainId='terrain-'+selT;
+    const url='https://mymatch.ma/api/creneaux?club='+clubId+'&terrain='+terrainId+'&date='+dateStr;
     console.log('[MyMatch] fetchCreneaux →', url);
     const res=await fetch(url);
     const data=await res.json();
