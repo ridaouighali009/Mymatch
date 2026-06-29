@@ -1059,15 +1059,16 @@ function checkBtnVoir(){
 }
 
 
+function formatDateYYYYMMDD(date){
+  return new Date(date).toISOString().split('T')[0];
+}
+
 function goToPlayer(){
   if(!selT||!selD||!selH)return;
-  const y=selD.getFullYear();
-  const mo=String(selD.getMonth()+1).padStart(2,'0');
-  const dd=String(selD.getDate()).padStart(2,'0');
   const params=new URLSearchParams({
     club:'City Foot 5',
     terrain:'Terrain '+selT,
-    date:y+'-'+mo+'-'+dd,
+    date:formatDateYYYYMMDD(selD),
     heure:selH
   });
   cinematicTransitionTo('Player.html?'+params.toString());
