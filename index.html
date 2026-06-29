@@ -1061,11 +1061,13 @@ function checkBtnVoir(){
 
 function goToPlayer(){
   if(!selT||!selD||!selH)return;
-  const ds=days[selD.getDay()]+' '+selD.getDate()+' '+months[selD.getMonth()];
+  const y=selD.getFullYear();
+  const mo=String(selD.getMonth()+1).padStart(2,'0');
+  const dd=String(selD.getDate()).padStart(2,'0');
   const params=new URLSearchParams({
     club:'City Foot 5',
     terrain:'Terrain '+selT,
-    date:ds,
+    date:y+'-'+mo+'-'+dd,
     heure:selH
   });
   cinematicTransitionTo('Player.html?'+params.toString());
