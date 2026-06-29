@@ -477,11 +477,12 @@ const clubSlugs = {
 async function fetchVideo() {
   const clubSlug    = clubSlugs[p.club] || p.club.toLowerCase().replace(/\s+/g,'-');
   const terrainSlug = p.terrain.toLowerCase().replace(/\s+/g,'-');
+  const heure       = decodeURIComponent(p.heure);
   const url = 'https://mymatch.ma/api/video'
-    + '?club='    + encodeURIComponent(clubSlug)
-    + '&terrain=' + encodeURIComponent(terrainSlug)
-    + '&date='    + encodeURIComponent(p.date)
-    + '&heure='   + encodeURIComponent(p.heure);
+    + '?club='    + clubSlug
+    + '&terrain=' + terrainSlug
+    + '&date='    + p.date
+    + '&heure='   + heure;
   console.log('[MyMatch] fetchVideo →', url);
   try {
     const res  = await fetch(url);
