@@ -73,6 +73,7 @@ body > nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-it
 .fl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:.16em;color:var(--text);line-height:1}
 .fl span{color:var(--green)}
 .hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:30px;height:30px;cursor:pointer;padding:2px;background:none;border:none}
+@media(min-width:1025px){.hamburger{display:none}}
 .hamburger span{display:block;height:1.5px;background:var(--text);border-radius:1px;transition:all .3s;transform-origin:center}
 .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
@@ -307,9 +308,10 @@ footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex
 .footer-logo{display:flex;align-items:center;gap:11px}
 .fcopy{font-size:11px;color:var(--muted)}
 
+@media(max-width:1024px){.nav-links{display:none}}
+
 @media(max-width:768px){
   nav{padding:0 16px}
-  .nav-links{display:none}
   /* Bouton CTA du header : version compacte sur mobile pour qu'il
      reste sur une ligne et ne mange pas la moitié du header. */
   .nav-cta{font-size:9px;padding:7px 10px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
