@@ -1810,7 +1810,7 @@ function partagerMyMatch(){
     /* 6. TILT 3D — carte vidéo et cartes fondateurs s'inclinent
        subtilement vers le curseur. Desktop uniquement. */
     if (fine && !reduced){
-      document.querySelectorAll('.vcard, .fc').forEach(function(card){
+      document.querySelectorAll('.vcard').forEach(function(card){
         card.addEventListener('mousemove', function(e){
           var r = card.getBoundingClientRect();
           var px = (e.clientX - r.left) / r.width  - 0.5;
