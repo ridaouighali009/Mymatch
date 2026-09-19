@@ -217,6 +217,24 @@ section.alt{background:var(--s1);border-top:1px solid var(--line);border-bottom:
 .dpill.sel .dnum{color:var(--green)}
 .tdot{width:4px;height:4px;border-radius:50%;background:var(--green);margin:3px auto 0}
 .rbox{padding:24px;border:1px solid rgba(200,255,0,.22);border-radius:3px;background:var(--ga);display:none}
+/* Sélection club améliorée */
+.club-list-wrap{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+.club-opt{cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+.club-opt:hover:not(.sel){border-color:rgba(200,255,0,.45);background:rgba(200,255,0,.04)}
+.club-opt.sel{border-color:var(--green);background:rgba(200,255,0,.08)}
+.club-opt:not(.sel) .club-chk{background:var(--gb);border:1.5px solid var(--line)}
+.club-opt:not(.sel) .club-chk svg{display:none}
+/* Barre de sélection résumé */
+.sel-bar{display:flex;gap:6px;flex-wrap:wrap;min-height:22px;margin-bottom:16px}
+.sel-chip{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:2px;border:1px solid rgba(200,255,0,.3);color:var(--green);background:rgba(200,255,0,.06);display:inline-flex;align-items:center;gap:4px}
+/* Points de progression */
+.flow-prog{display:flex;gap:5px;align-items:center;margin-bottom:18px}
+.fp-dot{height:3px;width:18px;border-radius:2px;background:var(--line);transition:all .3s cubic-bezier(.16,1,.3,1)}
+.fp-dot.done{background:rgba(200,255,0,.45);width:18px}
+.fp-dot.active{background:var(--green);width:32px}
+/* Grille terrains — noms courts sur mobile */
+.tbtn .tn-label{font-size:12px;font-weight:700;letter-spacing:.04em;text-align:center;line-height:1.2;max-width:56px;word-break:break-word}
+@media(max-width:480px){.tgrid{grid-template-columns:repeat(3,1fr)!important}}
 .rbox.show{display:block;animation:fu .3s ease}
 .rt{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--green);letter-spacing:1px;margin-bottom:10px}
 .rd{font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:16px}
@@ -943,6 +961,13 @@ html{scroll-behavior:smooth}
   <h2 class="sh2 reveal">T’as fini ton match ?<br>Retrouve ta vidéo.</h2>
   <p class="sp reveal delay-1">Aucune inscription. Aucune app. Ton match est là.</p>
   <div class="flow-wrap">
+    <div class="flow-prog" id="flowProg" aria-hidden="true">
+      <div class="fp-dot active" id="fpd1"></div>
+      <div class="fp-dot" id="fpd2"></div>
+      <div class="fp-dot" id="fpd3"></div>
+      <div class="fp-dot" id="fpd4"></div>
+    </div>
+    <div class="sel-bar" id="selBar" aria-live="polite"></div>
     <div class="flow-tabs">
       <button class="ftab active" id="tab1" onclick="goTab(1)"><span class="tn">01</span>Club</button>
       <button class="ftab" id="tab2" onclick="goTab(2)"><span class="tn">02</span>Terrain</button>
@@ -951,15 +976,8 @@ html{scroll-behavior:smooth}
     </div>
     <div class="fpanel active" id="p1">
       <div class="flbl">Sur quel complexe tu as joué ?</div>
-      <div class="club-opt">
-        <div class="club-ico"><img src="images/club-ico.webp" alt="City Foot 5"/></div>
-        <div>
-          <div class="club-n">City Foot 5</div>
-          <div class="club-s">Casablanca centre · 13 terrains · 6 filmés</div>
-        </div>
-        <div class="club-chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5"><polyline points="20,6 9,17 4,12"/></svg></div>
-      </div>
-      <div style="margin-top:20px"><button class="btn-p" onclick="goTab(2)">Suivant</button></div>
+      <div id="clubList"></div>
+      <div style="margin-top:20px"><button class="btn-p" id="btnClubSuivant" style="opacity:.35;cursor:not-allowed" disabled>Suivant &rarr;</button></div>
     </div>
     <div class="fpanel" id="p2">
       <div class="flbl"><strong>Quel terrain ?</strong> Les verts sont filmés, les grisés sont standard.</div>
@@ -1177,24 +1195,133 @@ function scrub(e){
   document.getElementById('pFill').style.width=(prog*100)+'%';
 }
 function pad(n){return String(n).padStart(2,'0');}
+/* ---------------------------------------------------------------
+   Données des clubs (source : Claude.md)
+--------------------------------------------------------------- */
+const CLUBS = [
+  { id:'city-foot-5', nom:'City Foot 5', ville:'Casablanca centre', total:13, filmes:[1,2,3,4,5,6],
+    terrains:[{id:1,nom:'Terrain 1'},{id:2,nom:'Terrain 2'},{id:3,nom:'Terrain 3'},{id:4,nom:'Terrain 4'},{id:5,nom:'Terrain 5'},{id:6,nom:'Terrain 6'},{id:7,nom:'Terrain 7'},{id:8,nom:'Terrain 8'},{id:9,nom:'Terrain 9'},{id:10,nom:'Terrain 10'},{id:11,nom:'Terrain 11'},{id:12,nom:'Terrain 12'},{id:13,nom:'Terrain 13'}]},
+  { id:'arena-bouskoura', nom:'Arena Bouskoura', ville:'Bouskoura', total:9, filmes:[1,2,3,4],
+    terrains:[{id:1,nom:'Terrain A'},{id:2,nom:'Terrain B'},{id:3,nom:'Terrain C'},{id:4,nom:'Terrain D'},{id:5,nom:'Terrain E'},{id:6,nom:'Terrain F'},{id:7,nom:'Terrain G'},{id:8,nom:'Terrain H'},{id:9,nom:'Terrain I'}]},
+  { id:'green-sports-park', nom:'Green Sports Park', ville:'Bouskoura', total:6, filmes:[1,2,3],
+    terrains:[{id:1,nom:'Alpha'},{id:2,nom:'Beta'},{id:3,nom:'Gamma'},{id:4,nom:'Delta'},{id:5,nom:'Epsilon'},{id:6,nom:'Zeta'}]}
+];
+const HORAIRES=['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+
+let selC=null,selT=null,selD=null,selH=null;
+
+/* --- Rendu des clubs dans le panel #p1 --- */
+(function(){
+  const list=document.getElementById('clubList');
+  if(!list)return;
+  const wrap=document.createElement('div');
+  wrap.className='club-list-wrap';
+  CLUBS.forEach(function(club){
+    const opt=document.createElement('div');
+    opt.className='club-opt';
+    opt.setAttribute('role','radio');
+    opt.setAttribute('tabindex','0');
+    opt.setAttribute('aria-checked','false');
+    opt.innerHTML='<div class="club-ico"><img src="images/club-ico.webp" alt="'+club.nom+'"/></div>'
+      +'<div><div class="club-n">'+club.nom+'</div><div class="club-s">'+club.ville+' · '+club.total+' terrains · '+club.filmes.length+' filmés</div></div>'
+      +'<div class="club-chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5"><polyline points="20,6 9,17 4,12"/></svg></div>';
+    function pick(){
+      document.querySelectorAll('.club-opt').forEach(function(o){o.classList.remove('sel');o.setAttribute('aria-checked','false');});
+      opt.classList.add('sel');opt.setAttribute('aria-checked','true');
+      selC=club; selT=null; selH=null;
+      const btnC=document.getElementById('btnClubSuivant');
+      btnC.disabled=false;btnC.style.opacity='1';btnC.style.cursor='pointer';
+      updateSelBar();
+    }
+    opt.addEventListener('click',pick);
+    opt.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();pick();}});
+    wrap.appendChild(opt);
+  });
+  list.appendChild(wrap);
+  const btnC=document.getElementById('btnClubSuivant');
+  if(btnC) btnC.onclick=function(){if(selC){renderTerrains();goTab(2);}};
+})();
+
+/* --- Rendu des terrains selon le club sélectionné --- */
+function renderTerrains(){
+  if(!selC)return;
+  const grid=document.getElementById('terrainGrid');
+  grid.innerHTML='';
+  const cols=Math.min(selC.terrains.length,selC.terrains.length<=6?3:7);
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  selC.terrains.forEach(function(t){
+    const f=selC.filmes.includes(t.id);
+    const btn=document.createElement('button');
+    btn.className='tbtn'+(f?' f':'');
+    btn.setAttribute('aria-label',t.nom+(f?' — filmé':' — standard'));
+    btn.innerHTML='<span class="tn-label">'+t.nom+'</span><span class="ts">'+(f?'Filmé':'Std')+'</span>';
+    if(f){btn.onclick=function(){
+      document.querySelectorAll('#terrainGrid .tbtn.f').forEach(function(b){b.classList.remove('sel');});
+      btn.classList.add('sel');selT=t.nom;selH=null;
+      updateSelBar();goTab(3);
+    };}
+    grid.appendChild(btn);
+  });
+}
+
+/* --- Rendu des créneaux horaires (données locales) --- */
+function renderCreneaux(){
+  if(!selT||!selD)return;
+  const hg=document.getElementById('heureGrid');
+  const dateMsg=document.getElementById('dateMsg');
+  selH=null;checkBtnVoir();
+  hg.innerHTML='';
+  dateMsg.style.display='none';
+  HORAIRES.forEach(function(h){
+    const btn=document.createElement('button');
+    btn.className='tbtn f';
+    btn.style.aspectRatio='auto';
+    btn.style.padding='12px 4px';
+    btn.setAttribute('aria-label','Créneau '+h);
+    btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
+    btn.onclick=function(){
+      document.querySelectorAll('#heureGrid .tbtn').forEach(function(b){b.classList.remove('sel');});
+      btn.classList.add('sel');selH=h;updateSelBar();checkBtnVoir();
+    };
+    hg.appendChild(btn);
+  });
+  goTab(4);
+}
+
+/* --- Résumé de sélection --- */
+function updateSelBar(){
+  const bar=document.getElementById('selBar');
+  if(!bar)return;
+  const days_fr=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const months_fr=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  let html='';
+  if(selC)html+='<span class="sel-chip">'+selC.nom+'</span>';
+  if(selT)html+='<span class="sel-chip">'+selT+'</span>';
+  if(selD)html+='<span class="sel-chip">'+days_fr[selD.getDay()]+' '+selD.getDate()+' '+months_fr[selD.getMonth()]+'</span>';
+  if(selH)html+='<span class="sel-chip">'+selH+'</span>';
+  bar.innerHTML=html;
+}
+
+/* --- Progression visuelle --- */
+function updateProgress(step){
+  for(var i=1;i<=4;i++){
+    const d=document.getElementById('fpd'+i);
+    if(!d)continue;
+    d.classList.remove('active','done');
+    if(i<step)d.classList.add('done');
+    else if(i===step)d.classList.add('active');
+  }
+}
+
 function goTab(n){
-  [1,2,3,4].forEach(i=>{
+  [1,2,3,4].forEach(function(i){
     document.getElementById('tab'+i).classList.toggle('active',i===n);
     document.getElementById('p'+i).classList.toggle('active',i===n);
   });
-}
-let selT=null,selD=null,selH=null;
-const filmed=[1,2,3,4,5,6];
-const grid=document.getElementById('terrainGrid');
-for(let i=1;i<=13;i++){
-  const f=filmed.includes(i);
-  const btn=document.createElement('button');
-  btn.className='tbtn'+(f?' f':'');
-  btn.innerHTML='<span style="font-size:18px;font-weight:700">'+i+'</span><span class="ts">'+(f?'Filmé':'Std')+'</span>';
-  if(f){(function(num,el){el.onclick=function(){document.querySelectorAll('.tbtn.f').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selT=num;goTab(3);fetchCreneaux();};})(i,btn);}
-  grid.appendChild(btn);
+  updateProgress(n);
 }
 
+/* --- Calendrier --- */
 const days=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 const dr=document.getElementById('dateRow');
@@ -1206,62 +1333,20 @@ for(let i=13;i>=0;i--){
   if(i===0)selD=d;
   p.innerHTML='<div class="dday">'+days[d.getDay()]+'</div><div class="dnum">'+d.getDate()+'</div><div class="dmon">'+months[d.getMonth()]+'</div>'+(i===0?'<div class="tdot"></div>':'');
   (function(date,el){el.onclick=function(){
-    document.querySelectorAll('.dpill').forEach(x=>x.classList.remove('sel'));
+    document.querySelectorAll('.dpill').forEach(function(x){x.classList.remove('sel');});
     el.classList.add('sel');selD=date;
-    if(selT){fetchCreneaux();}
+    updateSelBar();
+    if(selT){renderCreneaux();}
   };})(d,p);
   dr.appendChild(p);
 }
 
 const hg=document.getElementById('heureGrid');
 const dateMsg=document.getElementById('dateMsg');
-async function fetchCreneaux(){
-  if(!selT||!selD)return;
-  const y=selD.getFullYear();
-  const mo=String(selD.getMonth()+1).padStart(2,'0');
-  const dd=String(selD.getDate()).padStart(2,'0');
-  const dateStr=y+'-'+mo+'-'+dd;
-  selH=null;checkBtnVoir();
-  dateMsg.textContent='Recherche des vidéos…';
-  dateMsg.style.display='block';
-  hg.innerHTML='';
-  try{
-    const clubIds={'City Foot 5':'city-foot-5','Arena Bouskoura':'arena-bouskoura','Green Sports Park':'green-sports-park'};
-    const clubId=clubIds['City Foot 5'];
-    const terrainId='terrain-'+selT;
-    const url='https://mymatch.ma/api/creneaux?club='+clubId+'&terrain='+terrainId+'&date='+dateStr;
-    console.log('[MyMatch] fetchCreneaux →', url);
-    const res=await fetch(url);
-    const data=await res.json();
-    console.log('[MyMatch] réponse API →', data);
-    if(!data||!data.length){
-      dateMsg.textContent='Aucune vidéo disponible pour ce terrain à cette date.';
-      return;
-    }
-    dateMsg.style.display='none';
-    hg.innerHTML='';
-    data.forEach(function(c){
-      const h=typeof c==='string'?c:(c.heure_debut||c.heure||c.debut||c.time||String(c));
-      const btn=document.createElement('button');
-      btn.className='tbtn f';
-      btn.style.aspectRatio='auto';
-      btn.style.padding='10px 4px';
-      btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
-      btn.onclick=function(){
-        document.querySelectorAll('#heureGrid .tbtn').forEach(b=>b.classList.remove('sel'));
-        btn.classList.add('sel');selH=h;checkBtnVoir();
-      };
-      hg.appendChild(btn);
-    });
-    goTab(4);
-  }catch(e){
-    dateMsg.textContent='Erreur de connexion. Réessaie.';
-  }
-}
 
 function checkBtnVoir(){
   const btn=document.getElementById('btnVoir');
-  const ok=selT&&selD&&selH;
+  const ok=selC&&selT&&selD&&selH;
   btn.disabled=!ok;
   btn.style.opacity=ok?'1':'0.35';
   btn.style.cursor=ok?'pointer':'not-allowed';
@@ -1277,10 +1362,10 @@ function formatDateYYYYMMDD(date){
 }
 
 function goToPlayer(){
-  if(!selT||!selD||!selH)return;
+  if(!selC||!selT||!selD||!selH)return;
   const params=new URLSearchParams({
-    club:'City Foot 5',
-    terrain:'Terrain '+selT,
+    club:selC.nom,
+    terrain:selT,
     date:formatDateYYYYMMDD(selD),
     heure:selH
   });
