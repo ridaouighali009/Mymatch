@@ -88,6 +88,13 @@ Le script `detect_and_record.py` devrait vérifier ce statut toutes les 5 min. N
   - Table `videos` (club_id, terrain_numero, date_match, heure_debut, heure_fin, fichier, taille_octets, date_upload, date_expiration, statut)
   - 0 vidéo en base au 26/11/2026 (vidéos de test uploadées en août puis supprimées manuellement).
 - Backend : Flask + Gunicorn (3 workers) + service systemd `mymatch` (Restart=always). Routes existantes : `/api/nouvelle-video`, `/api/creneaux`, `/api/video`, `/api/statut`, `/api/upload`, `/api/purge`.
+- ✅ **Sécurisation de l'API — résolu, déployé et vérifié le 26/11/2026** :
+  - `/api/upload`, `/api/nouvelle-video` et `/api/purge` exigent le header `X-API-Key` (401 sinon ; 503 si la clé n'est pas configurée côté serveur). `/api/video`, `/api/creneaux` restent publiques ; `/api/statut` n'est pas protégée (ne fait rien pour l'instant).
+  - Validation stricte avant de construire le nom de fichier (400 sinon) : club ∈ {city-foot-5, arena-bouskoura, green-sports-park}, terrain = `terrain-N`, date = `AAAA-MM-JJ` (date réelle), heures = `HH:MM` (sans secondes). Bloque `../` et tout caractère inattendu.
+  - La clé n'est **pas** dans `app.py` ni dans le repo : variable `MYMATCH_API_KEY` dans `/etc/systemd/system/mymatch.service.d/cle-api.conf` (chmod 600). Ne jamais l'écrire dans ce fichier.
+  - Sauvegarde de l'ancienne version : `/var/www/mymatch/app.py.avant-cle-api`.
+  - Vérifié : service actif, les 3 tests curl OK (sans clé → 401, avec clé → `{"deleted":0}`, `/api/creneaux` → `[]`). `purge.py` (cron 3h) n'appelle pas l'API → non impacté.
+  - `app.py` n'est volontairement pas versionné dans le repo (il contient le mot de passe de la base).
 - Reverse proxy : Nginx, `client_max_body_size 5000M` (configuré après une erreur 413 lors des tests d'upload).
 - Domaine : mymatch.ma acheté via Genious Communication (registrar marocain agréé ANRT), DNS configuré, HTTPS actif via Certbot/Let's Encrypt.
 - Firewall : UFW actif, ports 22/80/443 seulement.
@@ -145,6 +152,12 @@ Upload du fichier vers `/api/upload` sur le serveur, 3 tentatives avec 60s d'int
 ### alerts.py
 
 Surveillance toutes les 10 min : ping caméra, % d'usage du SSD (seuil 80%), accessibilité du serveur mymatch.ma, et que `detect_and_record.py` tourne toujours (redémarre automatiquement sinon). Alertes SMS via Twilio — compte Twilio jamais créé/configuré, les identifiants dans le script sont des placeholders. Numéros d'alerte prévus : +212641690227 et un second numéro non communiqué. Redémarrage préventif du RPi à 3h du matin (seulement si aucun enregistrement en cours).
+
+### ⚠️ À faire sur les scripts RPi suite à la sécurisation de l'API
+
+- `upload.py` (et `detect_and_record.py` s'il appelle `/api/nouvelle-video`) doit envoyer `headers={"X-API-Key": API_KEY}`, avec la même clé que sur le serveur.
+- Les valeurs envoyées doivent respecter le format validé : `city-foot-5`, `terrain-3`, `2026-08-10`, `21:05`.
+- Ne pas remettre en file d'attente indéfiniment un envoi refusé en 400/401 (réessayer ne règle rien) : le signaler à la place.
 
 ### Configuration systemd prévue (2 services, pas 3 — upload.py n'est pas un service permanent, il est appelé ponctuellement)
 
