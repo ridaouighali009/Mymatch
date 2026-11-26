@@ -437,8 +437,11 @@ async function chargerVideo(){
     }).catch(()=>{});
 
     /* expiration */
-    if(d.expire){
-      const reste = Math.max(0, Math.ceil((new Date(d.expire) - new Date())/86400000));
+    /* app.py : "expire" = date_expiration.isoformat(), ex. "2026-12-10T21:05:33.123456"
+       (sans fuseau, microsecondes) -> on retire la fraction de seconde pour tous les navigateurs */
+    const expDate = d.expire ? new Date(String(d.expire).replace(/\.\d+/, '')) : null;
+    if(expDate && !isNaN(expDate)){
+      const reste = Math.max(0, Math.ceil((expDate - new Date())/86400000));
       $('s-jours').textContent  = reste+'J';
       $('exp-jours').textContent = reste + (reste>1?' jours restants':' jour restant');
       $('exp-barre').style.width = Math.min(100,(reste/14)*100)+'%';
@@ -463,12 +466,17 @@ async function chargerCreneaux(){
     }
     box.innerHTML = '';
     list.forEach(c=>{
-      const actif = c.heure_debut === heureTxt;
+      /* app.py renvoie heure_debut tel que stocké en base (ex. "21:00") ;
+         comparaison sur HH:MM pour tolérer un éventuel "21:00:00" */
+      const h = String(c.heure_debut);
+      const actif = h.slice(0,5) === heureTxt.slice(0,5);
       const a = document.createElement('a');
       a.className = 'creneau' + (actif?' actif':'');
       a.href = `Player.html?club=${encodeURIComponent(clubTxt)}&terrain=${encodeURIComponent(terrainTxt)}&date=${dateISO}&heure=${encodeURIComponent(c.heure_debut)}`;
-      a.innerHTML = `<span class="creneau-h">${c.heure_debut}</span>
-                     <span class="creneau-tag">${actif?'En lecture':'Voir'}</span>`;
+      /* textContent (pas innerHTML) : heure_debut vient de la base */
+      const sh = document.createElement('span'); sh.className = 'creneau-h'; sh.textContent = h.slice(0,5);
+      const st = document.createElement('span'); st.className = 'creneau-tag'; st.textContent = actif ? 'En lecture' : 'Voir';
+      a.append(sh, st);
       box.appendChild(a);
     });
   }catch(e){

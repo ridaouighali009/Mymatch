@@ -113,7 +113,7 @@ Une nouvelle version de `Player.html` (lecteur vidéo avec sidebar créneaux, sp
 
 - `index.html` sur `main` (sélection multi-clubs) affiche des créneaux **fixes** (`HORAIRES` 09:00→23:00) et n'appelle plus `/api/creneaux` — régression par rapport à la prod (3306a34).
 - Noms de terrains incompatibles avec le format API `terrain-N` : Arena Bouskoura = "Terrain A…I", Green Sports Park = "Alpha…Zeta".
-- `Player.html` : format exact du champ d'expiration (`expire` attendu par le JS) et de `heure_debut` (`21:00` ou `21:00:00` ?) non confirmé — la base est vide (0 vidéo), l'API ne renvoie que `[]` / 404. À vérifier avec une vraie vidéo ou en lisant `app.py`.
+- ~~`Player.html` : format de `expire` / `heure_debut`~~ → résolu le 26/11/2026 d'après `app.py` : `/api/video` renvoie `{url, expire}` (`expire` = `date_expiration.isoformat()`), `/api/creneaux` renvoie `[{heure_debut, heure_fin, id}]`.
 
 Action recommandée à la reprise : faire le ménage dans les branches, merger ou abandonner explicitement chacune, et repartir d'une branche `main` propre comme unique source de vérité.
 
