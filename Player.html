@@ -281,7 +281,7 @@
 
       <!-- SPECS -->
       <div class="specs">
-        <div class="spec"><span class="spec-val">4K</span><span class="spec-lbl">Qualité</span></div>
+        <div class="spec"><span class="spec-val">HD</span><span class="spec-lbl">Qualité</span></div>
         <div class="spec"><span class="spec-val" id="s-duree">—</span><span class="spec-lbl">Durée</span></div>
         <div class="spec"><span class="spec-val" id="s-poids">—</span><span class="spec-lbl">Taille</span></div>
         <div class="spec"><span class="spec-val" id="s-jours">—</span><span class="spec-lbl">Jours restants</span></div>
@@ -365,9 +365,11 @@ const CLUBS = {
   'green sports park':'green-sports-park'
 };
 const clubId = CLUBS[clubTxt.toLowerCase().trim()] || clubTxt.toLowerCase().trim().replace(/\s+/g,'-');
-const terrainId = /^terrain-/i.test(terrainTxt)
-  ? terrainTxt.toLowerCase().replace(/\s+/g,'-')
-  : 'terrain-' + terrainTxt.replace(/[^0-9a-zA-Z]/g,'').toLowerCase();
+/* "Terrain 3" / "terrain-3" / "3" -> "terrain-3" */
+const terrainId = 'terrain-' + terrainTxt.trim()
+  .replace(/^terrain[\s_-]*/i,'')
+  .replace(/[^0-9a-zA-Z]/g,'')
+  .toLowerCase();
 
 /* date -> YYYY-MM-DD en heure locale */
 function toISO(str){
@@ -391,6 +393,14 @@ const $ = id => document.getElementById(id);
 function toast(msg){
   const t = $('toast'); t.textContent = msg; t.classList.add('on');
   clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+/* octets -> "850 Mo" ou "1,2 Go" */
+function taille(o){
+  if(!o || !isFinite(o)) return '—';
+  const Mo = o/1048576;
+  return Mo < 1024
+    ? Math.round(Mo)+' Mo'
+    : (Mo/1024).toFixed(1).replace('.',',')+' Go';
 }
 function mmss(sec){
   if(!sec || !isFinite(sec)) return '—';
@@ -423,7 +433,7 @@ async function chargerVideo(){
     /* taille du fichier */
     fetch(d.url,{method:'HEAD'}).then(h=>{
       const o = h.headers.get('content-length');
-      if(o) $('s-poids').textContent = (o/1073741824).toFixed(1).replace('.',',')+'G';
+      if(o) $('s-poids').textContent = taille(+o);
     }).catch(()=>{});
 
     /* expiration */
