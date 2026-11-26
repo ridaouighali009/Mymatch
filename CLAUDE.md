@@ -1,5 +1,7 @@
 # MyMatch — Fichier de contexte projet (mis à jour 26 novembre 2026)
 
+> 🔒 **Le repo GitHub est PUBLIC.** N'y écrire **jamais** aucun secret, même temporairement (un commit supprimé ensuite reste lisible dans l'historique) : mots de passe, clé API (`MYMATCH_API_KEY`), identifiants Twilio, clés SSH, fichiers `.env`, `app.py` du serveur. Les secrets restent uniquement sur le serveur / le RPi ; ce fichier dit seulement *où* ils sont rangés.
+
 ## C'est quoi MyMatch ?
 
 MyMatch est une plateforme marocaine de captation vidéo automatique pour terrains de football amateur 5v5 à Casablanca. Les joueurs scannent un QR Code affiché sur le terrain après leur match, sélectionnent club/terrain/date/heure sur le site, et accèdent à leur vidéo en quelques secondes. Aucune app, aucun compte.
@@ -82,7 +84,7 @@ Le script `detect_and_record.py` devrait vérifier ce statut toutes les 5 min. N
 
 - VPS : Hetzner CX22/CX23, Ubuntu (26.04 après mises à jour automatiques de Hetzner), IP 91.99.78.242.
 - Accès SSH : clé uniquement (pas de mot de passe). Clés autorisées actuellement : un Mac principal (sans label dans authorized_keys), et un PC Windows (mymatch-hp, connexion via `ssh mymatch` grâce à un alias dans `~/.ssh/config` sur ce PC — nécessite `-o KexAlgorithms=curve25519-sha256` car OpenSSH client 9.5 sur Windows ne supporte pas nativement le KEX par défaut d'un serveur OpenSSH 10.2). Un 2e Mac (mymatch-mac2) a été retiré le 26/11/2026. Sauvegarde du fichier dans `~/.ssh/authorized_keys.backup`.
-- Base de données : PostgreSQL, DB `mymatch`, user `mymatch_user` / password `MyMatch2026!`.
+- Base de données : PostgreSQL, DB `mymatch`, user `mymatch_user`. Mot de passe **changé le 26/11/2026** (l'ancien était exposé publiquement dans l'historique git) ; il n'est noté nulle part dans le repo.
   - Table `clubs` (city-foot-5, arena-bouskoura, green-sports-park déjà insérés)
   - Table `terrains`
   - Table `videos` (club_id, terrain_numero, date_match, heure_debut, heure_fin, fichier, taille_octets, date_upload, date_expiration, statut)
