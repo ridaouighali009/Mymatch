@@ -50,7 +50,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js" defer></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -568,7 +567,8 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){.ld-torso,.ld-arm,.lt,.ld-ball{transform:none!important;opacity:1!important}.ld-seam{display:none}}
 
 /* ===== 2. BALLE DE DÉFILEMENT ===== */
-.sc{position:fixed;left:0;right:0;top:0;height:18px;z-index:900;pointer-events:none}
+/* MyMatch : placée juste sous l'en-tête fixe (62 px) pour ne plus passer sur ses boutons */
+.sc{position:fixed;left:0;right:0;top:62px;height:18px;z-index:900;pointer-events:none}
 .sc-line{position:absolute;left:0;right:0;top:8px;height:2px;background:rgba(242,234,215,.14)}
 .sc-fill{position:absolute;left:0;top:8px;height:2px;background:#E8873F;width:0}
 .sc-ball{position:absolute;top:1px;left:0;width:16px;height:16px;margin-left:-8px;will-change:transform}

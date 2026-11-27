@@ -111,7 +111,7 @@ Check de santé effectué le 26/11/2026 : les 3 services (mymatch, nginx, postgr
 ✅ **Depuis le 27/11/2026, `main` est la branche de production et l'unique source de vérité.** Le serveur (`/var/www/mymatch/static`) suit `main` (bascule faite le 27/11/2026 sur le commit `72febe6`, vérifiée : site OK, « Aucune vidéo disponible » affiché comme attendu).
 
 - **Mise à jour du site** : `cd /var/www/mymatch/static && git pull` (sur `main`). Pas de redémarrage nécessaire : Nginx sert les fichiers directement. Le backend `app.py` n'est pas dans le repo et se met à jour séparément.
-- **Retour arrière** si besoin : `git checkout claude/install-ui-ux-skill-yTgfh` dans `/var/www/mymatch/static` (ancienne prod, commit `3306a34`).
+- **Retour arrière** si besoin : `git checkout 43c04ea` dans `/var/www/mymatch/static` (dernière version validée en production, le 27/11/2026 : refonte + logo + animations) ; `git checkout main` pour revenir ensuite à la dernière version. Les anciens points de retour (`4e7df00`, puis `3306a34` / branche `claude/install-ui-ux-skill-yTgfh`) ne sont plus à utiliser.
 - Tout nouveau travail part de `main` et y revient ; ne plus laisser traîner de branches `claude/*` non mergées.
 - ⚠️ **La branche par défaut du dépôt GitHub est encore `claude/install-ui-ux-skill-yTgfh`** : tout fichier envoyé via l'interface web de GitHub y atterrit au lieu de `main` (arrivé le 27/11/2026 avec reference-v5.html). À changer dans GitHub → Settings → General → Default branch → `main`.
 
@@ -123,7 +123,7 @@ Branches restantes :
 
 Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau `Player.html` intégré et déployé ; sélection multi-clubs corrigée et déployée (créneaux réels via `/api/creneaux`, terrains « Terrain 1…N » → `terrain-N` sur les 3 clubs).
 
-🎨 **Refonte design v3 — fusionnée dans `main` le 27/11/2026, PAS ENCORE DÉPLOYÉE** (le serveur est encore sur `4e7df00`). Source : branche `Refonte-v3` / PR #2. Voir « Site web » ci-dessous. Sélection limitée à **City Foot 5** (multi-clubs mis de côté, voir « Écarté ou reporté »).
+✅ **Refonte design v3, photo mosquée Hassan II, logo « Y-célébration » et animations — déployés et validés sur le serveur le 27/11/2026 (commit `43c04ea`)**. Source de la refonte : branche `Refonte-v3` / PR #2 (fermée). Voir « Site web » ci-dessous. Sélection limitée à **City Foot 5** (multi-clubs mis de côté, voir « Écarté ou reporté »).
 
 ✅ Exposition de `/.git/` et des fichiers `.md` via Nginx — résolu le 27/11/2026 (voir « Reverse proxy » dans Infrastructure serveur).
 
@@ -157,7 +157,8 @@ Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau 
   - `Player.html` : `data-min="3400"` + `data-wait-for-video="true"` ; `MMLoader.done()` est appelé à `loadeddata`, `loadedmetadata` (sur iPhone, `loadeddata` n'arrive souvent qu'à la lecture) ou `error` de la vidéo, et quand l'API ne renvoie pas de vidéo.
   - Ajout MyMatch au script : filet de sécurité `data-max` (9 000 ms par défaut) — la page s'ouvre quoi qu'il arrive.
 - **Transition accueil → lecteur** (`.page-wipe`) : même fond dégradé que l'écran de chargement, sans logo statique ; l'écran de chargement du lecteur prend le relais avec le logo animé.
-- **Balle de défilement `.sc`** (accueil uniquement) : balle orange qui roule sur une ligne en haut de page, proportionnellement au défilement (remplace l'ancienne barre `.scroll-progress`).
+- **Balle de défilement `.sc`** (accueil uniquement) : balle orange qui roule sur une ligne **juste sous l'en-tête fixe** (`top:62px`, pour ne pas passer sur ses boutons), proportionnellement au défilement (remplace l'ancienne barre `.scroll-progress`).
+- `lenis.css` n'est plus chargé (le fichier n'existe pas dans Lenis 1.0.45 : erreur 404 inutile). Seul `lenis.min.js` est chargé depuis le CDN.
 - **Passe en pointillés** dans « Comment ça marche » : un trait orange en pointillés relie chaque étape à la suivante quand elle apparaît (vertical sur mobile, horizontal entre les cartes sur ordinateur). CSS seul (`.how-item::after`).
 - `prefers-reduced-motion` respecté partout : logo affiché directement puis fondu, balle de défilement masquée, pointillés affichés sans animation.
 - Mobile : espace réservé sous le pied de page (150 px) pour que la barre « Retrouve ta vidéo » et le bouton WhatsApp ne cachent plus le copyright.
