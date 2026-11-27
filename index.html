@@ -39,6 +39,9 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
 <meta name="theme-color" content="#1F3B2D">
 
+<!-- Photos du haut de page : préchargées (la photo d'action est un fond CSS, découverte tard sinon) -->
+<link rel="preload" as="image" href="images/hero-action.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="image" href="images/joueur.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
 
@@ -500,7 +503,7 @@ img{image-rendering:auto;-webkit-backface-visibility:hidden}
 /* Liens légaux + icônes réseaux dans le footer (ajouts cohérents
    avec la palette : muted par défaut, vert au survol). */
 .flinks-leg{display:flex;gap:18px;flex-wrap:wrap}
-.flinks-leg a{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;letter-spacing:.5px;transition:color .2s}
+.flinks-leg a{font-size:11px;color:rgba(255,255,255,.6);text-decoration:none;letter-spacing:.5px;transition:color .2s}
 .flinks-leg a:hover{color:var(--green)}
 .fsocial{display:flex;gap:10px;align-items:center}
 .fsocial a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s,border-color .2s,background .2s}
@@ -661,6 +664,10 @@ html{scroll-behavior:smooth}
 .wa-fab{position:fixed;bottom:24px;right:24px;z-index:500;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 22px rgba(37,211,102,.38);cursor:pointer;text-decoration:none;border:none;transition:transform .25s ease,box-shadow .25s ease}
 .wa-fab:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 8px 32px rgba(37,211,102,.5)}
 @media(max-width:768px){.wa-fab{bottom:80px;right:16px}}
+/* Mobile : le bouton WhatsApp n'apparaît qu'après le haut de page,
+   sinon il masque le bord droit des boutons du hero. */
+@media(max-width:768px){.wa-fab{opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease}
+.wa-fab.wa-fab--on{opacity:1;pointer-events:auto;transform:none}}
 
 /* ============================================================
    STICKY CTA — mobile uniquement, apparaît après le hero
@@ -735,7 +742,7 @@ nav.scrolled,nav.is-scrolled{background:rgba(21,42,32,.97);border-bottom:1px sol
 
 /* Hero : photo d'action orange, voile navy à gauche pour le texte */
 .hero{background:var(--navy);min-height:100vh}
-.h-bg{position:absolute;inset:0;background:url('images/hero-action.jpg') 62% center/cover no-repeat,linear-gradient(115deg,#1F3B2D 0%,#4A3A1E 55%,#E8873F 100%);opacity:1;filter:none;animation:mm-kb 18s ease-in-out infinite alternate}
+.h-bg{position:absolute;inset:0;background:url('images/hero-action.webp') 62% center/cover no-repeat,linear-gradient(115deg,#1F3B2D 0%,#4A3A1E 55%,#E8873F 100%);opacity:1;filter:none;animation:mm-kb 18s ease-in-out infinite alternate}
 @keyframes mm-kb{from{transform:scale(1)}to{transform:scale(1.07)}}
 .h-fade{background:linear-gradient(180deg,rgba(31,59,45,0) 58%,rgba(31,59,45,1) 100%)}
 .h-fade2{background:linear-gradient(to right,rgba(31,59,45,.94) 0%,rgba(31,59,45,.62) 34%,rgba(31,59,45,0) 64%)}
@@ -782,7 +789,7 @@ section.alt{background:var(--navy2);border-color:transparent}
 
 /* "Le terrain s'allume" : ballon corail sur gazon navy */
 .night-s{height:440px;background:var(--navy);border:none}
-.night-bg{position:absolute;inset:0;background:url('images/terrain-nuit.jpg') 70% center/cover no-repeat,radial-gradient(circle at 74% 56%,#E8873F 0,#E8873F 4%,rgba(232,135,63,0) 4.4%),linear-gradient(135deg,#2A4A3A,#152A20);animation:mm-kb 22s ease-in-out infinite alternate}
+.night-bg{position:absolute;inset:0;background:url('images/terrain-nuit.webp') 70% center/cover no-repeat,radial-gradient(circle at 74% 56%,#E8873F 0,#E8873F 4%,rgba(232,135,63,0) 4.4%),linear-gradient(135deg,#2A4A3A,#152A20);animation:mm-kb 22s ease-in-out infinite alternate}
 .night-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(21,42,32,.92) 0%,rgba(21,42,32,.45) 42%,rgba(21,42,32,0) 70%)}
 .night-cont{justify-content:flex-start}
 .night-txt{text-align:left;max-width:560px}
@@ -854,7 +861,7 @@ section.alt{background:var(--navy2);border-color:transparent}
 
 /* Bande affiche : célébration de but */
 .poster-s{position:relative;height:600px;overflow:hidden;background:var(--navy2)}
-.poster-bg{position:absolute;inset:0;background:url('images/but.jpg') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 60%,#E8873F 140%);animation:mm-kb 20s ease-in-out infinite alternate}
+.poster-bg{position:absolute;inset:0;background:url('images/but.webp') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 60%,#E8873F 140%);animation:mm-kb 20s ease-in-out infinite alternate}
 .poster-s::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(21,42,32,.95) 0%,rgba(21,42,32,.6) 40%,rgba(21,42,32,0) 70%)}
 .poster-cont{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:24px;padding:0 48px;max-width:760px}
 .poster-ey{font-size:12px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--coral)}
@@ -981,9 +988,9 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
 .faq-item.open .faq-ico{border-color:#F2EAD7;background:rgba(242,234,215,.08)}
 .fsocial a:hover{color:#F2EAD7;border-color:rgba(242,234,215,.45);background:rgba(242,234,215,.05)}
 .sport-card::after{background:linear-gradient(90deg,rgba(242,234,215,0),#F2EAD7);box-shadow:0 -14px 0 -1px rgba(242,234,215,.5),0 14px 0 -1px rgba(242,234,215,.3)}
-.night-bg{background:url('images/terrain-nuit.jpg') 70% center/cover no-repeat,linear-gradient(135deg,#2A4A3A,#152A20)}
+.night-bg{background:url('images/terrain-nuit.webp') 70% center/cover no-repeat,linear-gradient(135deg,#2A4A3A,#152A20)}
 .casa-ov{background:linear-gradient(0deg,rgba(242,234,215,.12) 0%,rgba(242,234,215,0) 40%),linear-gradient(to right,rgba(21,42,32,.05) 20%,rgba(21,42,32,.55) 55%,rgba(21,42,32,.94) 100%)}
-.poster-bg{background:url('images/but.jpg') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 100%)}
+.poster-bg{background:url('images/but.webp') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 100%)}
 .sport-img{background:var(--img) var(--pos,center)/cover no-repeat,linear-gradient(160deg,#2A4A3A,#152A20)}
 
 @media (prefers-reduced-motion: reduce){.hp-leg,.hp-shot,.hp-lines{animation:none}.hp-leg{transform:none}.hp-lines{opacity:0}}
@@ -1095,7 +1102,7 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
 
 <div class="hero">
   <div class="h-glow" aria-hidden="true"></div>
-  <img class="h-player-img" src="images/joueur.jpg" alt="" aria-hidden="true" width="960" height="1280" fetchpriority="high"/>
+  <img class="h-player-img" src="images/joueur.webp" alt="" aria-hidden="true" width="960" height="1280" fetchpriority="high"/>
   <div class="h-rec" aria-hidden="true"><span class="h-rec-dot"></span>REC</div>
   <div class="h-fade"></div>
   <div class="h-fade2"></div>
@@ -1264,7 +1271,7 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
 </section>
 
 <div class="casa-s">
-  <img class="casa-img" src="images/casa-bg.webp" alt="La mosquée Hassan II à Casablanca, de nuit"/>
+  <img class="casa-img" src="images/casa-bg.webp" alt="La mosquée Hassan II à Casablanca, de nuit" width="1536" height="2048" loading="lazy" decoding="async"/>
   <div class="casa-tint"></div>
   <div class="casa-ov"></div>
   <div class="casa-cont">
@@ -1305,15 +1312,15 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
   </div>
   <div class="sports-grid">
     <article class="sport-card reveal">
-      <div class="sport-img" role="img" aria-label="Joueur de foot à 5 en pleine frappe" style="--img:url('images/hero-action.jpg');--pos:62% center"></div>
+      <div class="sport-img" role="img" aria-label="Joueur de foot à 5 en pleine frappe" style="--img:url('images/hero-action.webp');--pos:62% center"></div>
       <div class="sport-info"><span class="sport-name">Foot à 5</span><span class="sport-st is-live"><span class="st-dot"></span>Le premier sport filmé</span></div>
     </article>
     <article class="sport-card reveal delay-1">
-      <div class="sport-img" role="img" aria-label="Joueur de padel qui saute pour un smash" style="--img:url('images/padel.jpg');--pos:center 30%"></div>
+      <div class="sport-img" role="img" aria-label="Joueur de padel qui saute pour un smash" style="--img:url('images/padel.webp');--pos:center 30%"></div>
       <div class="sport-info"><span class="sport-name">Padel</span><span class="sport-st">Bientôt</span></div>
     </article>
     <article class="sport-card reveal delay-2">
-      <div class="sport-img" role="img" aria-label="Joueur de basket qui monte au panier" style="--img:url('images/basket.jpg');--pos:center 30%"></div>
+      <div class="sport-img" role="img" aria-label="Joueur de basket qui monte au panier" style="--img:url('images/basket.webp');--pos:center 30%"></div>
       <div class="sport-info"><span class="sport-name">Basket</span><span class="sport-st">Bientôt</span></div>
     </article>
   </div>
@@ -2012,9 +2019,11 @@ function partagerMyMatch(){
 (function(){
   var cta=document.getElementById('stickyCta');
   if(!cta)return;
+  var fab=document.querySelector('.wa-fab');
   var threshold=window.innerHeight*0.85;
   function onScroll(){
     var y=window.scrollY||window.pageYOffset;
+    if(fab)fab.classList.toggle('wa-fab--on',y>threshold);
     var sel=document.getElementById('selection');
     var inSel=sel&&sel.getBoundingClientRect().top<window.innerHeight*0.6&&sel.getBoundingClientRect().bottom>0;
     if(y>threshold&&!inSel){
