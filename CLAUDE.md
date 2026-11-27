@@ -113,6 +113,7 @@ Check de santé effectué le 26/11/2026 : les 3 services (mymatch, nginx, postgr
 - **Mise à jour du site** : `cd /var/www/mymatch/static && git pull` (sur `main`). Pas de redémarrage nécessaire : Nginx sert les fichiers directement. Le backend `app.py` n'est pas dans le repo et se met à jour séparément.
 - **Retour arrière** si besoin : `git checkout claude/install-ui-ux-skill-yTgfh` dans `/var/www/mymatch/static` (ancienne prod, commit `3306a34`).
 - Tout nouveau travail part de `main` et y revient ; ne plus laisser traîner de branches `claude/*` non mergées.
+- ⚠️ **La branche par défaut du dépôt GitHub est encore `claude/install-ui-ux-skill-yTgfh`** : tout fichier envoyé via l'interface web de GitHub y atterrit au lieu de `main` (arrivé le 27/11/2026 avec reference-v5.html). À changer dans GitHub → Settings → General → Default branch → `main`.
 
 Branches restantes :
 
@@ -156,9 +157,11 @@ Générées avec Figma, fichier **« MyMatch — Visuels du site »** ; converti
 | `but.webp` | Fond de l'affiche « but » d'`index.html` + bloc Instagram de `Player.html` |
 | `padel.webp` | Carte « Padel » de la section multisport |
 | `basket.webp` | Carte « Basket » de la section multisport |
-| `casa-bg.webp` | Mosquée Hassan II, section « Le talent casablancais » (chargement différé) — **provisoire** : à remplacer par `mosquee-hassan2` dès que la photo est poussée sur GitHub (elle n'a jamais été envoyée) |
+| `mosquee-hassan2.webp` | Mosquée Hassan II au coucher du soleil, section « Le talent casablancais » (chargement différé, cadrage `object-position: left 28%`) |
 
-Images supprimées le 27/11/2026 (plus utilisées) : `hero-bg`, `night-bg`, `mural-bg`, `cityfoot-bg`, `cityfoot-logo`, `club-ico`, `video-thumb`.
+Images supprimées le 27/11/2026 (plus utilisées) : `hero-bg`, `night-bg`, `mural-bg`, `cityfoot-bg`, `cityfoot-logo`, `club-ico`, `video-thumb`, puis `casa-bg` (ancienne photo de la mosquée, remplacée par `mosquee-hassan2`). Récupérables dans l'historique git si besoin.
+
+Design de référence : `reference-v5.html` (index final validé), sur la branche `claude/install-ui-ux-skill-yTgfh` (commit `f2a380d`) — volontairement **non copié sur `main`** (il serait servi publiquement sur mymatch.ma). `index.html` de `main` = reference-v5 + optimisations (WebP, préchargement, lazy, WhatsApp mobile, contraste mentions légales).
 
 ### Pages
 
