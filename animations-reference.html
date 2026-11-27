@@ -1,0 +1,157 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Référence animations MyMatch</title>
+<style>
+/* ===== Page de démonstration (à ne pas copier) ===== */
+body{margin:0;background:#1F3B2D;color:#F2EAD7;font-family:Archivo,Inter,sans-serif}
+.demo{min-height:100vh;display:flex;align-items:center;justify-content:center;font-size:28px;border-bottom:1px solid rgba(242,234,215,.1)}
+.demo:nth-child(even){background:#152A20}
+
+/* ===== 1. ÉCRAN DE CHARGEMENT ===== */
+.ld{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 60% 50% at 50% 40%,#2A4A3A 0%,#1F3B2D 55%,#152A20 100%);transition:opacity .3s ease}
+.ld.is-fade{opacity:0}
+.ld.is-out{pointer-events:none}
+/* sortie : un trou s'ouvre au centre de la balle géante et dévoile la page */
+@property --hole{syntax:'<length>';inherits:false;initial-value:0px}
+.ld.is-open{-webkit-mask:radial-gradient(circle at 50% 50%,transparent var(--hole),#000 calc(var(--hole) + 1px));mask:radial-gradient(circle at 50% 50%,transparent var(--hole),#000 calc(var(--hole) + 1px));animation:ld-hole .5s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes ld-hole{to{--hole:150vmax}}
+.ld-logo{width:min(560px,78vw);height:auto;overflow:visible}
+.ld-torso,.ld-arm{transform-box:fill-box}
+.ld-torso{transform-origin:50% 100%;transform:scaleY(0)}
+.ld-arm-l{transform-origin:90.4% 85.2%;transform:rotate(-118deg) scale(0)}
+.ld-arm-r{transform-origin:9.6% 85.2%;transform:rotate(118deg) scale(0)}
+.lt{opacity:0}
+.ld-ball,.ld-ball-in{transform-box:fill-box;transform-origin:center}
+.ld-ball{transform:translate(-3600px,-700px)}
+/* l'ombre sous la balle pendant les rebonds */
+.ld-shadow{opacity:0}
+@media (prefers-reduced-motion:reduce){.ld-torso,.ld-arm,.lt,.ld-ball{transform:none!important;opacity:1!important}.ld-seam{display:none}}
+
+/* ===== 2. BALLE DE DÉFILEMENT ===== */
+.sc{position:fixed;left:0;right:0;top:0;height:18px;z-index:900;pointer-events:none}
+.sc-line{position:absolute;left:0;right:0;top:8px;height:2px;background:rgba(242,234,215,.14)}
+.sc-fill{position:absolute;left:0;top:8px;height:2px;background:#E8873F;width:0}
+.sc-ball{position:absolute;top:1px;left:0;width:16px;height:16px;margin-left:-8px;will-change:transform}
+@media (prefers-reduced-motion:reduce){.sc-ball{display:none}}
+</style></head><body>
+
+<div class="ld" id="ld" aria-hidden="true">
+<svg class="ld-logo" viewBox="-162 -273 9075 2306" role="img" aria-label="MyMatch">
+ <g transform="skewX(-10) translate(330 0)" fill="#F2EAD7">
+  <path class="lt lt-l" d="M78 1760V0H614L762 1073L909 0H1450V1760H1128V492L926 1760H610L396 492V1760Z"/>
+  <g class="ld-y"><path class="ld-torso" d="M2182 1039 L2352 730 L2522 1039 L2522 1760 L2182 1760 Z"/><path class="ld-arm ld-arm-l" d="M1468 146 L1768 0 L2352 730 L2182 1039 Z"/><path class="ld-arm ld-arm-r" d="M3236 146 L2936 0 L2352 730 L2522 1039 Z"/></g>
+  <path class="lt lt-r" style="--i:0" d="M3274.0 1760V0H3810.0L3958.0 1073L4105.0 0H4646.0V1760H4324.0V492L4122.0 1760H3806.0L3592.0 492V1760Z"/><path class="lt lt-r" style="--i:1" d="M4724.0 1760 4894.0 0H5491.0L5658.0 1760H5325.0L5300.0 1476H5088.0L5066.0 1760ZM5113.0 1195H5273.0L5196.0 300H5180.0Z"/><path class="lt lt-r" style="--i:2" d="M5887.0 1760V338H5678.0V0H6448.0V338H6239.0V1760Z"/><path class="lt lt-r" style="--i:3" d="M6926.0 1776Q6735.0 1776 6618.5 1657.0Q6502.0 1538 6502.0 1324V512Q6502.0 256 6603.5 120.0Q6705.0 -16 6934.0 -16Q7059.0 -16 7156.5 30.0Q7254.0 76 7310.0 167.5Q7366.0 259 7366.0 398V702H7016.0V442Q7016.0 363 6996.0 335.5Q6976.0 308 6934.0 308Q6885.0 308 6868.0 343.5Q6851.0 379 6851.0 438V1319Q6851.0 1392 6872.5 1422.0Q6894.0 1452 6934.0 1452Q6979.0 1452 6997.5 1415.0Q7016.0 1378 7016.0 1319V1002H7370.0V1335Q7370.0 1567 7253.0 1671.5Q7136.0 1776 6926.0 1776Z"/><path class="lt lt-r" style="--i:4" d="M7457.0 1760V0H7807.0V629H7973.0V0H8323.0V1760H7973.0V962H7807.0V1760Z"/>
+ </g>
+ <g transform="translate(2600 300)"><g class="ld-ball"><g class="ld-ball-in"><circle r="207" fill="#CC5500"/><path class="ld-seam" d="M-160 -40 Q0 -150 160 -40 M-120 110 Q0 40 120 110" fill="none" stroke="#F2EAD7" stroke-width="26" stroke-linecap="round"/></g></g></g>
+</svg>
+</div>
+
+<div class="sc" aria-hidden="true"><div class="sc-line"></div><div class="sc-fill" id="scFill"></div>
+<svg class="sc-ball" id="scBall" viewBox="-10 -10 20 20"><circle r="8.5" fill="#CC5500" stroke="#F2EAD7" stroke-width="1.5"/><path d="M-6 -2 Q0 -7 6 -2 M-4.5 4.5 Q0 2 4.5 4.5" fill="none" stroke="#F2EAD7" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+
+<div class="demo">Section 1 — fais défiler</div><div class="demo">Section 2</div><div class="demo">Section 3</div><div class="demo">Section 4</div>
+
+<script>
+/* ===== 1. ÉCRAN DE CHARGEMENT =====
+   Réglages : MIN_MS = durée minimale à l'écran (accueil 2300, Player 3400).
+   Sur Player.html, appeler MMLoader.done() quand la vidéo est prête (loadeddata) ou en cas d'erreur. */
+const MMLoader = (() => {
+  const ld = document.getElementById('ld');
+  const MIN_MS = +(ld.dataset.min || 2300);
+  const t0 = performance.now();
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => ld.querySelector(s), $$ = s => [...ld.querySelectorAll(s)];
+  let pump = [];
+
+  // Trajectoire de la balle : 2 rebonds puis elle monte se poser à la place de la tête.
+  function bounceFrames() {
+    const G = 1253;                 // sol, relatif au centre de la tête (unités du SVG)
+    const segs = [                  // [x départ, y départ, x arrivée, y arrivée, hauteur du sommet au-dessus du sol, durée relative]
+      [-3600, -700, -2450, G, null, 0.30],
+      [-2450, G, -1150, G, 1500, 0.38],
+      [-1150, G, 0, 0, 1253, 0.32]
+    ];
+    const kf = []; let off = 0;
+    segs.forEach(([x0, y0, x1, y1, h, dur], si) => {
+      const N = 14;
+      for (let i = (si ? 1 : 0); i <= N; i++) {
+        const t = i / N; let y;
+        if (si === 0) y = y0 + (y1 - y0) * t * t;                    // chute
+        else if (si === segs.length - 1) y = G - h * (1 - (1 - t) * (1 - t)); // montée jusqu'au sommet
+        else y = G - 4 * h * t * (1 - t);                              // rebond complet
+        kf.push({ transform: `translate(${x0 + (x1 - x0) * t}px,${y}px)`, offset: Math.min(1, off + dur * t) });
+      }
+      off += dur;
+    });
+    kf[kf.length - 1].offset = 1;
+    return kf;
+  }
+
+  function play() {
+    if (reduce) return;
+    const E = 'cubic-bezier(.2,.9,.25,1)';
+    $('.ld-ball').animate(bounceFrames(), { duration: 1150, easing: 'linear', fill: 'forwards' });
+    $('.ld-ball-in').animate([{ transform: 'rotate(0)' }, { transform: 'rotate(760deg)' }], { duration: 1150, easing: 'cubic-bezier(.3,.6,.4,1)', fill: 'forwards' });
+    $('.ld-seam').animate([{ opacity: 1 }, { opacity: 1, offset: .75 }, { opacity: 0 }], { duration: 1400, fill: 'forwards' });
+    // la tête se pose : petit écrasement
+    $('.ld-ball-in').animate([{ transform: 'rotate(760deg) scale(1)' }, { transform: 'rotate(760deg) scale(1.16,.86)' }, { transform: 'rotate(760deg) scale(1)' }], { duration: 320, delay: 1150, easing: 'ease-out', fill: 'forwards' });
+    // le corps sort du sol
+    $('.ld-torso').animate([{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }], { duration: 420, delay: 650, easing: E, fill: 'forwards' });
+    // les bras arrivent baissés puis se lèvent : célébration
+    $$('.ld-arm').forEach((a, i) => {
+      const s = i ? 1 : -1;
+      a.animate([
+        { transform: `rotate(${118 * s}deg) scale(0)` },
+        { transform: `rotate(${118 * s}deg) scale(1)`, offset: .3 },
+        { transform: `rotate(${-10 * s}deg) scale(1)`, offset: .8 },
+        { transform: 'rotate(0deg) scale(1)' }
+      ], { duration: 900, delay: 780, easing: 'cubic-bezier(.5,0,.2,1)', fill: 'forwards' });
+    });
+    // les lettres glissent depuis le joueur
+    $$('.lt').forEach(l => {
+      const left = l.classList.contains('lt-l'), i = +getComputedStyle(l).getPropertyValue('--i') || 0;
+      l.animate([{ opacity: 0, transform: `translateX(${left ? 700 : -700}px)` }, { opacity: 1, transform: 'none' }],
+        { duration: 520, delay: 1450 + i * 55, easing: E, fill: 'forwards' });
+    });
+    // en attendant : les bras « pompent » doucement
+    setTimeout(() => {
+      $$('.ld-arm').forEach((a, i) => pump.push(a.animate(
+        [{ transform: 'rotate(0)' }, { transform: `rotate(${i ? 9 : -9}deg)` }, { transform: 'rotate(0)' }],
+        { duration: 620, iterations: Infinity, easing: 'ease-in-out', composite: 'replace' })));
+    }, 2300);
+  }
+
+  let doneCalled = false, loaded = false;
+  function out() {
+    pump.forEach(p => p.cancel());
+    if (reduce) { ld.classList.add('is-out', 'is-fade'); setTimeout(() => ld.remove(), 400); return; }
+    // fin : la balle part en frappe vers l'écran et ouvre la page
+    $('.ld-ball').animate([{ transform: 'translate(0,0) scale(1)' }, { transform: 'translate(0,0) scale(1.25)', offset: .25 }, { transform: 'translate(0,0) scale(90)' }],
+      { duration: 560, easing: 'cubic-bezier(.6,0,.9,.4)', fill: 'forwards' });
+    ld.classList.add('is-out');
+    // quand la balle couvre l'écran, un trou s'ouvre au centre et dévoile la page
+    setTimeout(() => ld.classList.add('is-open'), 470);
+    setTimeout(() => ld.remove(), 1050);
+  }
+  function tryOut() { if (!loaded || !doneCalled) return; const wait = Math.max(0, MIN_MS - (performance.now() - t0)); setTimeout(out, wait); }
+  play();
+  addEventListener('load', () => { loaded = true; if (ld.dataset.waitForVideo !== 'true') doneCalled = true; tryOut(); });
+  return { done() { doneCalled = true; tryOut(); } };
+})();
+
+/* ===== 2. BALLE DE DÉFILEMENT : roule sur une ligne en haut de page ===== */
+(() => {
+  const ball = document.getElementById('scBall'), fill = document.getElementById('scFill');
+  const R = 8, CIRC = 2 * Math.PI * R; let ticking = false;
+  function upd() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? scrollY / max : 0, x = p * (innerWidth - 16) + 8;
+    fill.style.width = x + 'px';
+    ball.style.transform = `translateX(${x}px) rotate(${x / CIRC * 360}deg)`;
+    ticking = false;
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+  addEventListener('resize', upd); upd();
+})();
+</script>
+</body></html>
