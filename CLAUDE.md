@@ -118,10 +118,10 @@ Branches connues à la pause :
 
 Une nouvelle version de `Player.html` (lecteur vidéo avec sidebar créneaux, specs auto, bloc expiration animé, bloc Instagram "but du mois") a été écrite en dehors de Claude Code et donnée au fondateur en téléchargement mais il n'est pas confirmé qu'elle ait été déployée sur GitHub ni sur le serveur. À vérifier en priorité.
 
-### 🚫 Bloquants avant de basculer le serveur sur `main` (relevés le 26/11/2026)
+### Bloquants avant de basculer le serveur sur `main` (relevés le 26/11/2026 — tous résolus sur `main` au 27/11/2026, pas encore déployés)
 
-- `index.html` sur `main` (sélection multi-clubs) affiche des créneaux **fixes** (`HORAIRES` 09:00→23:00) et n'appelle plus `/api/creneaux` — régression par rapport à la prod (3306a34).
-- Noms de terrains incompatibles avec le format API `terrain-N` : Arena Bouskoura = "Terrain A…I", Green Sports Park = "Alpha…Zeta".
+- ~~`index.html` sur `main` affiche des créneaux fixes~~ → résolu le 27/11/2026 : la sélection multi-clubs rappelle `/api/creneaux` (club, terrain-N, date) et n'affiche que les créneaux réels ; si aucun, reste à l'étape « date » avec « Aucune vidéo disponible pour ce terrain à cette date. ».
+- ~~Noms de terrains incompatibles avec `terrain-N`~~ → résolu le 27/11/2026 : les 3 clubs affichent « Terrain 1…N » (13 / 9 / 6), envoyés à l'API en `terrain-N`.
 - ~~`Player.html` : format de `expire` / `heure_debut`~~ → résolu le 26/11/2026 d'après `app.py` : `/api/video` renvoie `{url, expire}` (`expire` = `date_expiration.isoformat()`), `/api/creneaux` renvoie `[{heure_debut, heure_fin, id}]`.
 
 Action recommandée à la reprise : faire le ménage dans les branches, merger ou abandonner explicitement chacune, et repartir d'une branche `main` propre comme unique source de vérité.

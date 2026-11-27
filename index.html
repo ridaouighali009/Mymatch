@@ -1198,17 +1198,17 @@ function pad(n){return String(n).padStart(2,'0');}
 /* ---------------------------------------------------------------
    Données des clubs (source : Claude.md)
 --------------------------------------------------------------- */
+/* Terrains : tous affichés "Terrain N" (N = numéro), envoyés à l'API en "terrain-N". */
+function terrainsNumerotes(n){
+  return Array.from({length:n},function(_,i){return {id:i+1,nom:'Terrain '+(i+1)};});
+}
 const CLUBS = [
-  { id:'city-foot-5', nom:'City Foot 5', ville:'Casablanca centre', total:13, filmes:[1,2,3,4,5,6],
-    terrains:[{id:1,nom:'Terrain 1'},{id:2,nom:'Terrain 2'},{id:3,nom:'Terrain 3'},{id:4,nom:'Terrain 4'},{id:5,nom:'Terrain 5'},{id:6,nom:'Terrain 6'},{id:7,nom:'Terrain 7'},{id:8,nom:'Terrain 8'},{id:9,nom:'Terrain 9'},{id:10,nom:'Terrain 10'},{id:11,nom:'Terrain 11'},{id:12,nom:'Terrain 12'},{id:13,nom:'Terrain 13'}]},
-  { id:'arena-bouskoura', nom:'Arena Bouskoura', ville:'Bouskoura', total:9, filmes:[1,2,3,4],
-    terrains:[{id:1,nom:'Terrain A'},{id:2,nom:'Terrain B'},{id:3,nom:'Terrain C'},{id:4,nom:'Terrain D'},{id:5,nom:'Terrain E'},{id:6,nom:'Terrain F'},{id:7,nom:'Terrain G'},{id:8,nom:'Terrain H'},{id:9,nom:'Terrain I'}]},
-  { id:'green-sports-park', nom:'Green Sports Park', ville:'Bouskoura', total:6, filmes:[1,2,3],
-    terrains:[{id:1,nom:'Alpha'},{id:2,nom:'Beta'},{id:3,nom:'Gamma'},{id:4,nom:'Delta'},{id:5,nom:'Epsilon'},{id:6,nom:'Zeta'}]}
+  { id:'city-foot-5', nom:'City Foot 5', ville:'Casablanca centre', total:13, filmes:[1,2,3,4,5,6], terrains:terrainsNumerotes(13)},
+  { id:'arena-bouskoura', nom:'Arena Bouskoura', ville:'Bouskoura', total:9, filmes:[1,2,3,4], terrains:terrainsNumerotes(9)},
+  { id:'green-sports-park', nom:'Green Sports Park', ville:'Bouskoura', total:6, filmes:[1,2,3], terrains:terrainsNumerotes(6)}
 ];
-const HORAIRES=['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
 
-let selC=null,selT=null,selD=null,selH=null;
+let selC=null,selT=null,selTid=null,selD=null,selH=null;
 
 /* --- Rendu des clubs dans le panel #p1 --- */
 (function(){
@@ -1228,7 +1228,7 @@ let selC=null,selT=null,selD=null,selH=null;
     function pick(){
       document.querySelectorAll('.club-opt').forEach(function(o){o.classList.remove('sel');o.setAttribute('aria-checked','false');});
       opt.classList.add('sel');opt.setAttribute('aria-checked','true');
-      selC=club; selT=null; selH=null;
+      selC=club; selT=null; selTid=null; selH=null;
       const btnC=document.getElementById('btnClubSuivant');
       btnC.disabled=false;btnC.style.opacity='1';btnC.style.cursor='pointer';
       updateSelBar();
@@ -1257,31 +1257,60 @@ function renderTerrains(){
     btn.innerHTML='<span class="tn-label">'+t.nom+'</span><span class="ts">'+(f?'Filmé':'Std')+'</span>';
     if(f){btn.onclick=function(){
       document.querySelectorAll('#terrainGrid .tbtn.f').forEach(function(b){b.classList.remove('sel');});
-      btn.classList.add('sel');selT=t.nom;selH=null;
-      updateSelBar();goTab(3);
+      btn.classList.add('sel');selT=t.nom;selTid='terrain-'+t.id;selH=null;
+      updateSelBar();goTab(3);renderCreneaux();
     };}
     grid.appendChild(btn);
   });
 }
 
-/* --- Rendu des créneaux horaires (données locales) --- */
-function renderCreneaux(){
-  if(!selT||!selD)return;
+/* --- Créneaux : uniquement les horaires où une vidéo existe (GET /api/creneaux) --- */
+let creneauxReq=0;
+async function renderCreneaux(){
+  if(!selC||!selTid||!selD)return;
   const hg=document.getElementById('heureGrid');
   const dateMsg=document.getElementById('dateMsg');
+  const req=++creneauxReq;            /* ignore les réponses d'un clic précédent */
   selH=null;checkBtnVoir();
   hg.innerHTML='';
+  dateMsg.textContent='Recherche des vidéos…';
+  dateMsg.style.display='block';
+  const url='https://mymatch.ma/api/creneaux?club='+encodeURIComponent(selC.id)
+    +'&terrain='+encodeURIComponent(selTid)
+    +'&date='+formatDateYYYYMMDD(selD);
+  console.log('[MyMatch] fetchCreneaux →', url);
+  let data;
+  try{
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    data=await res.json();
+  }catch(e){
+    if(req!==creneauxReq)return;
+    console.error('[MyMatch] erreur créneaux →', e);
+    dateMsg.textContent='Erreur de connexion. Réessaie.';
+    return;
+  }
+  if(req!==creneauxReq)return;
+  console.log('[MyMatch] réponse API →', data);
+  if(!Array.isArray(data)||!data.length){
+    dateMsg.textContent='Aucune vidéo disponible pour ce terrain à cette date.';
+    return;                           /* reste à l'étape "date", bouton désactivé */
+  }
   dateMsg.style.display='none';
-  HORAIRES.forEach(function(h){
+  data.forEach(function(c){
+    const h=String(c.heure_debut);    /* app.py : [{heure_debut, heure_fin, id}] */
     const btn=document.createElement('button');
     btn.className='tbtn f';
     btn.style.aspectRatio='auto';
     btn.style.padding='12px 4px';
-    btn.setAttribute('aria-label','Créneau '+h);
-    btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
+    btn.setAttribute('aria-label','Créneau '+h.slice(0,5));
+    const lbl=document.createElement('span');
+    lbl.style.cssText='font-size:13px;font-weight:600;letter-spacing:.5px';
+    lbl.textContent=h.slice(0,5);
+    btn.appendChild(lbl);
     btn.onclick=function(){
       document.querySelectorAll('#heureGrid .tbtn').forEach(function(b){b.classList.remove('sel');});
-      btn.classList.add('sel');selH=h;updateSelBar();checkBtnVoir();
+      btn.classList.add('sel');selH=h;updateSelBar();checkBtnVoir();   /* valeur exacte pour /api/video */
     };
     hg.appendChild(btn);
   });
@@ -1298,7 +1327,7 @@ function updateSelBar(){
   if(selC)html+='<span class="sel-chip">'+selC.nom+'</span>';
   if(selT)html+='<span class="sel-chip">'+selT+'</span>';
   if(selD)html+='<span class="sel-chip">'+days_fr[selD.getDay()]+' '+selD.getDate()+' '+months_fr[selD.getMonth()]+'</span>';
-  if(selH)html+='<span class="sel-chip">'+selH+'</span>';
+  if(selH)html+='<span class="sel-chip">'+String(selH).slice(0,5)+'</span>';
   bar.innerHTML=html;
 }
 
