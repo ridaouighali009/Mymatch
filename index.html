@@ -35,8 +35,9 @@
 </script>
 
 <!-- Favicon SVG : barres jaunes + monogramme MM -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
+<link rel="icon" href="/logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/logo/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/logo/apple-touch-icon.png">
 <meta name="theme-color" content="#1F3B2D">
 
 <!-- Photos du haut de page : préchargées (la photo d'action est un fond CSS, découverte tard sinon) -->
@@ -71,13 +72,6 @@ body > nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-it
 .nav-left{display:flex;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none;transition:opacity .25s ease}
 .logo:hover{opacity:.78}
-.logo-mark{flex-shrink:0;display:block}
-.logo-mark rect{transition:opacity .25s ease}
-.logo:hover .logo-mark rect:nth-child(2){opacity:.8}
-.logo:hover .logo-mark rect:nth-child(3){opacity:.5}
-.logo-t{font-family:'Archivo',sans-serif;font-weight:900;font-size:22px;letter-spacing:.16em;color:var(--text);line-height:1}
-.logo-t span{color:var(--green)}
-.fl{font-family:'Archivo',sans-serif;font-weight:900;font-size:20px;letter-spacing:.16em;color:var(--text);line-height:1}
 .fl span{color:var(--green)}
 .hamburger{display:flex;flex-direction:column;justify-content:center;gap:6px;width:36px;height:36px;cursor:pointer;padding:6px;background:transparent;border:1px solid rgba(232,135,63,0.35);border-radius:3px;flex-shrink:0}
 .hamburger span{display:block;height:2px;width:100%;background:#E8873F;border-radius:1px;transition:all .3s;transform-origin:center}
@@ -706,9 +700,10 @@ body{font-family:'Archivo',sans-serif;font-weight:400}
 .sh2{line-height:.92}
 
 /* Logo */
-.logo-mark{width:auto;height:26px;display:block}
-.logo-t,.fl{font-style:italic;font-weight:900;letter-spacing:-.01em;font-size:25px;color:#fff}
-.logo-t span,.fl span{color:inherit}
+/* Nouveau logo « Y-célébration » (SVG, lettres en tracés) */
+.logo-img{height:28px;width:auto;display:block;flex-shrink:0}
+.pw-logo{height:44px}
+@media(max-width:768px){.logo-img{height:23px}.pw-logo{height:36px}}
 .logo:hover{opacity:.85}
 
 /* Navigation */
@@ -875,7 +870,7 @@ section.alt{background:var(--navy2);border-color:transparent}
 footer{background:var(--navy2)}
 .fsocial a:hover{color:var(--coral);border-color:rgba(232,135,63,.45)}
 
-@media(max-width:768px){.nav-left{gap:10px}.logo{gap:6px}.logo-t{font-size:19px}.logo-mark{height:20px}.nav-cta{padding:8px 12px !important;font-size:10px !important;letter-spacing:.04em !important}}
+@media(max-width:768px){.nav-left{gap:10px}.logo{gap:6px}.nav-cta{padding:8px 12px !important;font-size:10px !important;letter-spacing:.04em !important}}
 .scroll-progress{background:var(--coral);box-shadow:0 0 14px rgba(232,135,63,.45)}
 
 @media (prefers-reduced-motion: reduce){
@@ -1026,11 +1021,6 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
       </g>
       <circle cx="50" cy="14" r="12" fill="url(#mm-ball-shade)"/>
     </symbol>
-    <symbol id="mm-mark" viewBox="0 0 64 28">
-      <path d="M2 23 C 16 28, 31 26, 40 17 L 39.6 21.8 C 30 30, 14 30, 2 23 Z" fill="#E8873F"/>
-      <path d="M9 14.5 C 19 16.5, 28 15.5, 35.5 11.5 L 35.3 14 C 27.5 18.5, 18.5 18.5, 9 14.5 Z" fill="#F2B27A" opacity=".8"/>
-      <use href="#mm-ball" x="0" y="0" width="64" height="28"/>
-    </symbol>
   </defs>
 </svg>
 
@@ -1054,8 +1044,7 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
       <span></span><span></span><span></span>
     </button>
     <a class="logo" href="#" aria-label="MyMatch">
-      <svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg>
-      <span class="logo-t">My<span>Match</span></span>
+      <img class="logo-img" src="logo/mymatch-logo-clair.svg" alt="" width="110" height="28"/>
     </a>
   </div>
   <div class="nav-links">
@@ -1380,8 +1369,7 @@ nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
 <footer>
   <div class="footer-top">
     <div class="footer-logo">
-      <svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg>
-      <div class="fl">My<span>Match</span></div>
+      <img class="logo-img" src="logo/mymatch-logo-clair.svg" alt="MyMatch" width="110" height="28" loading="lazy"/>
     </div>
     <div class="fsocial" aria-label="Réseaux sociaux">
       <a href="#" aria-label="Instagram" rel="noopener">
@@ -1575,7 +1563,7 @@ function cinematicTransitionTo(href){
   if (!wipe){
     wipe = document.createElement('div');
     wipe.className = 'page-wipe';
-    wipe.innerHTML = '<div class="pw-mark"><svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg><span>My<span class="ac">Match</span></span></div>';
+    wipe.innerHTML = '<div class="pw-mark"><img class="logo-img pw-logo" src="logo/mymatch-logo-clair.svg" alt="" width="173" height="44"/></div>';
     document.body.appendChild(wipe);
   }
   if (window.__lenis && window.__lenis.stop) window.__lenis.stop();

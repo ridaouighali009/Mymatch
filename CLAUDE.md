@@ -143,7 +143,12 @@ Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau 
 ⚠️ Nom trompeur hérité : la variable `--green` vaut l'orange `#E8873F`.
 
 - **Police** : Archivo (Google Fonts, axes largeur/graisse) sur tout le site ; titres en Archivo noir (900) italique.
-- **Logo** : balle orange avec traînées + mot « MyMatch » en italique, en SVG inline (header et footer d'`index.html`, header de `Player.html`).
+- **Logo « Y-célébration »** (depuis le 27/11/2026) : le Y de MYMATCH est un joueur qui lève les bras, la balle orange (`#CC5500`) est sa tête. Fichiers dans `logo/` :
+  - `mymatch-logo-clair.svg` (lettres crème, pour fonds verts/foncés) et `mymatch-logo-fonce.svg` (lettres vertes, pour fonds crème/clairs) — lettres déjà en tracés, ne jamais ajouter de texte « MyMatch » à côté ; PNG équivalents (1181×300).
+  - `mymatch-icone.svg` / `favicon.svg` (Y sur tuile verte arrondie), `mymatch-y-seul.svg` (Y seul, fond transparent), `favicon-32.png`, `apple-touch-icon.png` (180), `icone-512.png`.
+  - Utilisé en `<img class="logo-img">` (hauteur 28 px ordinateur, 23 px mobile) : header d'`index.html` (visible aussi menu mobile ouvert), footer, transition vers le lecteur (`.pw-logo`, 44/36 px), header de `Player.html`. Tous ces emplacements sont sur fond vert → version **claire** ; la version foncée n'est pas utilisée pour l'instant.
+  - Favicons des 2 pages : `/logo/favicon.svg`, `/logo/favicon-32.png`, `/logo/apple-touch-icon.png`.
+  - L'ancienne balle à traînées (symbole SVG `#mm-ball`) reste utilisée uniquement par les animations de chargement (loader d'`index.html`, chargement de `Player.html`).
 
 ### Photos (`images/`, toutes en WebP)
 
