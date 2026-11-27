@@ -122,14 +122,50 @@ Branches restantes :
 
 Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau `Player.html` intégré et déployé ; sélection multi-clubs corrigée et déployée (créneaux réels via `/api/creneaux`, terrains « Terrain 1…N » → `terrain-N` sur les 3 clubs).
 
+🎨 **Refonte design v3 — fusionnée dans `main` le 27/11/2026, PAS ENCORE DÉPLOYÉE** (le serveur est encore sur `4e7df00`). Source : branche `Refonte-v3` / PR #2. Voir « Site web » ci-dessous. Sélection limitée à **City Foot 5** (multi-clubs mis de côté, voir « Écarté ou reporté »).
+
 ✅ Exposition de `/.git/` et des fichiers `.md` via Nginx — résolu le 27/11/2026 (voir « Reverse proxy » dans Infrastructure serveur).
 
 ## Site web — pages existantes
 
-- **index.html** — page d'accueil. Design : fond noir `#080808`, jaune fluo `#C8FF00`, police Barlow Condensed ultra-bold. Logo en 3 barres verticales + texte MYMATCH. Hero avec photo de terrain marocain (drapeau), titre "TU VIENS DE MARQUER." + "MATENSACH." en accent jaune. Sections : stats animées, aperçu vidéo, "comment ça marche", citations des 2 fondateurs, section Casablanca (mosquée Hassan II), clubs partenaires, footer (mentions légales, copyright, réseaux sociaux), bouton "Partager MyMatch" (WhatsApp).
-- **Player.html** — page lecteur vidéo. Reçoit club/terrain/date/heure en paramètres URL, interroge `/api/video`, charge la vraie vidéo dans un lecteur HTML5.
-- **Sélection de créneaux dynamique** : implémentée et validée en test — le site interroge `/api/creneaux` et n'affiche que les horaires où une vidéo existe réellement (plus de créneaux fixes 9h/10h/11h... codés en dur). Si aucun créneau, le site reste bloqué à l'étape "date" avec le message "Aucune vidéo disponible pour ce terrain à cette date." et le bouton "Voir mon match" reste désactivé.
-- Le parcours complet a été testé et validé en août 2026 avec de fausses vidéos uploadées manuellement via curl : sélection → créneau réel → Player.html → vidéo qui se charge. Mais jamais avec une vraie caméra/un vrai enregistrement.
+### Charte graphique (refonte v3, validée — ne pas modifier sans accord)
+
+| Rôle | Code | Variable CSS |
+|---|---|---|
+| Vert forêt (fond principal) | `#1F3B2D` | `--bg`, `--navy` |
+| Vert forêt foncé / clair (surfaces) | `#152A20` / `#2A4A3A` | `--navy2` `--s1` / `--navy3` `--s2` |
+| Crème (sections claires) | `#F2EAD7` / `#F8F3E8` | `--ice` / `--ice2` |
+| Orange brûlé (accent, titres) | `#E8873F` (clair `#F2B27A`, foncé `#9A3F00`) | `--coral` (`--coral2`, `--coral-d`) |
+| Orange des boutons principaux | `#BF5000`, texte `#FFF8EC` | forcé en CSS sur `.btn-p`, `.nav-cta`… |
+| Texte sur crème | `#5A6B5F` | `--ink-m` |
+
+⚠️ Nom trompeur hérité : la variable `--green` vaut l'orange `#E8873F`.
+
+- **Police** : Archivo (Google Fonts, axes largeur/graisse) sur tout le site ; titres en Archivo noir (900) italique.
+- **Logo** : balle orange avec traînées + mot « MyMatch » en italique, en SVG inline (header et footer d'`index.html`, header de `Player.html`).
+
+### Photos (`images/`, toutes en WebP)
+
+Générées avec Figma, fichier **« MyMatch — Visuels du site »** ; converties de JPG en WebP le 27/11/2026 (rendu identique, -22 à -43 % de poids).
+
+| Fichier | Rôle |
+|---|---|
+| `joueur.webp` | Joueur en photo à droite du haut de page (préchargé) |
+| `hero-action.webp` | Fond du haut de page (préchargé) + carte « Foot » de la section multisport |
+| `terrain-nuit.webp` | Fond du bandeau terrain de nuit |
+| `but.webp` | Fond de l'affiche « but » d'`index.html` + bloc Instagram de `Player.html` |
+| `padel.webp` | Carte « Padel » de la section multisport |
+| `basket.webp` | Carte « Basket » de la section multisport |
+| `casa-bg.webp` | Mosquée Hassan II, section « Le talent casablancais » (chargement différé) — **provisoire** : à remplacer par `mosquee-hassan2` dès que la photo est poussée sur GitHub (elle n'a jamais été envoyée) |
+
+Images supprimées le 27/11/2026 (plus utilisées) : `hero-bg`, `night-bg`, `mural-bg`, `cityfoot-bg`, `cityfoot-logo`, `club-ico`, `video-thumb`.
+
+### Pages
+
+- **index.html** — page d'accueil : haut de page « TU VIENS DE MARQUER. / MATENSACH. » avec joueur à droite, stats, aperçu vidéo, sélection du match, « comment ça marche », « Le talent casablancais » (mosquée), fondateurs, section multisport foot / padel / basket, FAQ, footer.
+- **Sélection du match** : **City Foot 5 uniquement** (13 terrains, 1 à 6 filmés). Appelle `/api/creneaux?club=city-foot-5&terrain=terrain-N&date=AAAA-MM-JJ` (date locale) et n'affiche que les créneaux réels ; si aucun : « Aucune vidéo disponible pour ce terrain à cette date. », bouton « Voir mon match » désactivé. Ouvre `Player.html?club=City Foot 5&terrain=Terrain N&date=…&heure=…`.
+- **Player.html** — lecteur vidéo : interroge `/api/video` puis `/api/creneaux` (sidebar des autres matchs). Garde les corrections : « Terrain 3 » / « terrain-3 » / « 3 » → `terrain-3` ; taille en Mo / Go ; `expire` avec microsecondes ; heures comparées en HH:MM ; sidebar construite en `textContent`.
+- Le parcours complet a été testé en août 2026 avec de fausses vidéos uploadées via curl, et la refonte le 27/11/2026 avec API simulée + vraie API en lecture seule. Jamais avec une vraie caméra / un vrai enregistrement.
 
 ## Outils de travail utilisés
 
@@ -173,6 +209,7 @@ Commandes de déploiement déjà rédigées, jamais exécutées faute de matéri
 - Tablette de stats sur le terrain (joueurs inscrits, clic sur le buteur, score live) : idée en discussion, jugée secondaire ("séduction, pas solidité") tant que le cœur du système (caméra → vidéo) n'est pas validé. Questions ouvertes non tranchées : qui clique pendant le match, qui saisit les noms des joueurs, interface tactile ou boutons prédéfinis, lien ou non avec la vidéo du match.
 - Déclaration CNDP, contrat type avec les clubs, CGU détaillées, consultation d'un avocat marocain : jugé nécessaire mais non bloquant pour un lancement pilote ("lancez-vous, régularisez ensuite" — approche assumée, inspirée de la trajectoire de Spash en France).
 - Cloudflare R2 pour le stockage vidéo : solution identifiée comme la bonne direction long terme, non implémentée.
+- **Sélection multi-clubs (Arena Bouskoura, Green Sports Park) : mise de côté le 27/11/2026**, le site ne propose que City Foot 5 (club pilote). La version 3 clubs existe dans l'historique de `main` (commit `72febe6` : 3 cartes club, terrains « Terrain 1…N » → `terrain-N`, appel `/api/creneaux` avec le slug du club choisi) — à reprendre dans le nouveau design quand un 2e club sera en vue.
 
 ## Priorités à la reprise (dans l'ordre recommandé)
 
