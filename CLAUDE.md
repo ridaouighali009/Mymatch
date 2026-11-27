@@ -98,6 +98,7 @@ Le script `detect_and_record.py` devrait vérifier ce statut toutes les 5 min. N
   - Vérifié : service actif, les 3 tests curl OK (sans clé → 401, avec clé → `{"deleted":0}`, `/api/creneaux` → `[]`). `purge.py` (cron 3h) n'appelle pas l'API → non impacté.
   - `app.py` n'est volontairement pas versionné dans le repo (il contient le mot de passe de la base).
 - Reverse proxy : Nginx, `client_max_body_size 5000M` (configuré après une erreur 413 lors des tests d'upload).
+- ✅ **Blocage des fichiers cachés et `.md` — résolu, déployé et vérifié le 27/11/2026** : le dossier servi étant un clone git, Nginx exposait `/.git/`, `/.mcp.json`, `/CLAUDE.md`… Règles dans `/etc/nginx/snippets/mymatch-bloque.conf` (incluses après chaque `server_name` de la config du site) : tout chemin commençant par un point → 404, **sauf `/.well-known/`** (indispensable au renouvellement Certbot) ; tout fichier `.md` → 404. Sauvegarde de l'ancienne config : `/root/nginx-mymatch.avant-blocage`. Vérifié : `/.git/config`, `/CLAUDE.md`, `/.mcp.json` → 404 ; `/`, `/Player.html` → 200 ; `certbot renew --dry-run` OK.
 - Domaine : mymatch.ma acheté via Genious Communication (registrar marocain agréé ANRT), DNS configuré, HTTPS actif via Certbot/Let's Encrypt.
 - Firewall : UFW actif, ports 22/80/443 seulement.
 - Purge automatique : cron à 3h du matin, script `/var/www/mymatch/purge.py`, supprime les vidéos dont `date_expiration < NOW()`.
@@ -121,7 +122,7 @@ Branches restantes :
 
 Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau `Player.html` intégré et déployé ; sélection multi-clubs corrigée et déployée (créneaux réels via `/api/creneaux`, terrains « Terrain 1…N » → `terrain-N` sur les 3 clubs).
 
-⚠️ Nginx sert tout le dossier git : `/.git/` et les fichiers `.md` (dont ce fichier) sont accessibles publiquement sur mymatch.ma tant que le blocage Nginx n'est pas appliqué.
+✅ Exposition de `/.git/` et des fichiers `.md` via Nginx — résolu le 27/11/2026 (voir « Reverse proxy » dans Infrastructure serveur).
 
 ## Site web — pages existantes
 
