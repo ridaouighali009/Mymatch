@@ -148,7 +148,19 @@ Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau 
   - `mymatch-icone.svg` / `favicon.svg` (Y sur tuile verte arrondie), `mymatch-y-seul.svg` (Y seul, fond transparent), `favicon-32.png`, `apple-touch-icon.png` (180), `icone-512.png`.
   - Utilisé en `<img class="logo-img">` (hauteur 28 px ordinateur, 23 px mobile) : header d'`index.html` (visible aussi menu mobile ouvert), footer, transition vers le lecteur (`.pw-logo`, 44/36 px), header de `Player.html`. Tous ces emplacements sont sur fond vert → version **claire** ; la version foncée n'est pas utilisée pour l'instant.
   - Favicons des 2 pages : `/logo/favicon.svg`, `/logo/favicon-32.png`, `/logo/apple-touch-icon.png`.
-  - L'ancienne balle à traînées (symbole SVG `#mm-ball`) reste utilisée uniquement par les animations de chargement (loader d'`index.html`, chargement de `Player.html`).
+  - L'ancienne balle à traînées (`#mm-ball`) a été supprimée le 27/11/2026 (plus aucun usage).
+
+### Animations (depuis le 27/11/2026, prototype validé `animations-reference.html`, supprimé du repo après intégration)
+
+- **Écran de chargement `.ld`** (accueil + lecteur) : le logo se construit (balle qui arrive en 2 rebonds et devient la tête, corps qui sort du sol, bras qui se lèvent, lettres qui glissent), les bras « pompent » en attendant, puis sortie « frappe vers l'écran » (la balle grossit et un trou s'ouvre sur la page). SVG, CSS et script `MMLoader` repris tels quels de la référence.
+  - Accueil : `data-min="2300"` (durée minimale) ; se termine à `window.load`.
+  - `Player.html` : `data-min="3400"` + `data-wait-for-video="true"` ; `MMLoader.done()` est appelé à `loadeddata`, `loadedmetadata` (sur iPhone, `loadeddata` n'arrive souvent qu'à la lecture) ou `error` de la vidéo, et quand l'API ne renvoie pas de vidéo.
+  - Ajout MyMatch au script : filet de sécurité `data-max` (9 000 ms par défaut) — la page s'ouvre quoi qu'il arrive.
+- **Transition accueil → lecteur** (`.page-wipe`) : même fond dégradé que l'écran de chargement, sans logo statique ; l'écran de chargement du lecteur prend le relais avec le logo animé.
+- **Balle de défilement `.sc`** (accueil uniquement) : balle orange qui roule sur une ligne en haut de page, proportionnellement au défilement (remplace l'ancienne barre `.scroll-progress`).
+- **Passe en pointillés** dans « Comment ça marche » : un trait orange en pointillés relie chaque étape à la suivante quand elle apparaît (vertical sur mobile, horizontal entre les cartes sur ordinateur). CSS seul (`.how-item::after`).
+- `prefers-reduced-motion` respecté partout : logo affiché directement puis fondu, balle de défilement masquée, pointillés affichés sans animation.
+- Mobile : espace réservé sous le pied de page (150 px) pour que la barre « Retrouve ta vidéo » et le bouton WhatsApp ne cachent plus le copyright.
 
 ### Photos (`images/`, toutes en WebP)
 
