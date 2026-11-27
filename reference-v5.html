@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="description" content="MyMatch — Revois ton match de foot à 5 en quelques secondes. Terrains équipés à Casablanca, sans app ni compte.">
+<title>MyMatch — Revois ton match de foot à 5, Casablanca</title>
+
+<!-- Open Graph / WhatsApp preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MyMatch">
+<meta property="og:title" content="MyMatch — Revois ton match de foot à 5">
+<meta property="og:description" content="Captation vidéo automatique pour les matchs de foot 5v5 à Casablanca. Sans app, sans compte : scanne le QR du terrain et accède à ta vidéo.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&h=630&q=85&auto=format&fit=crop">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://mymatch.ma/">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter card (Telegram / X preview) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MyMatch — Revois ton match en 10 secondes">
+<meta name="twitter:description" content="Captation vidéo automatique pour le foot 5v5 à Casablanca. Sans app, sans compte.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&h=630&q=85&auto=format&fit=crop">
+
+<!-- Canonical + robots -->
+<link rel="canonical" href="https://mymatch.ma/">
+<meta name="robots" content="index, follow">
+<!-- JSON-LD : LocalBusiness + WebSite SearchAction -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://mymatch.ma/#website","url":"https://mymatch.ma/","name":"MyMatch","description":"Revois tes matchs de foot 5v5 à Casablanca — sans app, sans compte.","potentialAction":{"@type":"SearchAction","target":"https://mymatch.ma/?terrain={terrain}&date={date}","query-input":"required name=terrain"}},{"@type":"LocalBusiness","@id":"https://mymatch.ma/#business","name":"MyMatch","url":"https://mymatch.ma/","description":"Captation vidéo automatique des matchs de foot 5v5 à Casablanca.","address":{"@type":"PostalAddress","streetAddress":"Rte de l'Oasis","addressLocality":"Casablanca","addressCountry":"MA"},"areaServed":"Casablanca","serviceType":"Captation vidéo match football"}]}
+</script>
+
+<!-- Favicon SVG : barres jaunes + monogramme MM -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
+<meta name="theme-color" content="#1F3B2D">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+
+<!-- GSAP + ScrollTrigger + Lenis (cinematic scrolling stack) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Palette MyMatch (moodboard) : Navy #1F3B2D · Bleu glacier #F2EAD7 ·
+     Corail #E8873F (boutons, accents) · Blanc. --green garde son nom
+     pour ne rien casser : c'est désormais le corail. */
+  --navy:#1F3B2D;--navy2:#152A20;--navy3:#2A4A3A;
+  --ice:#F2EAD7;--ice2:#F8F3E8;--ink-m:#5A6B5F;
+  --coral:#E8873F;--coral2:#F2B27A;--coral-d:#9A3F00;
+  --bg:#1F3B2D;--s1:#152A20;--s2:#2A4A3A;
+  --line:rgba(255,255,255,0.09);--line2:rgba(255,255,255,0.2);
+  --text:#FFFFFF;--muted:#A3B3A5;--muted2:#D8DECF;
+  --green:#E8873F;--ga:rgba(232,135,63,0.08);--gb:rgba(232,135,63,0.16);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Archivo',sans-serif;font-weight:500;font-size:16px;line-height:1.55;letter-spacing:.005em;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+body > nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;background:rgba(31,59,45,0.92);border-bottom:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.nav-left{display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;transition:opacity .25s ease}
+.logo:hover{opacity:.78}
+.logo-mark{flex-shrink:0;display:block}
+.logo-mark rect{transition:opacity .25s ease}
+.logo:hover .logo-mark rect:nth-child(2){opacity:.8}
+.logo:hover .logo-mark rect:nth-child(3){opacity:.5}
+.logo-t{font-family:'Archivo',sans-serif;font-weight:900;font-size:22px;letter-spacing:.16em;color:var(--text);line-height:1}
+.logo-t span{color:var(--green)}
+.fl{font-family:'Archivo',sans-serif;font-weight:900;font-size:20px;letter-spacing:.16em;color:var(--text);line-height:1}
+.fl span{color:var(--green)}
+.hamburger{display:flex;flex-direction:column;justify-content:center;gap:6px;width:36px;height:36px;cursor:pointer;padding:6px;background:transparent;border:1px solid rgba(232,135,63,0.35);border-radius:3px;flex-shrink:0}
+.hamburger span{display:block;height:2px;width:100%;background:#E8873F;border-radius:1px;transition:all .3s;transform-origin:center}
+.hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.drawer{position:fixed;top:62px;left:0;bottom:0;width:260px;background:#1A3326;border-right:1px solid var(--line);z-index:199;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:28px 0}
+.drawer.open{transform:translateX(0)}
+.drawer-link{display:flex;align-items:center;gap:14px;padding:15px 28px;font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);background:none;border:none;border-left:2px solid transparent;cursor:pointer;font-family:'Archivo',sans-serif;transition:all .25s ease;text-align:left;width:100%}
+.drawer-link:hover{color:var(--text);border-left-color:var(--green);background:rgba(255,255,255,0.02)}
+.drawer-link svg{flex-shrink:0;opacity:.5;transition:opacity .2s}
+.drawer-link:hover svg{opacity:1}
+.drawer-div{height:1px;background:var(--line);margin:12px 28px}
+.drawer-cta{margin:14px 28px 0;background:var(--green);color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:14px 22px;border:none;border-radius:2px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+.drawer-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,135,63,.18)}
+.drawer-cta:hover{opacity:.85}
+.drawer-ov{position:fixed;inset:0;top:62px;background:rgba(0,0,0,0.5);z-index:198;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(2px)}
+.drawer-ov.open{opacity:1;pointer-events:auto}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;font-weight:700;color:var(--muted2);text-decoration:none;letter-spacing:.18em;text-transform:uppercase;transition:color .25s ease;cursor:pointer;background:none;border:none;font-family:'Archivo',sans-serif;padding:0}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--green);color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:11px 24px;border:none;border-radius:2px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,135,63,.22);background:#F2B27A}
+
+.hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;padding-top:62px;overflow:hidden}
+.h-bg{position:absolute;inset:0;width:100%;height:100%;background-size:cover;background-position:center center;background-repeat:no-repeat;opacity:0.5;filter:brightness(1.2) contrast(1.05) saturate(1.05)}
+.h-fade{position:absolute;inset:0;background:linear-gradient(175deg,rgba(31,59,45,0) 0%,rgba(31,59,45,0.4) 45%,rgba(31,59,45,1) 82%)}
+.h-fade2{position:absolute;inset:0;background:linear-gradient(to right,rgba(31,59,45,0.82) 0%,transparent 65%)}
+.h-body{position:relative;z-index:2;padding:0 32px 90px;max-width:680px}
+.h-kicker{display:inline-flex;align-items:center;gap:10px;font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;color:var(--green);text-transform:uppercase;margin-bottom:28px}
+.k-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.h-h1{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(60px,9.5vw,116px);line-height:.9;letter-spacing:-.005em;text-transform:uppercase;margin-bottom:10px}
+.h-h1 .blk{display:block;color:var(--text)}
+.h-darija{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(24px,3.6vw,38px);color:var(--green);letter-spacing:.18em;text-transform:uppercase;margin-bottom:26px;font-style:italic;text-shadow:0 0 24px rgba(232,135,63,.25)}
+.h-desc{font-size:15px;color:var(--muted2);line-height:1.75;max-width:500px;font-weight:400;margin-bottom:14px}
+.h-desc strong{color:var(--text);font-weight:600}
+.h-launch{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:30px;border:1px solid rgba(232,135,63,0.25);padding:7px 14px;border-radius:2px;background:rgba(232,135,63,0.05)}
+.l-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+.h-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-p{background:var(--green);color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;padding:16px 34px;border:none;border-radius:2px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;position:relative;overflow:hidden}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(232,135,63,.18);background:#F2B27A}
+.btn-p:active{transform:translateY(0)}
+.btn-g{background:transparent;color:var(--text);font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;padding:16px 30px;border:1px solid var(--line2);border-radius:2px;cursor:pointer;transition:border-color .25s ease,background .25s ease,color .25s ease}
+.btn-g:hover{border-color:var(--green);color:var(--green);background:rgba(232,135,63,.04)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{padding:28px 16px;text-align:center;border-right:1px solid var(--line)}
+.stat:last-child{border-right:none}
+.stat-v{font-family:'Archivo',sans-serif;font-weight:900;font-size:48px;color:var(--green);line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.stat-l{font-family:'Archivo',sans-serif;font-weight:700;font-size:11px;color:var(--muted2);margin-top:8px;letter-spacing:.18em;line-height:1.45;text-transform:uppercase}
+
+section{padding:100px 32px}
+section.alt{background:var(--s1);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ey{display:inline-block;font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;letter-spacing:.28em;color:var(--green);text-transform:uppercase;margin-bottom:18px}
+.sh2{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(42px,5.8vw,68px);text-transform:uppercase;letter-spacing:-.005em;line-height:.95;margin-bottom:14px}
+.sp{font-size:14px;color:var(--muted2);line-height:1.75;max-width:480px;font-weight:400;margin-bottom:36px}
+
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;max-width:1100px}
+.ap-note{border-left:2px solid var(--green);padding-left:16px;font-size:13px;color:var(--muted2);line-height:1.7;margin-top:20px}
+.ap-note strong{color:var(--text);font-weight:600}
+
+.vcard{background:var(--s2);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.vp{aspect-ratio:16/9;position:relative;cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.vp-thumb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.62;filter:brightness(1.3) contrast(1.05);transition:opacity .3s}
+.vp:hover .vp-thumb{opacity:.75}
+.vp-grain{position:absolute;inset:0;opacity:.4;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
+.vp-dark{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.1) 50%,rgba(0,0,0,0.25) 100%)}
+.vp-play{width:64px;height:64px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;transition:transform .2s;box-shadow:0 0 0 12px rgba(232,135,63,0.12)}
+.vp:hover .vp-play{transform:scale(1.08)}
+.vp-badge{position:absolute;top:12px;right:12px;z-index:2;font-size:10px;font-weight:700;letter-spacing:2px;background:rgba(0,0,0,.7);color:var(--green);padding:4px 10px;border-radius:2px;border:1px solid rgba(232,135,63,.25)}
+.vp-tc{position:absolute;top:12px;left:12px;z-index:2;font-family:'Archivo',sans-serif;font-size:12px;color:rgba(255,255,255,.45);letter-spacing:2px;background:rgba(0,0,0,.5);padding:3px 8px;border-radius:2px}
+.vp-meta{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:14px;display:flex;justify-content:space-between;align-items:flex-end}
+.vp-meta-l{font-size:11px;color:rgba(255,255,255,.5);line-height:1.5}
+.vp-meta-r{font-size:13px;color:rgba(255,255,255,.35);letter-spacing:1px}
+.pctrl{display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--line)}
+.prog{flex:1;height:2px;background:rgba(255,255,255,.07);border-radius:1px;cursor:pointer;position:relative}
+.pfill{height:100%;background:var(--green);border-radius:1px;width:0%;transition:width .08s;position:relative}
+.pfill::after{content:'';position:absolute;right:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.pt{font-size:12px;color:var(--muted);letter-spacing:1px;font-variant-numeric:tabular-nums}
+.vacts{display:flex;gap:8px;padding:11px 14px;border-top:1px solid var(--line)}
+.vb{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;border:1px solid var(--line);border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted2);cursor:pointer;background:transparent;font-family:'Archivo',sans-serif;transition:all .15s}
+.vb:hover{border-color:var(--green);color:var(--green)}
+.vb.pr{background:var(--green);color:#fff;border-color:var(--green)}
+.vb.pr:hover{opacity:.85;color:#fff}
+.moments-placeholder{padding:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.mph-icon{width:34px;height:34px;border-radius:50%;background:var(--ga);border:1px solid rgba(232,135,63,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mph-text{font-size:12px;color:var(--muted);line-height:1.5}
+.mph-text strong{color:var(--muted2);font-weight:500;display:block;margin-bottom:1px}
+
+.cf-s{position:relative;height:440px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cf-bg{width:100%;height:100%;object-fit:cover;object-position:center 42%;opacity:.6;display:block;filter:brightness(1.35) saturate(1.1)}
+.cf-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(31,59,45,.94) 0%,rgba(31,59,45,.22) 55%,rgba(31,59,45,.72) 100%)}
+.cf-cont{position:absolute;inset:0;display:flex;align-items:center;padding:0 40px;gap:28px}
+.cf-logo{width:88px;height:88px;background:rgba(255,255,255,.95);border-radius:6px;padding:5px;overflow:hidden;flex-shrink:0}
+.cf-logo img{width:100%;height:100%;object-fit:contain}
+.cf-lbl{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.cf-ttl{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(42px,5.2vw,66px);text-transform:uppercase;letter-spacing:-.005em;line-height:.95;margin-bottom:12px}
+.cf-d{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;max-width:380px}
+
+.night-s{position:relative;height:360px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.night-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(31,59,45,.92) 0%,rgba(31,59,45,.3) 55%,rgba(31,59,45,.88) 100%)}
+.night-cont{position:absolute;inset:0;display:flex;align-items:center;padding:0 48px;justify-content:flex-end}
+.night-txt{max-width:360px;text-align:right}
+.night-ey{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.night-q{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(30px,4.2vw,50px);text-transform:uppercase;letter-spacing:-.005em;line-height:1}
+.night-q .acc{color:var(--green)}
+
+.flow-wrap{max-width:660px}
+.flow-tabs{display:flex;margin-bottom:28px}
+.ftab{flex:1;padding:14px 8px;text-align:center;cursor:pointer;border:1px solid var(--line);border-right:none;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);transition:all .25s ease;background:transparent;font-family:'Archivo',sans-serif}
+.ftab:last-child{border-right:1px solid var(--line)}
+.ftab.active{background:var(--gb);border-color:rgba(232,135,63,.3);color:var(--green)}
+.ftab .tn{font-family:'Archivo',sans-serif;font-size:22px;display:block;line-height:1;margin-bottom:3px}
+.fpanel{display:none;animation:fu .25s ease}
+.fpanel.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.flbl{font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.6}
+.flbl strong{color:var(--text);font-weight:600}
+.club-opt{display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid rgba(232,135,63,.22);border-radius:3px;background:var(--gb);max-width:400px}
+.club-ico{width:46px;height:46px;background:#fff;border-radius:4px;padding:3px;overflow:hidden;flex-shrink:0}
+.club-ico img{width:100%;height:100%;object-fit:contain}
+.club-n{font-family:'Archivo',sans-serif;font-size:22px;letter-spacing:1px;color:var(--green)}
+.club-s{font-size:11px;color:var(--muted2);margin-top:1px}
+.club-chk{margin-left:auto;width:22px;height:22px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:12px}
+.tbtn{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:3px;font-weight:700;font-size:16px;color:var(--muted);background:transparent;transition:all .15s;font-family:'Archivo',sans-serif;cursor:not-allowed}
+.tbtn .ts{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px;text-transform:uppercase}
+.tbtn.f{border-color:rgba(232,135,63,.2);color:var(--text);cursor:pointer}
+.tbtn.f:hover,.tbtn.f.sel{border-color:var(--green);background:var(--ga);color:var(--green)}
+.tbtn.f.sel{background:var(--gb)}
+.tleg{font-size:11px;color:var(--muted)}
+.drow{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-bottom:24px}
+.drow::-webkit-scrollbar{display:none}
+.dpill{flex-shrink:0;width:58px;padding:10px 4px;border:1px solid var(--line);border-radius:3px;text-align:center;cursor:pointer;transition:all .15s;background:transparent}
+.dpill:hover{border-color:var(--line2)}
+.dpill.sel{border-color:var(--green);background:var(--ga)}
+.dday{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.dnum{font-family:'Archivo',sans-serif;font-size:26px;color:var(--text);line-height:1.1}
+.dmon{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.dpill.sel .dday,.dpill.sel .dmon{color:rgba(232,135,63,.6)}
+.dpill.sel .dnum{color:var(--green)}
+.tdot{width:4px;height:4px;border-radius:50%;background:var(--green);margin:3px auto 0}
+.rbox{padding:24px;border:1px solid rgba(232,135,63,.22);border-radius:3px;background:var(--ga);display:none}
+.rbox.show{display:block;animation:fu .3s ease}
+.rt{font-family:'Archivo',sans-serif;font-size:20px;color:var(--green);letter-spacing:1px;margin-bottom:10px}
+.rd{font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:16px}
+.rd strong{color:var(--text)}
+
+.how-list{max-width:560px}
+.how-item{display:flex;gap:24px;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--line)}
+.how-item:last-child{border-bottom:none}
+.how-n{font-family:'Archivo',sans-serif;font-weight:900;font-size:14px;letter-spacing:.2em;color:var(--green);padding-top:2px;min-width:32px}
+.how-t{font-weight:700;font-size:17px;margin-bottom:6px}
+.how-d{font-size:13px;color:var(--muted2);line-height:1.7}
+
+.casa-s{position:relative;height:380px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.casa-img{width:100%;height:100%;object-fit:cover;object-position:center 55%;opacity:.5;display:block;filter:brightness(1.4) contrast(1.05)}
+.casa-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(31,59,45,0.05) 0%,rgba(31,59,45,0.65) 100%)}
+.casa-ov2{position:absolute;inset:0;background:linear-gradient(to right,transparent 30%,rgba(31,59,45,.94) 100%)}
+.casa-cont{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:0 48px}
+.casa-txt{max-width:360px;text-align:right}
+.casa-ey{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.casa-q{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(30px,4.2vw,48px);text-transform:uppercase;letter-spacing:-.005em;line-height:1}
+.casa-q .acc{color:var(--green)}
+
+/* Section fondateurs — deux cartes côte à côte sur desktop, séparées
+   par une fine ligne jaune. Chaque carte a un fond légèrement plus clair
+   que la page pour s'en détacher, un grand guillemet en filigrane, un
+   nom en jaune fluo, et un badge pill "800+ MATCHS · CASABLANCA". */
+.founders{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;background:transparent;border:none;
+  max-width:1100px;margin-top:8px;
+}
+.fc{
+  padding:64px 56px 56px;
+  background:#2A4A3A;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.fc:first-child{border-right:1px solid rgba(232,135,63,0.2)}
+.fc-role{
+  position:relative;z-index:1;
+  font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.24em;color:var(--green);text-transform:uppercase;
+  margin-bottom:32px;opacity:.7;
+}
+/* Grand guillemet décoratif en filigrane, derrière le contenu */
+.fc-open{
+  position:absolute;top:-44px;right:18px;z-index:0;
+  font-family:'Archivo',sans-serif;font-weight:900;
+  font-size:200px;line-height:1;
+  color:var(--green);opacity:.10;
+  pointer-events:none;user-select:none;
+}
+.fc-q{
+  position:relative;z-index:1;
+  font-size:14.5px;color:var(--muted2);line-height:1.78;margin-bottom:32px;
+  flex:1;
+}
+.fc-q b{color:var(--text);font-weight:600}
+.fc-name{
+  position:relative;z-index:1;
+  font-family:'Archivo',sans-serif;font-weight:900;
+  font-size:38px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);line-height:1;margin-bottom:14px;
+}
+.fc-sub{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;align-self:flex-start;
+  padding:6px 13px;
+  border:1px solid rgba(232,135,63,0.3);border-radius:999px;
+  font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--green);background:rgba(232,135,63,0.04);
+}
+/* Petit trait vert en haut-gauche de chaque carte (accent visuel) */
+.fc::after{content:'';position:absolute;top:0;left:0;width:32px;height:2px;background:var(--green);z-index:1}
+
+.mural-s{position:relative;height:320px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mural-bg{width:100%;height:100%;object-fit:cover;object-position:center 48%;opacity:.45;display:block;filter:brightness(1.4) contrast(1.05)}
+.mural-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(31,59,45,.96) 0%,rgba(31,59,45,.38) 60%,rgba(31,59,45,.96) 100%)}
+.mural-c{position:absolute;inset:0;display:flex;align-items:center;padding:0 40px}
+.mural-ky{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.mural-big{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(36px,5.3vw,56px);text-transform:uppercase;letter-spacing:-.005em;line-height:1}
+.mural-big .acc{color:var(--green)}
+
+footer{padding:32px 32px 24px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:11px}
+.fcopy{font-size:11px;color:var(--muted)}
+
+@media(max-width:1024px){.nav-links{display:none}}
+
+@media(max-width:768px){
+  nav{padding:0 16px}
+  /* Bouton CTA du header : version compacte sur mobile pour qu'il
+     reste sur une ligne et ne mange pas la moitié du header. */
+  .nav-cta{font-size:9px;padding:7px 10px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+  .h-body{padding:0 20px 70px;max-width:100%}
+  .ap-grid{grid-template-columns:1fr;gap:36px}
+  /* Sur mobile, tous les .reveal-left / .reveal-right héritent d'un
+     translateX(±40px) qui pousse les éléments hors-écran à droite ou
+     à gauche → ça coupe le texte (.casa-q) et décale le lecteur
+     vidéo (.vcard) et la card Ghali (.fc). On force un reveal
+     vertical uniforme — pas de translateX du tout sur ces écrans. */
+  .reveal-left, .reveal-right{
+    transform:translateY(40px) !important;
+  }
+  .reveal-left.visible, .reveal-right.visible{
+    transform:translateY(0) !important;
+  }
+
+  /* Cartes fondateurs : empilées verticalement, séparées par une fine
+     ligne jaune horizontale (au lieu de verticale en desktop). */
+  .founders{grid-template-columns:1fr;max-width:100%;margin:0}
+  .fc{padding:44px 24px 36px;margin:0 !important}
+  .fc:first-child{border-right:none;border-bottom:1px solid rgba(232,135,63,0.2)}
+  .fc-open{font-size:140px;top:-32px;right:8px}
+  .fc-name{font-size:28px;letter-spacing:.1em;word-break:break-word}
+  .fc-q{font-size:14px;line-height:1.7}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .tgrid{grid-template-columns:repeat(5,1fr)}
+  /* Sections : padding max 60px haut/bas sur mobile. */
+  section{padding:60px 20px}
+  .cf-cont{flex-direction:column;align-items:flex-start;padding:0 20px;gap:20px}
+  .cf-bg, .night-bg, .casa-img, .mural-bg{height:100%;object-position:center}
+  /* Section "Le talent casablancais" : tient dans l'écran sans déborder
+     à droite. Padding latéral réduit + overflow clip + clamp font.   */
+  .casa-s{overflow:hidden}
+  .casa-cont{padding:0 20px;overflow:hidden;max-width:100%;justify-content:flex-end}
+  .casa-q{font-size:clamp(28px,8vw,60px);max-width:100%;word-wrap:break-word;overflow-wrap:break-word}
+  footer{text-align:center}
+  .footer-top,.footer-bottom{flex-direction:column;align-items:center;justify-content:center}
+  /* Empêche tout débordement horizontal résiduel */
+  html, body{max-width:100vw;overflow-x:hidden}
+  /* Titre hero : marge serrée pour qu'il rentre sur iPhone SE */
+  .h-h1{font-size:clamp(48px,12vw,80px);max-width:100%;word-wrap:break-word}
+  .h-darija{font-size:clamp(20px,4.5vw,28px)}
+  .h-desc{font-size:14px;max-width:100%}
+  .h-launch{font-size:10px;padding:6px 12px}
+  .h-btns{flex-direction:column;width:100%}
+  .h-btns .btn-p, .h-btns .btn-g{width:100%;padding:14px 24px}
+}
+
+/* ============================================================
+   ANIMATIONS — Ajout pur (aucun changement de design, contenu,
+   couleurs ou photo). Compositions :
+     1. Slide-up ligne par ligne du titre hero
+     2. Ken Burns (zoom doux 12s en boucle alternée) sur la photo
+     3. Parallax 30% sur la photo (translateY mis à jour par JS)
+     4. Stats : comptage de 0 à la valeur finale via IntersectionObserver
+     5. Nav : variation d'opacité / bordure / ombre au-delà de 80px
+   ============================================================ */
+
+/* 1. Slide-up du titre hero. Chaque .blk devient un "clipper"
+   (overflow:hidden) et son contenu (.blk-inner ajouté en JS) glisse
+   depuis le bas vers sa position naturelle, avec délai en cascade. */
+.h-h1 .blk{overflow:hidden;padding-bottom:.04em}
+.h-h1 .blk-inner{display:block;will-change:transform}
+/* Fallback CSS si GSAP ne charge pas : slide-up en cascade via animation. */
+html:not(.gsap-ready) .h-h1 .blk-inner{
+  opacity:0;
+  transform:translateY(105%);
+  animation:hero-line-up .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+html:not(.gsap-ready) .h-h1 .blk:nth-child(1) .blk-inner{animation-delay:.15s}
+html:not(.gsap-ready) .h-h1 .blk:nth-child(2) .blk-inner{animation-delay:.30s}
+html:not(.gsap-ready) .h-h1 .blk:nth-child(3) .blk-inner{animation-delay:.45s}
+@keyframes hero-line-up{
+  from{opacity:0;transform:translateY(105%)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* 2 + 3. Ken Burns + parallax fusionnés dans le même `transform`
+   pour ne pas se voler la propriété. JS pousse --parallax-y, et les
+   DEUX keyframes le reprennent ; le navigateur ré-évalue la variable
+   à chaque frame, donc l'offset de scroll suit en continu pendant
+   que la scale fait son zoom de 1 → 1.08 sur 12s en alternance. */
+/* Transform piloté par GSAP (Ken Burns + parallax via ScrollTrigger).
+   Fallback CSS si GSAP ne charge pas : on garde la boucle ken-burns. */
+.h-bg{will-change:transform;animation:ken-burns 14s ease-in-out infinite alternate}
+.gsap-ready .h-bg{animation:none}
+@keyframes ken-burns{
+  from{transform:scale(1)}
+  to  {transform:scale(1.09)}
+}
+
+/* 4. Header au scroll : devient plus opaque + bordure verte fluo
+   + flou backdrop, transition fluide 0.4s sur toutes les props. */
+nav, header { transition: background .4s ease, border-bottom .4s ease, backdrop-filter .4s ease, -webkit-backdrop-filter .4s ease, box-shadow .4s ease; }
+nav.scrolled, header.scrolled, nav.is-scrolled {
+  background: rgba(31, 59, 45, 0.97);
+  border-bottom: 1px solid rgba(255, 90, 54, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Respect prefers-reduced-motion : on désactive les boucles et
+   on rend le titre immédiatement visible. Le compteur stats sera
+   également court-circuité côté JS (valeur finale directe). */
+@media (prefers-reduced-motion: reduce){
+  .h-bg{animation:none}
+  .h-h1 .blk-inner{animation:none;opacity:1;transform:none}
+  .darija-cursor{animation:none}
+}
+
+/* 1. Curseur clignotant pour l'effet machine à écrire sur "Matensach." */
+.darija-cursor{
+  display:inline-block;
+  margin-left:2px;
+  font-weight:inherit;
+  color:rgba(232,135,63,0.7);
+  animation:darija-blink .85s steps(2,start) infinite;
+}
+@keyframes darija-blink{ to { visibility:hidden; } }
+
+/* ============================================================
+   SCROLL REVEAL — apparition fluide des éléments au scroll.
+   Les classes sont posées dans le HTML ; IntersectionObserver
+   ajoute .visible quand l'élément entre dans le viewport (15%).
+   ============================================================ */
+.reveal       { opacity: 0; transform: translateY(40px);  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible       { opacity: 1; transform: translateY(0); }
+.reveal-left  { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal-left.visible  { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(40px);  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+
+/* Respect prefers-reduced-motion : visibilité immédiate sans animation. */
+@media (prefers-reduced-motion: reduce){
+  .reveal, .reveal-left, .reveal-right { opacity: 1; transform: none; transition: none; }
+  .page-wipe { transition: none; }
+}
+
+/* ============================================================
+   TRANSITION CINÉMATIQUE — overlay plein écran qui monte du bas
+   quand on clique "Voir mon match", puis navigue.
+   ============================================================ */
+.page-wipe{
+  position:fixed;inset:0;z-index:9999;
+  background:#1F3B2D;
+  transform:translateY(100%);
+  transition:transform .72s cubic-bezier(.85,0,.15,1);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.page-wipe.is-active{transform:translateY(0);pointer-events:auto}
+.pw-mark{display:flex;align-items:center;gap:14px;opacity:0;transform:translateY(20px);transition:opacity .4s ease .35s,transform .5s cubic-bezier(.16,1,.3,1) .35s}
+.page-wipe.is-active .pw-mark{opacity:1;transform:translateY(0)}
+.pw-mark span{font-family:'Archivo',sans-serif;font-weight:900;font-size:34px;letter-spacing:.18em;color:#fff;line-height:1}
+.pw-mark span .ac{color:var(--green)}
+
+/* ============================================================
+   IMAGE SHARPNESS — applique sur tous les fonds photo et thumbs
+   pour éviter le sub-pixel blur sur iPad/Safari + GPU layer.
+   ============================================================ */
+.h-bg,.cf-bg,.night-bg,.casa-bg,.mural-bg,.vp-thumb,.moment-bg,.vcard img,.club-band-cover img{
+  image-rendering:-webkit-optimize-contrast;
+  image-rendering:crisp-edges;
+  image-rendering:auto;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+img{image-rendering:auto;-webkit-backface-visibility:hidden}
+
+/* Bloc d'infos discret sous la description de City Foot 5
+   (adresse, horaires, captation) — même typographie sobre que .cf-d. */
+.cf-info{list-style:none;margin:14px 0 0;padding:0;max-width:380px;display:flex;flex-direction:column;gap:4px}
+.cf-info li{display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6}
+.cf-info li span{color:var(--green);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;font-size:10px;min-width:78px;display:inline-block;padding-top:2px;flex-shrink:0}
+
+/* Liens légaux + icônes réseaux dans le footer (ajouts cohérents
+   avec la palette : muted par défaut, vert au survol). */
+.flinks-leg{display:flex;gap:18px;flex-wrap:wrap}
+.flinks-leg a{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;letter-spacing:.5px;transition:color .2s}
+.flinks-leg a:hover{color:var(--green)}
+.fsocial{display:flex;gap:10px;align-items:center}
+.fsocial a{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s,border-color .2s,background .2s}
+.fsocial a:hover{color:var(--green);border-color:rgba(232,135,63,.4);background:rgba(232,135,63,.05)}
+.fsocial svg{width:16px;height:16px}
+
+/* ============================================================
+   GSAP / LENIS — couches dédiées
+   ============================================================ */
+/* Lenis : seules ces règles sont nécessaires. Surtout PAS overflow:hidden
+   sur html/body : ça bloquerait le scroll. overflow:hidden ne doit
+   s'appliquer qu'au moment où Lenis est explicitement en pause
+   (classe .lenis-stopped). */
+html.lenis, html.lenis body { height: auto; }
+html.lenis.lenis-smooth { scroll-behavior: auto !important; }
+html.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+html.lenis.lenis-stopped { overflow: hidden; }
+html.lenis.lenis-scrolling iframe { pointer-events: none; }
+
+/* Lettres splittées du titre hero (display inline-block pour permettre
+   le translateY de GSAP, le parent .blk garde overflow:hidden pour clipper
+   la slide-from-below). */
+.h-h1 .h-letter{display:inline-block;will-change:transform;line-height:.92}
+.h-h1 .h-letter.space{width:.35em}
+
+/* Mode horizontal de la liste "Comment ça marche" — activé dès qu'on
+   passe en tablette / desktop. La section #how est épinglée par GSAP
+   pendant le défilement horizontal. */
+@media (min-width:1024px){
+  .how-list-h{display:flex;flex-direction:row;flex-wrap:nowrap;gap:48px;width:max-content;max-width:none;align-items:stretch;padding:0 8vw}
+  .how-list-h .how-item{flex:0 0 min(560px,72vw);max-width:none;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:6px;padding:34px 30px;align-items:flex-start}
+  .how-list-h .how-n{font-size:20px;letter-spacing:.22em}
+  #how.is-horizontal{position:relative;padding-top:84px;padding-bottom:96px;overflow:hidden}
+  #how.is-horizontal .ey,#how.is-horizontal .sh2,#how.is-horizontal .sp{padding-left:8vw}
+}
+
+/* Mobile : remonte la phrase "Le talent casablancais" tout en bas
+   de la photo pour qu'on voie clairement la mosquée Hassan II au-dessus. */
+@media (max-width:768px){
+  .casa-cont{align-items:flex-end;padding:0 20px 36px}
+}
+
+/* ============================================================
+   SMOOTH SCROLL natif (fallback si Lenis ne charge pas)
+   ============================================================ */
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+
+/* ============================================================
+   LOADER plein écran : disparaît après 1.5s en fondu.
+   Fond #1F3B2D, wordmark MyMatch qui pulse en jaune fluo.
+   ============================================================ */
+.ldr{
+  position:fixed; inset:0; z-index:99999;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .5s ease, visibility 0s linear .5s;
+}
+.ldr.is-done{ opacity:0; visibility:hidden; pointer-events:none; }
+.ldr-mark{ display:flex; align-items:center; gap:14px; animation:ldr-pulse 1.4s ease-in-out infinite; }
+.ldr-mark span{
+  font-family:'Archivo',sans-serif; font-weight:900;
+  font-size:34px; letter-spacing:.18em; color:#fff; line-height:1;
+}
+.ldr-mark span .ac{ color:var(--green); }
+@keyframes ldr-pulse{
+  0%,100%{ opacity:.5; transform:scale(.97); }
+  50%   { opacity:1;  transform:scale(1);    }
+}
+@media (prefers-reduced-motion: reduce){ .ldr-mark{ animation:none; opacity:1; } }
+
+/* ============================================================
+   EXPÉRIENCE v2 — couche motion / micro-interactions.
+   Additif pur : aucun changement d'image, de contenu, de couleur
+   ni de typographie. Tout est gardé derrière reduced-motion.
+   ============================================================ */
+
+/* Barre de progression de lecture du site (2px, en haut) */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--green);transform-origin:0 50%;transform:scaleX(0);z-index:300;pointer-events:none;box-shadow:0 0 14px rgba(232,135,63,.45)}
+
+/* Bande marquee cinétique entre le hero et les stats */
+.mq{overflow:hidden;border-bottom:1px solid var(--line);padding:13px 0;position:relative}
+.mq-track{display:flex;align-items:center;width:max-content;will-change:transform}
+.mq-track span{font-family:'Archivo',sans-serif;font-weight:900;font-size:15px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-right:36px}
+.mq-track span.g{color:var(--green)}
+.mq-track i{width:5px;height:5px;background:var(--green);transform:rotate(45deg);flex-shrink:0;opacity:.55;margin-right:36px}
+
+/* Particules lumineuses dans le hero (canvas, desktop seulement) */
+.h-particles{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+/* Shine sweep diagonal sur le bouton principal */
+.btn-p::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .55s ease;pointer-events:none}
+.btn-p:hover::after{left:135%}
+
+/* Boutons magnétiques : transform piloté par GSAP, on sort le
+   transform de la transition CSS pour éviter tout conflit. */
+.is-magnet{transition:box-shadow .25s ease,background .25s ease,color .25s ease,border-color .25s ease}
+
+/* Soulignement animé des liens nav (droite → gauche → droite) */
+.nav-links a{position:relative}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-6px;width:100%;height:1.5px;background:var(--green);transform:scaleX(0);transform-origin:100% 50%;transition:transform .35s cubic-bezier(.16,1,.3,1)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:0 50%}
+
+/* Pulse radar autour du bouton play de la vidéo d'aperçu */
+.vp-play::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(232,135,63,.5);animation:vp-radar 2.2s ease-out infinite}
+@keyframes vp-radar{0%{transform:scale(.9);opacity:.8}70%,100%{transform:scale(1.75);opacity:0}}
+
+/* Stats : glow au survol */
+.stat{transition:background .4s ease}
+.stat:hover{background:radial-gradient(ellipse at 50% 100%,rgba(232,135,63,.06),transparent 70%)}
+.stat-v{transition:text-shadow .4s ease}
+.stat:hover .stat-v{text-shadow:0 0 32px rgba(232,135,63,.4)}
+
+/* Flow de sélection : pop-in en cascade des terrains / dates / heures */
+.fpanel.active .tbtn,.fpanel.active .dpill{animation:sel-pop .45s cubic-bezier(.16,1,.3,1) backwards}
+.fpanel.active .tbtn:nth-child(2),.fpanel.active .dpill:nth-child(2){animation-delay:.03s}
+.fpanel.active .tbtn:nth-child(3),.fpanel.active .dpill:nth-child(3){animation-delay:.06s}
+.fpanel.active .tbtn:nth-child(4),.fpanel.active .dpill:nth-child(4){animation-delay:.09s}
+.fpanel.active .tbtn:nth-child(5),.fpanel.active .dpill:nth-child(5){animation-delay:.12s}
+.fpanel.active .tbtn:nth-child(6),.fpanel.active .dpill:nth-child(6){animation-delay:.15s}
+.fpanel.active .tbtn:nth-child(7),.fpanel.active .dpill:nth-child(7){animation-delay:.18s}
+.fpanel.active .tbtn:nth-child(8),.fpanel.active .dpill:nth-child(8){animation-delay:.21s}
+.fpanel.active .tbtn:nth-child(9),.fpanel.active .dpill:nth-child(9){animation-delay:.24s}
+.fpanel.active .tbtn:nth-child(10),.fpanel.active .dpill:nth-child(10){animation-delay:.27s}
+.fpanel.active .tbtn:nth-child(11),.fpanel.active .dpill:nth-child(11){animation-delay:.30s}
+.fpanel.active .tbtn:nth-child(12),.fpanel.active .dpill:nth-child(12){animation-delay:.33s}
+.fpanel.active .tbtn:nth-child(13),.fpanel.active .dpill:nth-child(13){animation-delay:.36s}
+.fpanel.active .tbtn:nth-child(14),.fpanel.active .dpill:nth-child(14){animation-delay:.39s}
+@keyframes sel-pop{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.tbtn.f,.dpill{transition:border-color .15s,background .15s,color .15s,transform .25s cubic-bezier(.16,1,.3,1)}
+.tbtn.f:hover,.dpill:hover{transform:translateY(-3px)}
+
+/* Titres de section : lettres qui glissent vers le haut (split JS).
+   Chaque mot est un clip (overflow hidden), chaque lettre monte. */
+.sh2 .w,.cf-ttl .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.sh2 .c,.cf-ttl .c{display:inline-block;will-change:transform}
+
+/* Reduced motion : on neutralise toute la couche v2 */
+@media (prefers-reduced-motion: reduce){
+  .scroll-progress{display:none}
+  .vp-play::before{animation:none}
+  .fpanel.active .tbtn,.fpanel.active .dpill{animation:none}
+  .btn-p::after{display:none}
+  .h-particles{display:none}
+}
+
+/* ============================================================
+   SOCIAL PROOF BAR — bande live entre marquee et stats
+   ============================================================ */
+.social-proof{display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 32px;border-bottom:1px solid var(--line);background:var(--s1);flex-wrap:wrap}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:blink 2s ease-in-out infinite}
+.sp-count{font-family:'Archivo',sans-serif;font-weight:900;font-size:32px;color:var(--green);line-height:1;font-variant-numeric:tabular-nums;min-width:2.4ch;text-align:right}
+.sp-label{font-family:'Archivo',sans-serif;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2)}
+
+/* ============================================================
+   WHATSAPP FAB — bouton flottant fixe
+   ============================================================ */
+.wa-fab{position:fixed;bottom:24px;right:24px;z-index:500;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 22px rgba(37,211,102,.38);cursor:pointer;text-decoration:none;border:none;transition:transform .25s ease,box-shadow .25s ease}
+.wa-fab:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 8px 32px rgba(37,211,102,.5)}
+@media(max-width:768px){.wa-fab{bottom:80px;right:16px}}
+
+/* ============================================================
+   STICKY CTA — mobile uniquement, apparaît après le hero
+   ============================================================ */
+.sticky-cta{position:fixed;bottom:0;left:0;right:0;z-index:400;background:rgba(31,59,45,.97);border-top:1px solid var(--line);padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);display:none}
+.sticky-cta.show{transform:translateY(0)}
+.sticky-cta-txt{font-family:'Archivo',sans-serif;font-size:14px;color:var(--muted2);flex:1;letter-spacing:.3px}
+.sticky-cta-btn{background:var(--green);color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:12px 22px;border:none;border-radius:2px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .2s}
+.sticky-cta-btn:hover{opacity:.85}
+@media(max-width:768px){.sticky-cta{display:flex}}
+
+/* ============================================================
+   FAQ ACCORDION — section avant footer
+   ============================================================ */
+.faq-list{max-width:680px}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-item:first-child{border-top:1px solid var(--line)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;cursor:pointer;font-size:17px;font-weight:700;color:var(--text);letter-spacing:.01em;background:none;border:none;text-align:left;width:100%;font-family:'Archivo',sans-serif;transition:color .2s ease}
+.faq-q:hover{color:var(--green)}
+.faq-ico{width:22px;height:22px;flex-shrink:0;border:1px solid var(--line2);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s ease,border-color .3s ease,background .3s ease}
+.faq-item.open .faq-ico{transform:rotate(45deg);border-color:var(--green);background:var(--ga)}
+.faq-item.open .faq-q{color:var(--green)}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s cubic-bezier(.16,1,.3,1)}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+.faq-a-inner{overflow:hidden;min-height:0;font-size:14px;color:var(--muted2);line-height:1.75;padding-bottom:0;transition:padding-bottom .38s;font-weight:400}
+.faq-item.open .faq-a-inner{padding-bottom:22px}
+.faq-a-inner strong{color:var(--text);font-weight:600}
+
+/* ============================================================
+   REFONTE v2 (moodboard) — Navy #1F3B2D, bleu glacier #F2EAD7,
+   corail #E8873F. Titres en Archivo noir italique, photos d'action
+   en duotone, sections claires et foncées en alternance.
+   ============================================================ */
+body{font-family:'Archivo',sans-serif;font-weight:400}
+.h-h1,.sh2,.night-q,.casa-q,.poster-big,.stat-v,.fc-name,.how-n{font-style:italic;font-weight:900;font-stretch:88%;letter-spacing:-.01em}
+.sh2{line-height:.92}
+
+/* Logo */
+.logo-mark{width:auto;height:26px;display:block}
+.logo-t,.fl{font-style:italic;font-weight:900;letter-spacing:-.01em;font-size:25px;color:#fff}
+.logo-t span,.fl span{color:inherit}
+.logo:hover{opacity:.85}
+
+/* Navigation */
+body > nav{background:rgba(31,59,45,.88)}
+nav.scrolled,nav.is-scrolled{background:rgba(21,42,32,.97);border-bottom:1px solid rgba(232,135,63,.18)}
+.nav-links a{color:var(--muted2)}
+.hamburger{border-color:rgba(255,255,255,.25)}
+.hamburger span{background:#fff}
+.drawer{background:var(--navy2)}
+
+/* Boutons : corail plein, texte navy (contraste 5:1), forme pilule */
+.btn-p,.nav-cta,.drawer-cta,.sticky-cta-btn,.vb.pr{background:var(--coral) !important;color:var(--navy) !important;border-color:var(--coral) !important;font-weight:800;font-style:italic;border-radius:999px}
+.btn-p:hover,.nav-cta:hover,.drawer-cta:hover,.sticky-cta-btn:hover{background:var(--coral2) !important;box-shadow:0 14px 34px rgba(232,135,63,.35) !important;opacity:1}
+.btn-g{border-radius:999px;font-style:italic;font-weight:800}
+.btn-g:hover{border-color:var(--coral);color:var(--coral);background:rgba(232,135,63,.06)}
+.nav-cta{padding:12px 24px}
+
+/* Loader : le ballon tourne, la traînée se dessine */
+.ldr{background:var(--navy)}
+.ldr-mark{animation:none;flex-direction:column;gap:18px}
+.ldr-word{font-family:'Archivo',sans-serif;font-style:italic;font-weight:900;font-size:34px;letter-spacing:-.01em;color:#fff;line-height:1}
+.ldr-word .ac{color:inherit}
+.ldr-ball{transform-box:view-box;transform-origin:50px 14px;animation:ldr-spin .9s linear infinite}
+.ldr-sw{transform-box:fill-box;transform-origin:right center;animation:ldr-sw 1.2s cubic-bezier(.3,.7,.2,1) infinite}
+.ldr-sw2{animation-delay:.12s}
+@keyframes ldr-spin{to{transform:rotate(360deg)}}
+@keyframes ldr-sw{0%{transform:scaleX(0);opacity:0}35%{opacity:1}70%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.page-wipe{background:var(--navy)}
+.pw-mark span{font-style:italic;font-weight:900;letter-spacing:-.01em}
+.pw-mark span .ac{color:inherit}
+
+/* Hero : photo d'action orange, voile navy à gauche pour le texte */
+.hero{background:var(--navy);min-height:100vh}
+.h-bg{position:absolute;inset:0;background:url('images/hero-action.jpg') 62% center/cover no-repeat,linear-gradient(115deg,#1F3B2D 0%,#4A3A1E 55%,#E8873F 100%);opacity:1;filter:none;animation:mm-kb 18s ease-in-out infinite alternate}
+@keyframes mm-kb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.h-fade{background:linear-gradient(180deg,rgba(31,59,45,0) 58%,rgba(31,59,45,1) 100%)}
+.h-fade2{background:linear-gradient(to right,rgba(31,59,45,.94) 0%,rgba(31,59,45,.62) 34%,rgba(31,59,45,0) 64%)}
+.h-body{max-width:760px;z-index:3}
+.h-kicker{color:var(--coral)}
+.k-dot,.l-dot{background:var(--coral)}
+.h-h1{font-size:clamp(56px,8.8vw,128px);line-height:.86;margin-bottom:14px}
+.h-h1 .blk:last-child{color:var(--coral)}
+.h-darija{color:var(--ice);text-shadow:none;font-weight:800;letter-spacing:.14em}
+.darija-cursor{color:var(--coral)}
+.h-desc{color:#DDD6C4;font-size:16px}
+.h-launch{color:var(--coral);border-color:rgba(232,135,63,.35);background:rgba(232,135,63,.07);border-radius:999px}
+.h-rec{position:absolute;top:86px;right:32px;z-index:3;display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(21,42,32,.72);border:1px solid rgba(255,255,255,.18);font-family:'Archivo',sans-serif;font-weight:800;font-size:12px;letter-spacing:.2em;color:#fff}
+.h-rec-dot{width:9px;height:9px;border-radius:50%;background:var(--coral);animation:blink 1.4s ease-in-out infinite}
+@media(max-width:768px){
+  .h-bg{background-position:70% center}
+  .h-fade2{background:linear-gradient(to right,rgba(31,59,45,.9) 0%,rgba(31,59,45,.55) 60%,rgba(31,59,45,.3) 100%)}
+  .h-rec{top:76px;right:16px}
+}
+
+/* Bande de chiffres : bleu glacier, chiffres navy */
+.stats{background:var(--ice);border-top:none;border-bottom:none}
+.stat{border-right:1px solid rgba(31,59,45,.12)}
+.stat-v{color:var(--navy);font-size:clamp(44px,5vw,64px)}
+.stat-l{color:var(--ink-m)}
+.stat:hover{background:rgba(232,135,63,.08)}
+.stat:hover .stat-v{text-shadow:none;color:var(--coral-d)}
+
+/* Sections foncées */
+section{background:var(--navy)}
+section.alt{background:var(--navy2);border-color:transparent}
+.ey{color:var(--coral)}
+.sp{color:var(--muted2)}
+
+/* Aperçu vidéo */
+.vcard{background:var(--navy3);border-color:rgba(255,255,255,.1);border-radius:16px}
+.vp{background:#1A3326}
+.vp-thumb{width:100%;height:100%;opacity:.95;filter:none}
+.vp-play{background:var(--coral);box-shadow:0 0 0 12px rgba(232,135,63,.16)}
+.vp-badge{color:var(--coral);border-color:rgba(232,135,63,.35);border-radius:999px}
+.ap-note{border-left-color:var(--coral)}
+.vb{border-radius:999px}
+.mph-icon{border-color:rgba(232,135,63,.25)}
+
+/* "Le terrain s'allume" : ballon corail sur gazon navy */
+.night-s{height:440px;background:var(--navy);border:none}
+.night-bg{position:absolute;inset:0;background:url('images/terrain-nuit.jpg') 70% center/cover no-repeat,radial-gradient(circle at 74% 56%,#E8873F 0,#E8873F 4%,rgba(232,135,63,0) 4.4%),linear-gradient(135deg,#2A4A3A,#152A20);animation:mm-kb 22s ease-in-out infinite alternate}
+.night-ov{position:absolute;inset:0;background:linear-gradient(to right,rgba(21,42,32,.92) 0%,rgba(21,42,32,.45) 42%,rgba(21,42,32,0) 70%)}
+.night-cont{justify-content:flex-start}
+.night-txt{text-align:left;max-width:560px}
+.night-ey{color:var(--coral)}
+.night-q{font-size:clamp(40px,5.4vw,72px);line-height:.9;color:#fff}
+.night-q .acc{color:var(--coral)}
+
+/* Parcours de sélection : section claire */
+.light{background:var(--ice) !important;color:var(--navy);border-color:transparent !important}
+.light .ey{color:var(--coral-d)}
+.light .sh2{color:var(--navy)}
+.light .sp{color:var(--ink-m)}
+.light .flbl{color:var(--ink-m)}
+.light .flbl strong{color:var(--navy)}
+.light .ftab{border-color:rgba(31,59,45,.16);color:var(--ink-m);background:rgba(255,255,255,.4)}
+.light .ftab:last-child{border-right-color:rgba(31,59,45,.16)}
+.light .ftab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.light .ftab .tn{font-style:italic;font-weight:900}
+.light .club-opt{background:#fff;border-color:rgba(31,59,45,.14);border-radius:14px;box-shadow:0 10px 30px rgba(31,59,45,.08)}
+.light .club-ico{background:var(--ice2);border:1px solid rgba(31,59,45,.12);padding:6px}
+.light .club-ico svg *{stroke:var(--coral-d)}
+.light .club-n{color:var(--navy);font-weight:800;font-style:italic}
+.light .club-s{color:var(--ink-m)}
+.light .club-chk{background:var(--coral)}
+.light .tbtn{color:#7E8C80;border-color:rgba(31,59,45,.1);background:rgba(255,255,255,.35);border-radius:10px}
+.light .tbtn .ts{color:#6E7D72}
+.light .tbtn.f{color:var(--navy);border-color:rgba(31,59,45,.28);background:#fff}
+.light .tbtn.f:hover,.light .tbtn.f.sel{border-color:var(--coral);background:var(--coral);color:var(--navy)}
+.light .tbtn.f:hover .ts,.light .tbtn.f.sel .ts{color:var(--navy)}
+.light .tleg{color:var(--ink-m)}
+.light .dpill{background:#fff;border-color:rgba(31,59,45,.14);border-radius:12px}
+.light .dday,.light .dmon{color:var(--ink-m)}
+.light .dnum{color:var(--navy);font-style:italic;font-weight:900}
+.light .dpill.sel{background:var(--navy);border-color:var(--navy)}
+.light .dpill.sel .dday,.light .dpill.sel .dmon{color:var(--ice)}
+.light .dpill.sel .dnum{color:#fff}
+.light .tdot{background:var(--coral)}
+.light #dateMsg{color:var(--ink-m) !important}
+
+/* Comment ça marche */
+.how-n{font-size:30px;color:var(--coral);letter-spacing:0}
+.how-t{font-size:19px;font-weight:800}
+.how-d{color:var(--muted2)}
+@media (min-width:1024px){.how-list-h .how-item{background:var(--navy3);border-color:rgba(255,255,255,.08);border-radius:18px}}
+
+/* "Le talent casablancais" : la mosquée Hassan II en duotone navy + lueur corail */
+.casa-s{height:460px;background:var(--navy);border:none}
+.casa-img{opacity:1;filter:grayscale(1) contrast(1.2) brightness(1.05)}
+.casa-tint{position:absolute;inset:0;background:linear-gradient(170deg,#6E8A73 0%,#1F3B2D 75%);mix-blend-mode:multiply}
+.casa-ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(232,135,63,.28) 0%,rgba(232,135,63,0) 45%),linear-gradient(to right,rgba(21,42,32,0) 30%,rgba(21,42,32,.92) 100%)}
+.casa-ey{color:var(--coral)}
+.casa-txt{max-width:640px}
+.casa-q{font-size:clamp(34px,4.4vw,60px);line-height:.92;color:#fff}
+@media(max-width:768px){.casa-txt{max-width:100%}}
+.casa-q .acc{color:var(--coral)}
+
+/* Fondateurs : section claire, cartes blanches */
+.light .fc{background:#fff;border-radius:18px;box-shadow:0 18px 50px rgba(31,59,45,.1)}
+.light .founders{gap:20px}
+.light .fc:first-child{border-right:none}
+.light .fc::after{background:var(--coral);left:56px}
+.light .fc-role{color:var(--coral-d);opacity:1}
+.light .fc-open{color:var(--coral);opacity:.16}
+.light .fc-q{color:var(--ink-m)}
+.light .fc-q b{color:var(--navy)}
+.light .fc-name{color:var(--navy);font-size:44px;letter-spacing:0}
+.light .fc-sub{color:var(--navy);border-color:rgba(31,59,45,.2);background:var(--ice2)}
+@media(max-width:768px){.light .fc:first-child{border-bottom:none}.light .founders{gap:14px}}
+
+/* Bande affiche : célébration de but */
+.poster-s{position:relative;height:600px;overflow:hidden;background:var(--navy2)}
+.poster-bg{position:absolute;inset:0;background:url('images/but.jpg') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 60%,#E8873F 140%);animation:mm-kb 20s ease-in-out infinite alternate}
+.poster-s::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(21,42,32,.95) 0%,rgba(21,42,32,.6) 40%,rgba(21,42,32,0) 70%)}
+.poster-cont{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:24px;padding:0 48px;max-width:760px}
+.poster-ey{font-size:12px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--coral)}
+.poster-big{font-size:clamp(48px,7.4vw,112px);line-height:.86;text-transform:uppercase;color:#fff}
+.poster-big .acc{color:var(--coral)}
+@media(max-width:768px){.poster-s{height:520px}.poster-cont{padding:0 20px}.poster-s::after{background:linear-gradient(to right,rgba(21,42,32,.9) 0%,rgba(21,42,32,.55) 70%,rgba(21,42,32,.35) 100%)}}
+
+/* FAQ + pied de page */
+.faq-q:hover,.faq-item.open .faq-q{color:var(--coral)}
+.faq-item.open .faq-ico{border-color:var(--coral);background:rgba(232,135,63,.1)}
+footer{background:var(--navy2)}
+.fsocial a:hover{color:var(--coral);border-color:rgba(232,135,63,.45)}
+
+@media(max-width:768px){.nav-left{gap:10px}.logo{gap:6px}.logo-t{font-size:19px}.logo-mark{height:20px}.nav-cta{padding:8px 12px !important;font-size:10px !important;letter-spacing:.04em !important}}
+.scroll-progress{background:var(--coral);box-shadow:0 0 14px rgba(232,135,63,.45)}
+
+@media (prefers-reduced-motion: reduce){
+  .h-bg,.night-bg,.poster-bg,.ldr-ball,.ldr-sw,.h-rec-dot{animation:none}
+}
+/* ============================================================
+   REFONTE v3 — Vert forêt #1F3B2D · Crème #F2EAD7 · Orange brûlé.
+   Boutons : orange brûlé foncé #BF5000, texte crème (contraste 4,6:1).
+   Accents sur fond vert : orange clair #E8873F (contraste 4,6:1).
+   ============================================================ */
+.btn-p,.nav-cta,.drawer-cta,.sticky-cta-btn,.vb.pr{background:#BF5000 !important;color:#FFF8EC !important;border-color:#BF5000 !important}
+.btn-p:hover,.nav-cta:hover,.drawer-cta:hover,.sticky-cta-btn:hover{background:#A84600 !important;box-shadow:0 14px 34px rgba(191,80,0,.38) !important}
+.vp-play{background:#BF5000}
+.vp-play svg{fill:#FFF8EC}
+.light .club-chk{background:#BF5000}
+.light .tbtn.f:hover,.light .tbtn.f.sel{background:#BF5000;border-color:#BF5000;color:#FFF8EC}
+.light .tbtn.f:hover .ts,.light .tbtn.f.sel .ts{color:#FFF8EC}
+.light .fc-name{color:var(--navy)}
+.stat:hover .stat-v{color:#9A3F00}
+
+/* Hero : vidéo d'ambiance par-dessus la photo (la photo reste si la vidéo manque) */
+.h-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% center;z-index:0}
+.h-fade,.h-fade2{z-index:1}
+.h-body,.h-rec{z-index:3}
+
+/* Mosquée Hassan II : en couleurs naturelles, voile vert côté texte */
+.casa-img{opacity:1;object-position:left 28%;filter:saturate(.95) contrast(1.04) brightness(.95);animation:mm-kb 24s ease-in-out infinite alternate}
+.casa-tint{display:none}
+.casa-ov{background:linear-gradient(0deg,rgba(204,85,0,.28) 0%,rgba(204,85,0,0) 45%),linear-gradient(to right,rgba(21,42,32,.05) 20%,rgba(21,42,32,.55) 55%,rgba(21,42,32,.94) 100%)}
+
+/* Section multisport */
+.sports-s{padding:110px 48px;background:var(--navy)}
+.sports-head{max-width:720px;margin-bottom:52px}
+.sports-h{font-family:'Archivo',sans-serif;font-style:italic;font-weight:900;font-stretch:88%;text-transform:uppercase;font-size:clamp(38px,5.2vw,76px);line-height:.9;letter-spacing:-.01em;margin-bottom:18px}
+.sports-h .acc{color:var(--coral)}
+.sports-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.sport-card{position:relative;overflow:hidden;border-radius:22px;aspect-ratio:3/4;background:var(--navy3)}
+.sport-img{position:absolute;inset:0;background:var(--img) var(--pos,center)/cover no-repeat,linear-gradient(160deg,#2A4A3A,#152A20);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.sport-card::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(21,42,32,.92) 0%,rgba(21,42,32,.2) 45%,rgba(21,42,32,0) 70%)}
+/* Au survol : une traînée de vitesse orange traverse la carte */
+.sport-card::after{content:'';position:absolute;z-index:1;left:-60%;top:58%;width:60%;height:3px;border-radius:3px;background:linear-gradient(90deg,rgba(232,135,63,0),#E8873F);box-shadow:0 -14px 0 -1px rgba(242,178,122,.6),0 14px 0 -1px rgba(242,178,122,.35);opacity:0}
+.sport-card:hover .sport-img{transform:scale(1.06)}
+.sport-card:hover::after{animation:sp-streak .9s cubic-bezier(.4,0,.2,1)}
+@keyframes sp-streak{0%{left:-60%;opacity:0}20%{opacity:1}100%{left:110%;opacity:0}}
+.sport-info{position:absolute;z-index:2;left:22px;right:22px;bottom:22px;display:flex;flex-direction:column;gap:8px}
+.sport-name{font-style:italic;font-weight:900;font-stretch:88%;text-transform:uppercase;font-size:40px;line-height:.9;color:#FFF8EC}
+.sport-st{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid rgba(242,234,215,.35);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#F2EAD7}
+.sport-st.is-live{background:#BF5000;border-color:#BF5000;color:#FFF8EC}
+.st-dot{width:7px;height:7px;border-radius:50%;background:#FFF8EC;animation:blink 1.4s ease-in-out infinite}
+@media(max-width:900px){.sports-grid{grid-template-columns:1fr 1fr}.sport-card:first-child{grid-column:1 / -1;aspect-ratio:16/10}}
+@media(max-width:768px){.sports-s{padding:72px 20px}.sport-name{font-size:30px}}
+@media(max-width:520px){.sports-grid{grid-template-columns:1fr}.sport-card{aspect-ratio:4/3}.sport-card:first-child{aspect-ratio:4/3}}
+
+@media (prefers-reduced-motion: reduce){
+  .casa-img,.sport-img,.st-dot{animation:none;transition:none}
+  .sport-card:hover::after{animation:none}
+}
+/* ============================================================
+   v4 — Fonds en vert forêt et crème uniquement. L'orange ne sert plus
+   qu'aux boutons, à quelques mots et aux titres.
+   ============================================================ */
+:root{--ga:rgba(242,234,215,0.06);--gb:rgba(242,234,215,0.12)}
+
+/* Hero : dégradé vert, halo crème de projecteur, joueur discret à droite */
+.hero{background:linear-gradient(160deg,#2A4A3A 0%,#1F3B2D 45%,#173225 100%)}
+.h-glow{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 48% 70% at 74% 18%,rgba(242,234,215,.16),rgba(242,234,215,0) 65%),radial-gradient(ellipse 60% 50% at 10% 110%,rgba(242,234,215,.07),rgba(242,234,215,0) 70%)}
+.h-fade{background:linear-gradient(180deg,rgba(31,59,45,0) 70%,rgba(31,59,45,1) 100%)}
+.h-fade2{display:none}
+.h-player{position:absolute;z-index:1;right:7%;bottom:14%;height:min(54vh,480px);width:auto;pointer-events:none}
+.hp-body{opacity:.12}
+.hp-leg{transform-box:view-box;transform-origin:196px 256px;animation:hp-leg 3.6s cubic-bezier(.5,0,.2,1) infinite}
+@keyframes hp-leg{0%,10%{transform:rotate(62deg)}27%{transform:rotate(-8deg)}36%{transform:rotate(0deg)}72%,100%{transform:rotate(62deg)}}
+.hp-shot{opacity:.55;animation:hp-shot 3.6s cubic-bezier(.3,.6,.2,1) infinite}
+@keyframes hp-shot{0%,27%{transform:translate(0,0);opacity:.5}58%{transform:translate(118px,-74px);opacity:.5}68%{transform:translate(128px,-80px);opacity:0}69%{transform:translate(0,0);opacity:0}88%{opacity:0}100%{transform:translate(0,0);opacity:.5}}
+.hp-lines{opacity:0;animation:hp-lines 3.6s ease-out infinite}
+@keyframes hp-lines{0%,27%{opacity:0}34%,52%{opacity:.7}62%,100%{opacity:0}}
+@media(max-width:900px){.h-player{right:-8%;bottom:auto;top:12%;height:58vh}.hp-body{opacity:.08}.hp-shot{opacity:.3}}
+.h-rec-dot{background:#F2EAD7}
+.k-dot,.l-dot{background:var(--coral)}
+.h-launch{background:transparent;border-color:rgba(242,234,215,.25)}
+
+/* Sections : dégradés vert / crème */
+section{background:linear-gradient(180deg,#1F3B2D 0%,#1A3427 100%)}
+section.alt{background:linear-gradient(180deg,#173225 0%,#152A20 100%)}
+.light{background:linear-gradient(180deg,#F2EAD7 0%,#F8F3E8 100%) !important}
+.stats{background:linear-gradient(90deg,#F2EAD7 0%,#F8F3E8 50%,#F2EAD7 100%)}
+.stat:hover{background:rgba(31,59,45,.05)}
+.sports-s{background:linear-gradient(180deg,#1A3427 0%,#1F3B2D 100%)}
+
+/* Détails décoratifs : crème au lieu d'orange */
+.hamburger span{background:#F2EAD7}
+.scroll-progress{background:#F2EAD7 !important;box-shadow:none !important}
+nav.scrolled,nav.is-scrolled{border-bottom-color:rgba(242,234,215,.14)}
+.nav-links a::after{background:#F2EAD7}
+.drawer-link:hover{border-left-color:#F2EAD7}
+.btn-g:hover{border-color:#F2EAD7 !important;color:#F2EAD7 !important;background:rgba(242,234,215,.06) !important}
+.vb:hover{border-color:#F2EAD7;color:#F2EAD7}
+.vp-play{box-shadow:0 0 0 12px rgba(242,234,215,.1)}
+.vp-play::before{border-color:rgba(242,234,215,.4)}
+.vp-badge{border-color:rgba(242,234,215,.3)}
+.ap-note{border-left-color:rgba(242,234,215,.35)}
+.mph-icon{background:rgba(242,234,215,.06);border-color:rgba(242,234,215,.2)}
+.pfill,.pfill::after{background:#F2EAD7}
+.light .ftab.active{background:#1F3B2D}
+.light .tdot{background:#1F3B2D}
+.light .club-ico svg *{stroke:#1F3B2D}
+.light .fc::after{background:#1F3B2D}
+.rbox{border-color:rgba(242,234,215,.2)}
+.fc:first-child{border-right-color:rgba(242,234,215,.15)}
+.faq-item.open .faq-ico{border-color:#F2EAD7;background:rgba(242,234,215,.08)}
+.fsocial a:hover{color:#F2EAD7;border-color:rgba(242,234,215,.45);background:rgba(242,234,215,.05)}
+.sport-card::after{background:linear-gradient(90deg,rgba(242,234,215,0),#F2EAD7);box-shadow:0 -14px 0 -1px rgba(242,234,215,.5),0 14px 0 -1px rgba(242,234,215,.3)}
+.night-bg{background:url('images/terrain-nuit.jpg') 70% center/cover no-repeat,linear-gradient(135deg,#2A4A3A,#152A20)}
+.casa-ov{background:linear-gradient(0deg,rgba(242,234,215,.12) 0%,rgba(242,234,215,0) 40%),linear-gradient(to right,rgba(21,42,32,.05) 20%,rgba(21,42,32,.55) 55%,rgba(21,42,32,.94) 100%)}
+.poster-bg{background:url('images/but.jpg') 68% center/cover no-repeat,linear-gradient(115deg,#152A20 0%,#2A4A3A 100%)}
+.sport-img{background:var(--img) var(--pos,center)/cover no-repeat,linear-gradient(160deg,#2A4A3A,#152A20)}
+
+@media (prefers-reduced-motion: reduce){.hp-leg,.hp-shot,.hp-lines{animation:none}.hp-leg{transform:none}.hp-lines{opacity:0}}
+/* ============================================================
+   v5 — Vrai joueur (photo) à droite du haut de page, fondu dans le vert.
+   ============================================================ */
+.hero{background:linear-gradient(160deg,#24432F 0%,#1A2E22 52%,#172A1F 100%)}
+.h-glow{background:radial-gradient(ellipse 40% 60% at 72% 14%,rgba(242,234,215,.11),rgba(242,234,215,0) 65%),radial-gradient(ellipse 60% 50% at 10% 110%,rgba(242,234,215,.06),rgba(242,234,215,0) 70%)}
+.h-fade{background:linear-gradient(180deg,rgba(26,46,34,0) 72%,rgba(31,59,45,1) 100%)}
+.h-player-img{position:absolute;z-index:1;right:3%;bottom:0;height:92%;max-height:860px;width:auto;opacity:.92;filter:brightness(1.55) contrast(1.1) saturate(.85);pointer-events:none;
+  -webkit-mask-image:radial-gradient(ellipse 50% 54% at 52% 50%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 50% 54% at 52% 50%,#000 50%,transparent 100%);
+  animation:hp-breath 9s ease-in-out infinite alternate}
+@keyframes hp-breath{from{transform:translateY(0) scale(1)}to{transform:translateY(-10px) scale(1.025)}}
+@media(max-width:900px){.h-player-img{right:-18%;height:78%;opacity:.32}}
+@media (prefers-reduced-motion: reduce){.h-player-img{animation:none}}
+
+</style></style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id="mm-ball-clip"><circle cx="50" cy="14" r="12"/></clipPath>
+    <radialGradient id="mm-ball-shade" cx=".34" cy=".28" r=".8">
+      <stop offset="0" stop-color="#FFF8EC" stop-opacity=".34"/>
+      <stop offset=".5" stop-color="#FFF8EC" stop-opacity="0"/>
+      <stop offset="1" stop-color="#152A20" stop-opacity=".38"/>
+    </radialGradient>
+    <symbol id="mm-ball" viewBox="0 0 64 28">
+      <circle cx="50" cy="14" r="12" fill="#CC5500"/>
+      <g clip-path="url(#mm-ball-clip)" fill="none" stroke="#F2EAD7" stroke-linecap="round">
+        <path d="M37.5 18.5 C 43.5 9.5, 55.5 7, 63 11.5" stroke-width="1.8"/>
+      </g>
+      <circle cx="50" cy="14" r="12" fill="url(#mm-ball-shade)"/>
+    </symbol>
+    <symbol id="mm-mark" viewBox="0 0 64 28">
+      <path d="M2 23 C 16 28, 31 26, 40 17 L 39.6 21.8 C 30 30, 14 30, 2 23 Z" fill="#E8873F"/>
+      <path d="M9 14.5 C 19 16.5, 28 15.5, 35.5 11.5 L 35.3 14 C 27.5 18.5, 18.5 18.5, 9 14.5 Z" fill="#F2B27A" opacity=".8"/>
+      <use href="#mm-ball" x="0" y="0" width="64" height="28"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="ldr" class="ldr">
+  <div class="ldr-mark">
+    <svg class="ldr-svg" width="150" height="66" viewBox="0 0 64 28" aria-hidden="true">
+      <path class="ldr-sw" d="M2 23 C 16 28, 31 26, 40 17 L 39.6 21.8 C 30 30, 14 30, 2 23 Z" fill="#E8873F"/>
+      <path class="ldr-sw ldr-sw2" d="M9 14.5 C 19 16.5, 28 15.5, 35.5 11.5 L 35.3 14 C 27.5 18.5, 18.5 18.5, 9 14.5 Z" fill="#F2B27A" opacity=".75"/>
+      <g class="ldr-ball"><use href="#mm-ball"/></g>
+    </svg>
+    <span class="ldr-word">My<span class="ac">Match</span></span>
+  </div>
+</div>
+
+<!-- Barre de progression de scroll (2px verte, en haut) -->
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-left">
+    <button class="hamburger" id="ham" onclick="toggleDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="#" aria-label="MyMatch">
+      <svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg>
+      <span class="logo-t">My<span>Match</span></span>
+    </a>
+  </div>
+  <div class="nav-links">
+    <a onclick="sc('how')">Comment ça marche</a>
+    <a onclick="sc('founders')">L’équipe</a>
+  </div>
+  <button class="nav-cta" onclick="sc('selection')">Voir mon match</button>
+</nav>
+
+<div class="drawer" id="drawer">
+  <button class="drawer-link" onclick="sc('apercu');closeDrawer()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    Aperçu
+  </button>
+  <button class="drawer-link" onclick="sc('selection');closeDrawer()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Trouver mon match
+  </button>
+  <button class="drawer-link" onclick="sc('how');closeDrawer()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Comment ça marche
+  </button>
+  <button class="drawer-link" onclick="sc('founders');closeDrawer()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    L’équipe
+  </button>
+  <div class="drawer-div"></div>
+  <button class="drawer-cta" onclick="sc('selection');closeDrawer()">Voir mon match</button>
+</div>
+<div class="drawer-ov" id="drawerOv" onclick="closeDrawer()"></div>
+
+<!-- WhatsApp FAB — remplace 212600000000 par le vrai numéro business -->
+<a class="wa-fab" href="https://wa.me/212600000000" target="_blank" rel="noopener" aria-label="Nous contacter sur WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="white" aria-hidden="true">
+    <path d="M16 3C9.37 3 4 8.37 4 15c0 2.3.64 4.45 1.76 6.28L4 29l7.93-1.73A11.9 11.9 0 0 0 16 28c6.63 0 12-5.37 12-12S22.63 3 16 3Zm0 21.5a9.4 9.4 0 0 1-4.8-1.32l-.35-.2-4.12.9.92-4-.23-.37A9.46 9.46 0 0 1 6.5 15C6.5 9.75 10.75 5.5 16 5.5S25.5 9.75 25.5 15 21.25 24.5 16 24.5Zm5.26-7.12c-.29-.14-1.7-.84-1.96-.94-.26-.1-.45-.14-.64.14-.19.29-.74.94-.9 1.13-.17.19-.34.22-.63.07-.29-.14-1.22-.45-2.33-1.43-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.44.13-.59.13-.13.29-.34.44-.51.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.51-.07-.14-.64-1.54-.88-2.11-.23-.55-.47-.48-.64-.49-.17-.01-.36-.01-.55-.01-.19 0-.51.07-.78.36-.26.29-1 1-1 2.43s1.03 2.82 1.17 3.01c.14.19 2.03 3.1 4.92 4.35.69.3 1.22.47 1.64.6.69.22 1.32.19 1.81.11.55-.08 1.7-.7 1.94-1.37.24-.67.24-1.25.17-1.37-.07-.12-.26-.19-.55-.33Z"/>
+  </svg>
+</a>
+
+<!-- Sticky CTA — mobile, glisse depuis le bas après le hero -->
+<div class="sticky-cta" id="stickyCta" aria-hidden="true">
+  <span class="sticky-cta-txt">Retrouve ta vidéo maintenant</span>
+  <button class="sticky-cta-btn" onclick="sc('selection');document.getElementById('stickyCta').classList.remove('show')">Voir mon match</button>
+</div>
+
+<div class="hero">
+  <div class="h-glow" aria-hidden="true"></div>
+  <img class="h-player-img" src="images/joueur.jpg" alt="" aria-hidden="true" width="960" height="1280" fetchpriority="high"/>
+  <div class="h-rec" aria-hidden="true"><span class="h-rec-dot"></span>REC</div>
+  <div class="h-fade"></div>
+  <div class="h-fade2"></div>
+  <div class="h-body">
+    <div class="h-kicker"><span class="k-dot"></span>Foot à 5 · Casablanca</div>
+    <h1 class="h-h1">
+      <span class="blk">Tu viens de</span>
+      <span class="blk">marquer.</span>
+    </h1>
+    <div class="h-darija">Matensach.</div>
+    <p class="h-desc">Sur les terrains équipés, chaque match est filmé automatiquement. <strong>Scanne le QR code du terrain et retrouve ta vidéo</strong>, sans app ni compte.</p>
+    <div class="h-launch"><span class="l-dot"></span>Bientôt sur les terrains de Casablanca</div>
+    <div class="h-btns">
+      <button class="btn-p" onclick="sc('selection')">Voir mon match</button>
+      <button class="btn-g" onclick="sc('how')">Comment ça marche</button>
+      <button class="btn-g" onclick="partagerMyMatch()" aria-label="Partager MyMatch sur WhatsApp">Partager MyMatch</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat reveal delay-1"><div class="stat-v">100%</div><div class="stat-l">Du match filmé,<br>du début à la fin</div></div>
+  <div class="stat reveal delay-2"><div class="stat-v">HD</div><div class="stat-l">Caméra grand angle<br>sur tout le terrain</div></div>
+  <div class="stat reveal delay-3"><div class="stat-v">10s</div><div class="stat-l">Pour accéder<br>à ta vidéo</div></div>
+  <div class="stat reveal delay-4"><div class="stat-v">14j</div><div class="stat-l">Vidéo conservée<br>et téléchargeable</div></div>
+</div>
+
+<section id="apercu">
+  <div class="ap-grid">
+    <div>
+      <div class="ey reveal">Aperçu</div>
+      <h2 class="sh2 reveal">Ce que tu reçois<br>après chaque match</h2>
+      <p class="sp reveal delay-1">Chaque match joué sur un terrain équipé est filmé en entier, en HD. La vidéo est disponible en quelques minutes, sans aucune intervention de ta part.</p>
+      <div class="ap-note reveal delay-2"><strong>Revois toutes tes actions.</strong> Tes buts, tes erreurs, tes combinaisons avec tes coéquipiers. Tout est là, prêt à être partagé ou analysé.</div>
+    </div>
+    <div class="vcard reveal-right delay-1">
+      <div class="vp" id="vp" onclick="togglePlay()">
+        <svg class="vp-thumb" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="1600" height="900" fill="#1A3326"/>
+          <path d="M340 240 H1260 L1540 860 H60 Z" fill="#2A4A3A"/>
+          <g fill="rgba(255,255,255,.04)"><path d="M340 240 H432 L246 860 H60 Z"/><path d="M616 240 H708 L706 860 H520 Z"/><path d="M892 240 H984 L1166 860 H980 Z"/></g>
+          <g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3"><path d="M340 240 H1260 L1540 860 H60 Z"/><path d="M800 240 V860"/><ellipse cx="800" cy="520" rx="120" ry="64"/></g>
+          <g stroke-width="3"><circle cx="690" cy="470" r="14" fill="#E8873F" stroke="#fff"/><circle cx="880" cy="400" r="14" fill="#E8873F" stroke="#fff"/><circle cx="1010" cy="600" r="14" fill="#E8873F" stroke="#fff"/><circle cx="520" cy="640" r="14" fill="#E8873F" stroke="#fff"/><circle cx="780" cy="560" r="14" fill="#FBF7EE" stroke="#1F3B2D"/><circle cx="960" cy="480" r="14" fill="#FBF7EE" stroke="#1F3B2D"/><circle cx="1120" cy="540" r="14" fill="#FBF7EE" stroke="#1F3B2D"/><circle cx="620" cy="380" r="14" fill="#FBF7EE" stroke="#1F3B2D"/></g>
+          <circle cx="990" cy="598" r="7" fill="#fff"/>
+        </svg>
+        <div class="vp-grain"></div>
+        <div class="vp-dark"></div>
+        <div class="vp-tc" id="vp-tc">00:00:00</div>
+        <div class="vp-play" id="vp-play">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#1F3B2D"><polygon points="5,3 19,12 5,21"/></svg>
+        </div>
+        <div class="vp-badge">HD</div>
+        <div class="vp-meta">
+          <div class="vp-meta-l">Terrain 3<br>Aujourd’hui · 20h30</div>
+          <div class="vp-meta-r">60:00</div>
+        </div>
+      </div>
+      <div class="pctrl">
+        <svg id="playIco" width="15" height="15" viewBox="0 0 24 24" fill="#666" style="cursor:pointer;flex-shrink:0" onclick="togglePlay()"><polygon points="5,3 19,12 5,21"/></svg>
+        <span class="pt" id="tCur">00:00</span>
+        <div class="prog" onclick="scrub(event)"><div class="pfill" id="pFill"></div></div>
+        <span class="pt">60:00</span>
+      </div>
+      <div class="vacts">
+        <button class="vb pr">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9l-7 7-7-7"/></svg>
+          Télécharger
+        </button>
+        <button class="vb">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Partager
+        </button>
+      </div>
+      <div class="moments-placeholder">
+        <div class="mph-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8873F" stroke-width="2" opacity=".6"><polygon points="5,3 19,12 5,21"/></svg>
+        </div>
+        <div class="mph-text">
+          <strong>Bientôt disponible</strong>
+          Découpe automatique de tes meilleurs moments.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="night-s">
+  <div class="night-bg" role="img" aria-label="Ballon corail sur un terrain de foot à 5, de nuit"></div>
+  <div class="night-ov"></div>
+  <div class="night-cont">
+    <div class="night-txt">
+      <div class="night-ey reveal">Matchs du soir</div>
+      <div class="night-q reveal delay-1">Le terrain s’allume.<br><span class="acc">Ta vidéo aussi.</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="alt light" id="selection">
+  <div class="ey reveal">Trouver mon match</div>
+  <h2 class="sh2 reveal">T’as fini ton match ?<br>Retrouve ta vidéo.</h2>
+  <p class="sp reveal delay-1">Aucune inscription. Aucune app. Ton match est là.</p>
+  <div class="flow-wrap">
+    <div class="flow-tabs">
+      <button class="ftab active" id="tab1" onclick="goTab(1)"><span class="tn">01</span>Club</button>
+      <button class="ftab" id="tab2" onclick="goTab(2)"><span class="tn">02</span>Terrain</button>
+      <button class="ftab" id="tab3" onclick="goTab(3)"><span class="tn">03</span>Date</button>
+      <button class="ftab" id="tab4" onclick="goTab(4)"><span class="tn">04</span>Match</button>
+    </div>
+    <div class="fpanel active" id="p1">
+      <div class="flbl">Sur quel complexe tu as joué ?</div>
+      <div class="club-opt">
+        <div class="club-ico" aria-hidden="true"><svg viewBox="0 0 40 40" width="100%" height="100%"><rect x="5" y="9" width="30" height="22" rx="3" fill="none" stroke="#E8873F" stroke-width="2.4"/><path d="M20 9 V31" stroke="#E8873F" stroke-width="2.4"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="#E8873F" stroke-width="2.4"/></svg></div>
+        <div>
+          <div class="club-n">City Foot 5</div>
+          <div class="club-s">Casablanca centre · 13 terrains · 6 filmés</div>
+        </div>
+        <div class="club-chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1F3B2D" stroke-width="3.5"><polyline points="20,6 9,17 4,12"/></svg></div>
+      </div>
+      <div style="margin-top:20px"><button class="btn-p" onclick="goTab(2)">Suivant</button></div>
+    </div>
+    <div class="fpanel" id="p2">
+      <div class="flbl"><strong>Quel terrain ?</strong> Les verts sont filmés, les grisés sont standard.</div>
+      <div class="tgrid" id="terrainGrid"></div>
+      <div class="tleg"><span style="color:var(--green)">&#9632;</span> Filmé &nbsp;&nbsp;<span style="color:var(--muted)">&#9632;</span> Standard</div>
+    </div>
+    <div class="fpanel" id="p3">
+      <div class="flbl"><strong>Quel jour ?</strong> Les vidéos sont disponibles 14 jours après le match.</div>
+      <div class="drow" id="dateRow"></div>
+      <div id="dateMsg" style="display:none;margin-top:16px;color:var(--muted2);font-family:'Archivo',sans-serif;font-size:15px;letter-spacing:.5px"></div>
+    </div>
+    <div class="fpanel" id="p4">
+      <div class="flbl"><strong>Quelle heure ?</strong> Sélectionne le créneau de ton match.</div>
+      <div class="tgrid" id="heureGrid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px"></div>
+      <button class="btn-p" id="btnVoir" style="opacity:.35;cursor:not-allowed" disabled onclick="goToPlayer()">Voir mon match</button>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="ey reveal">Comment ça marche</div>
+  <h2 class="sh2 reveal">Zéro app.<br>Zéro compte.</h2>
+  <p class="sp reveal delay-1" style="margin-bottom:40px">Le terrain enregistre tout. Toi tu joues.</p>
+  <div class="how-list">
+    <div class="how-item reveal delay-1">
+      <div class="how-n">01</div>
+      <div>
+        <div class="how-t">Scanne le QR Code sur le terrain</div>
+        <div class="how-d">Chaque terrain filmé a son propre QR Code en bordure de terrain. Tu sors du match, tu scannes. Aucune app à télécharger, aucun compte à créer.</div>
+      </div>
+    </div>
+    <div class="how-item reveal delay-2">
+      <div class="how-n">02</div>
+      <div>
+        <div class="how-t">Sélectionne ton terrain et ta date</div>
+        <div class="how-d">Le système retrouve ta vidéo parmi les enregistrements du jour. Tu sélectionnes le terrain et l’heure de ton match. Moins de 10 secondes.</div>
+      </div>
+    </div>
+    <div class="how-item reveal delay-3">
+      <div class="how-n">03</div>
+      <div>
+        <div class="how-t">Regarde, télécharge, partage</div>
+        <div class="how-d">Vidéo HD du match complet. Télécharge direct sur ton téléphone et partage avec tes coéquipiers en un tap.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="casa-s">
+  <img class="casa-img" src="images/mosquee-hassan2.jpg" alt="La mosquée Hassan II à Casablanca, au coucher du soleil"/>
+  <div class="casa-tint"></div>
+  <div class="casa-ov"></div>
+  <div class="casa-cont">
+    <div class="casa-txt">
+      <div class="casa-ey reveal">Casablanca</div>
+      <div class="casa-q reveal-right">Le talent casablancais<br>mérite <span class="acc">d’être filmé.</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="light" id="founders">
+  <div class="ey reveal">Pourquoi MyMatch</div>
+  <h2 class="sh2 reveal">Deux joueurs.<br>Un projet né du terrain.</h2>
+  <p class="sp reveal delay-1" style="margin-bottom:44px">Des centaines de matchs joués à Casablanca. Des années de compétitions serrées, de matchs qui comptaient vraiment. Et jamais eu l’occasion de revoir une seule action.</p>
+  <div class="founders">
+    <div class="fc reveal-left">
+      <div class="fc-role">Co-fondateur · MyMatch</div>
+      <div class="fc-open">“</div>
+      <p class="fc-q">On jouait des matchs qui comptaient vraiment pour nous. Et à chaque défaite, on se disputait parce que personne ne savait vraiment ce qui s’était passé. Tu parles de mémoire, tu te rappelles ce que tu veux bien. <b>C’est pour ça qu’on a créé MyMatch — pour que les matchs qui comptent restent.</b></p>
+      <div class="fc-name">Mohamed</div>
+      <div class="fc-sub">800+ matchs · Casablanca</div>
+    </div>
+    <div class="fc reveal-right">
+      <div class="fc-role">Co-fondateur · MyMatch</div>
+      <div class="fc-open">“</div>
+      <p class="fc-q">Grand passionné de football, j’ai joué plus de 300 matchs à City Foot 5. À chaque fin de match, je trouvais ça dommage de ne pas avoir de rediffusion pour revoir mes plus belles actions, mes meilleurs buts, mais aussi les erreurs commises — celles qu’on oublie trop vite et qui nous empêchent de progresser. <b>Pour progresser, il faut revoir. Pour revoir, il faut une vidéo.</b> C’est pour ça que MyMatch a été créé.</p>
+      <div class="fc-name">Ghali</div>
+      <div class="fc-sub">300+ matchs · Casablanca</div>
+    </div>
+  </div>
+</section>
+
+<section class="sports-s" id="sports">
+  <div class="sports-head">
+    <div class="ey reveal">Plusieurs sports, un seul réflexe</div>
+    <h2 class="sports-h reveal delay-1">Le foot à 5 d’abord.<br><span class="acc">Le padel et le basket ensuite.</span></h2>
+    <p class="sp reveal delay-2">Le même principe sur chaque terrain : une caméra fixe, un QR code, ta vidéo sur ton téléphone.</p>
+  </div>
+  <div class="sports-grid">
+    <article class="sport-card reveal">
+      <div class="sport-img" role="img" aria-label="Joueur de foot à 5 en pleine frappe" style="--img:url('images/hero-action.jpg');--pos:62% center"></div>
+      <div class="sport-info"><span class="sport-name">Foot à 5</span><span class="sport-st is-live"><span class="st-dot"></span>Le premier sport filmé</span></div>
+    </article>
+    <article class="sport-card reveal delay-1">
+      <div class="sport-img" role="img" aria-label="Joueur de padel qui saute pour un smash" style="--img:url('images/padel.jpg');--pos:center 30%"></div>
+      <div class="sport-info"><span class="sport-name">Padel</span><span class="sport-st">Bientôt</span></div>
+    </article>
+    <article class="sport-card reveal delay-2">
+      <div class="sport-img" role="img" aria-label="Joueur de basket qui monte au panier" style="--img:url('images/basket.jpg');--pos:center 30%"></div>
+      <div class="sport-info"><span class="sport-name">Basket</span><span class="sport-st">Bientôt</span></div>
+    </article>
+  </div>
+</section>
+
+<div class="poster-s">
+  <div class="poster-bg" role="img" aria-label="Joueur qui célèbre un but sur un terrain de foot à 5, de nuit"></div>
+  <div class="poster-cont">
+    <div class="poster-ey reveal">Ton but. Ta vidéo.</div>
+    <div class="poster-big reveal delay-1">Chaque but<br>mérite <span class="acc">d’être revu.</span></div>
+    <button class="btn-p reveal delay-2" onclick="sc('selection')">Voir mon match</button>
+  </div>
+</div>
+
+<section class="alt" id="faq">
+  <div class="ey reveal">Questions fréquentes</div>
+  <h2 class="sh2 reveal">On répond<br>à tout.</h2>
+  <div class="faq-list reveal delay-1">
+    <div class="faq-item open">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="true">
+        Combien de temps ma vidéo reste disponible ?
+        <span class="faq-ico"><svg width="10" height="10" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="7" y1="0" x2="7" y2="14"/><line x1="0" y1="7" x2="14" y2="7"/></svg></span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Ta vidéo est conservée <strong>14 jours</strong> après le match. Passé ce délai, elle est automatiquement supprimée. Tu peux la télécharger à tout moment pendant cette période pour la conserver définitivement.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Faut-il une app ou un compte pour accéder à ma vidéo ?
+        <span class="faq-ico"><svg width="10" height="10" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="7" y1="0" x2="7" y2="14"/><line x1="0" y1="7" x2="14" y2="7"/></svg></span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner"><strong>Non, aucune app ni compte.</strong> Tu scannes le QR code sur le terrain, tu sélectionnes ta date et ton créneau horaire, et ta vidéo s'affiche directement dans ton navigateur en moins de 10 secondes.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Quels terrains sont filmés ?
+        <span class="faq-ico"><svg width="10" height="10" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="7" y1="0" x2="7" y2="14"/><line x1="0" y1="7" x2="14" y2="7"/></svg></span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Seuls les terrains <strong>équipés d’une caméra MyMatch</strong> sont filmés. Tu les reconnais au QR code affiché en bordure de terrain.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Quelle est la qualité de la vidéo ?
+        <span class="faq-ico"><svg width="10" height="10" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="7" y1="0" x2="7" y2="14"/><line x1="0" y1="7" x2="14" y2="7"/></svg></span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Chaque match est filmé <strong>en HD</strong> par une caméra fixe grand angle qui couvre tout le terrain. La vidéo couvre le match en entier, du coup d'envoi au coup de sifflet.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+        Est-ce payant ?
+        <span class="faq-ico"><svg width="10" height="10" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="7" y1="0" x2="7" y2="14"/><line x1="0" y1="7" x2="14" y2="7"/></svg></span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">L'accès à ta vidéo est <strong>inclus dans la location du terrain</strong>. Aucun frais supplémentaire, aucun abonnement. Tu joues sur un terrain filmé — ta vidéo est là.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-logo">
+      <svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg>
+      <div class="fl">My<span>Match</span></div>
+    </div>
+    <div class="fsocial" aria-label="Réseaux sociaux">
+      <a href="#" aria-label="Instagram" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a href="#" aria-label="TikTok" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5c.35 0 .68.05 1 .14" stroke-linecap="round"/>
+          <path d="M14 4c0 2.76 2.24 5 5 5" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="#" aria-label="WhatsApp" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M3 21l1.65-4.55A8.5 8.5 0 1 1 8.45 19.4L3 21Z" stroke-linejoin="round"/>
+          <path d="M8.5 9.5c.4 1.5 1.5 3.2 3 4.5 1.3 1.2 2.7 1.6 3.5 1.5l1-1c.3-.3.8-.4 1.1-.2l1.4.8c.3.2.4.6.3.9-.4 1-1.3 1.8-2.4 2-1.7.3-3.9-.3-6-2.3-2-2.1-2.6-4.3-2.3-6 .2-1.1 1-2 2-2.4.3-.1.7 0 .9.3l.8 1.4c.2.3.1.8-.2 1.1l-1 1c-.1.1-.1.3-.1.4Z" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="fcopy">© 2026 MyMatch · Casablanca</div>
+    <div class="flinks-leg" role="navigation" aria-label="Liens légaux">
+      <a href="#" rel="nofollow">Mentions légales</a>
+      <a href="#" rel="nofollow">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function sc(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(window.__lenis){ window.__lenis.scrollTo(el, { offset:-60, duration:1.4 }); }
+  else el.scrollIntoView({behavior:'smooth'});
+}
+function toggleDrawer(){
+  const d=document.getElementById('drawer'),h=document.getElementById('ham'),o=document.getElementById('drawerOv');
+  const open=d.classList.toggle('open');
+  h.classList.toggle('open',open);o.classList.toggle('open',open);
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('ham').classList.remove('open');
+  document.getElementById('drawerOv').classList.remove('open');
+}
+let playing=false,prog=0,iv=null;
+function togglePlay(){
+  playing=!playing;
+  const ico=document.getElementById('playIco'),pb=document.getElementById('vp-play');
+  if(playing){
+    ico.innerHTML='<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    pb.style.opacity='0';
+    iv=setInterval(()=>{
+      prog=Math.min(prog+0.003,1);
+      const s=Math.floor(prog*3600);
+      document.getElementById('tCur').textContent=pad(Math.floor(s/60))+':'+pad(s%60);
+      document.getElementById('pFill').style.width=(prog*100)+'%';
+      document.getElementById('vp-tc').textContent='00:'+pad(Math.floor(s/60))+':'+pad(s%60);
+      if(prog>=1){clearInterval(iv);playing=false;pb.style.opacity='1';ico.innerHTML='<polygon points="5,3 19,12 5,21"/>';}
+    },100);
+  }else{clearInterval(iv);pb.style.opacity='1';ico.innerHTML='<polygon points="5,3 19,12 5,21"/>';}
+}
+function scrub(e){
+  prog=Math.max(0,Math.min(1,e.offsetX/e.currentTarget.offsetWidth));
+  const s=Math.floor(prog*3600);
+  document.getElementById('tCur').textContent=pad(Math.floor(s/60))+':'+pad(s%60);
+  document.getElementById('pFill').style.width=(prog*100)+'%';
+}
+function pad(n){return String(n).padStart(2,'0');}
+function goTab(n){
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('tab'+i).classList.toggle('active',i===n);
+    document.getElementById('p'+i).classList.toggle('active',i===n);
+  });
+}
+let selT=null,selD=null,selH=null;
+const filmed=[1,2,3,4,5,6];
+const grid=document.getElementById('terrainGrid');
+for(let i=1;i<=13;i++){
+  const f=filmed.includes(i);
+  const btn=document.createElement('button');
+  btn.className='tbtn'+(f?' f':'');
+  btn.innerHTML='<span style="font-size:18px;font-weight:700">'+i+'</span><span class="ts">'+(f?'Filmé':'Std')+'</span>';
+  if(f){(function(num,el){el.onclick=function(){document.querySelectorAll('.tbtn.f').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selT=num;goTab(3);fetchCreneaux();};})(i,btn);}
+  grid.appendChild(btn);
+}
+
+const days=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+const dr=document.getElementById('dateRow');
+const today=new Date();
+for(let i=13;i>=0;i--){
+  const d=new Date(today);d.setDate(today.getDate()-i);
+  const p=document.createElement('div');
+  p.className='dpill'+(i===0?' sel':'');
+  if(i===0)selD=d;
+  p.innerHTML='<div class="dday">'+days[d.getDay()]+'</div><div class="dnum">'+d.getDate()+'</div><div class="dmon">'+months[d.getMonth()]+'</div>'+(i===0?'<div class="tdot"></div>':'');
+  (function(date,el){el.onclick=function(){
+    document.querySelectorAll('.dpill').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel');selD=date;
+    if(selT){fetchCreneaux();}
+  };})(d,p);
+  dr.appendChild(p);
+}
+
+const hg=document.getElementById('heureGrid');
+const dateMsg=document.getElementById('dateMsg');
+async function fetchCreneaux(){
+  if(!selT||!selD)return;
+  const y=selD.getFullYear();
+  const mo=String(selD.getMonth()+1).padStart(2,'0');
+  const dd=String(selD.getDate()).padStart(2,'0');
+  const dateStr=y+'-'+mo+'-'+dd;
+  selH=null;checkBtnVoir();
+  dateMsg.textContent='Recherche des vidéos…';
+  dateMsg.style.display='block';
+  hg.innerHTML='';
+  try{
+    const clubIds={'City Foot 5':'city-foot-5','Arena Bouskoura':'arena-bouskoura','Green Sports Park':'green-sports-park'};
+    const clubId=clubIds['City Foot 5'];
+    const terrainId='terrain-'+selT;
+    const url='https://mymatch.ma/api/creneaux?club='+clubId+'&terrain='+terrainId+'&date='+dateStr;
+    console.log('[MyMatch] fetchCreneaux →', url);
+    const res=await fetch(url);
+    const data=await res.json();
+    console.log('[MyMatch] réponse API →', data);
+    if(!data||!data.length){
+      dateMsg.textContent='Aucune vidéo disponible pour ce terrain à cette date.';
+      return;
+    }
+    dateMsg.style.display='none';
+    hg.innerHTML='';
+    data.forEach(function(c){
+      const h=typeof c==='string'?c:(c.heure_debut||c.heure||c.debut||c.time||String(c));
+      const btn=document.createElement('button');
+      btn.className='tbtn f';
+      btn.style.aspectRatio='auto';
+      btn.style.padding='10px 4px';
+      btn.innerHTML='<span style="font-size:13px;font-weight:600;letter-spacing:.5px">'+h+'</span>';
+      btn.onclick=function(){
+        document.querySelectorAll('#heureGrid .tbtn').forEach(b=>b.classList.remove('sel'));
+        btn.classList.add('sel');selH=h;checkBtnVoir();
+      };
+      hg.appendChild(btn);
+    });
+    goTab(4);
+  }catch(e){
+    dateMsg.textContent='Erreur de connexion. Réessaie.';
+  }
+}
+
+function checkBtnVoir(){
+  const btn=document.getElementById('btnVoir');
+  const ok=selT&&selD&&selH;
+  btn.disabled=!ok;
+  btn.style.opacity=ok?'1':'0.35';
+  btn.style.cursor=ok?'pointer':'not-allowed';
+}
+
+
+function formatDateYYYYMMDD(date){
+  const d=new Date(date);
+  const y=d.getFullYear();
+  const mo=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  return y+'-'+mo+'-'+dd;
+}
+
+function goToPlayer(){
+  if(!selT||!selD||!selH)return;
+  const params=new URLSearchParams({
+    club:'City Foot 5',
+    terrain:'Terrain '+selT,
+    date:formatDateYYYYMMDD(selD),
+    heure:selH
+  });
+  cinematicTransitionTo('Player.html?'+params.toString());
+}
+
+/* Transition cinématique : panneau noir qui monte du bas, révèle le
+   wordmark MYMATCH, puis navigue vers la cible. Respect reduced-motion. */
+function cinematicTransitionTo(href){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    window.location.href = href; return;
+  }
+  let wipe = document.querySelector('.page-wipe');
+  if (!wipe){
+    wipe = document.createElement('div');
+    wipe.className = 'page-wipe';
+    wipe.innerHTML = '<div class="pw-mark"><svg class="logo-mark" width="58" height="26" viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg><span>My<span class="ac">Match</span></span></div>';
+    document.body.appendChild(wipe);
+  }
+  if (window.__lenis && window.__lenis.stop) window.__lenis.stop();
+  requestAnimationFrame(()=>{ wipe.classList.add('is-active'); });
+  setTimeout(()=>{ window.location.href = href; }, 720);
+}
+
+/* Partage MyMatch : ouvre WhatsApp avec un message pré-rempli.
+   wa.me/?text= fonctionne sur mobile (app native) et desktop (web). */
+function partagerMyMatch(){
+  const message = 'Découvre MyMatch : revois tes matchs de foot à 5 à Casablanca, sans app ni compte. mymatch.ma';
+  window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener');
+}
+
+/* ============================================================
+   LENIS + GSAP + ScrollTrigger — pile cinématique.
+   ============================================================
+   - Lenis : smooth scrolling natif, synchronisé avec gsap.ticker.
+   - GSAP : entrée letter-by-letter du titre, compteurs, parallax
+            d'arrière-plan, header scrollé, horizontal scroll sur
+            les 3 cards "Comment ça marche".
+   ============================================================ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* 1. SPLIT du titre hero — chaque ligne (.blk) est enveloppée dans un
+     .blk-inner pour permettre le slide-up GSAP sans casser le wrapping. */
+  document.querySelectorAll('.h-h1 .blk').forEach(function(blk){
+    if (blk.dataset.split === '1') return;
+    var inner = document.createElement('span');
+    inner.className = 'blk-inner';
+    while (blk.firstChild) inner.appendChild(blk.firstChild);
+    blk.appendChild(inner);
+    blk.dataset.split = '1';
+  });
+
+  /* 2. Attend que GSAP, ScrollTrigger ET Lenis soient chargés (defer). */
+  function ready(){ return window.gsap && window.ScrollTrigger && window.Lenis; }
+  function start(){
+    if (!ready()){ return setTimeout(start, 60); }
+    var gsap = window.gsap, ScrollTrigger = window.ScrollTrigger, Lenis = window.Lenis;
+    gsap.registerPlugin(ScrollTrigger);
+    document.documentElement.classList.add('gsap-ready');
+
+    /* Lenis : smooth-scroll. Désactivé si reduced-motion OU sur écran
+       tactile (pointer:coarse) — sur mobile/tablette tactile, Lenis
+       provoque des sauts / décalages de scroll, le scroll natif iOS/
+       Android reste bien plus fiable. ScrollTrigger fonctionne sans
+       lui. */
+    var lenis = null;
+    var canSmooth = !reduced && window.matchMedia('(pointer: fine)').matches;
+    if (canSmooth){
+      lenis = new Lenis({
+        duration: 1.15,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true,
+        smoothTouch: false,
+        touchMultiplier: 1.2,
+      });
+      // Synchronise Lenis avec ScrollTrigger pour que les triggers
+      // restent en phase avec le scroll fluide.
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      // Exposé globalement pour les ancres internes (sc()) qui appellent
+      // scrollIntoView — on les redirige sur lenis.scrollTo.
+      window.__lenis = lenis;
+    }
+
+    /* 3. ENTRÉE TITRE HERO — chaque ligne slide up en cascade (0.15s). */
+    if (!reduced){
+      gsap.set('.h-h1 .blk-inner', { yPercent: 110, opacity: 0 });
+      gsap.to('.h-h1 .blk-inner', {
+        yPercent: 0, opacity: 1,
+        duration: 1.05, ease: 'power3.out',
+        stagger: 0.15,
+        delay: 0.25,
+      });
+    }
+
+    /* 4. STATS — compteurs GSAP from 0 → valeur finale. */
+    document.querySelectorAll('.stat-v').forEach(function(el){
+      var raw = (el.textContent || '').trim();
+      var m = raw.match(/^(\d+)(.*)$/);
+      if (!m){ return; }
+      var target = parseInt(m[1], 10);
+      var suffix = m[2] || '';
+      if (reduced){ return; } // garde la valeur affichée
+      var obj = { v: 0 };
+      el.textContent = '0' + suffix;
+      ScrollTrigger.create({
+        trigger: el, start: 'top 85%', once: true,
+        onEnter: function(){
+          gsap.to(obj, {
+            v: target, duration: 1.6, ease: 'power2.out',
+            onUpdate: function(){ el.textContent = Math.round(obj.v) + suffix; }
+          });
+        }
+      });
+    });
+
+    /* 6. HEADER — toggle .scrolled au-delà de 80px de scroll. */
+    ScrollTrigger.create({
+      start: 80, end: 'max',
+      toggleClass: { className: 'scrolled', targets: 'nav' }
+    });
+
+    /* 7. HORIZONTAL SCROLL — les 3 cards #how défilent latéralement
+       pendant que la section est épinglée. Désactivé sur mobile et
+       reduced-motion (fallback : disposition verticale d'origine). */
+    var howSec = document.getElementById('how');
+    var howList = howSec && howSec.querySelector('.how-list');
+    if (howList && !reduced && window.matchMedia('(min-width: 1024px)').matches){
+      howSec.classList.add('is-horizontal');
+      howList.classList.add('how-list-h');
+      var distance = function(){
+        return Math.max(0, howList.scrollWidth - window.innerWidth + 80);
+      };
+      gsap.to(howList, {
+        x: function(){ return -distance(); },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: howSec,
+          start: 'top top',
+          end: function(){ return '+=' + distance(); },
+          pin: true,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+    }
+
+    /* 8. REVEALS — stagger PAR SECTION (0.15s) : chaque section
+       déclenche en cascade les .reveal* qu'elle contient, façon Awwwards.
+       Les éléments isolés (pas dans une section) fallback en ScrollTrigger
+       individuel pour ne rien laisser invisible. */
+    var sectionSelectors = 'section, .hero, .stats, .cf-s, .night-s, .casa-s, .mural-s, footer';
+    var sections = document.querySelectorAll(sectionSelectors);
+    var handled = new WeakSet();
+    sections.forEach(function(sec){
+      var children = sec.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+      if (!children.length) return;
+      // Marque comme traités pour ne pas re-handler en mode isolé.
+      children.forEach(function(c){ handled.add(c); });
+      ScrollTrigger.create({
+        trigger: sec, start: 'top 82%', once: true,
+        onEnter: function(){
+          // Animation directe via gsap (overrides la classe .visible CSS).
+          gsap.fromTo(children,
+            { autoAlpha: 0, y: 36 },
+            { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out',
+              stagger: 0.15,
+              onStart: function(){ children.forEach(function(c){ c.classList.add('visible'); }); }
+            }
+          );
+        }
+      });
+    });
+    // Reveals orphelins (hors section ci-dessus) : entrée individuelle.
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){
+      if (handled.has(el)) return;
+      ScrollTrigger.create({
+        trigger: el, start: 'top 88%', once: true,
+        onEnter: function(){
+          el.classList.add('visible');
+          gsap.fromTo(el, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+        }
+      });
+    });
+
+    // Force un refresh une fois les fonts chargées (mesures stables).
+    if (document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
+    }
+
+    /* Refresh sur changement d'orientation / address bar iOS.
+       Évite les positions "gelées" qui laissent des reveals invisibles. */
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){ ScrollTrigger.refresh(); }, 150);
+    }, { passive: true });
+    window.addEventListener('orientationchange', function(){
+      setTimeout(function(){ ScrollTrigger.refresh(); }, 200);
+    });
+
+    /* Filet de sécurité : si après 2.5s un .reveal* n'est toujours pas
+       visible mais est déjà dans le viewport, on force la révélation.
+       Couvre les cas iOS où l'address bar redimensionne juste avant
+       que le ScrollTrigger ne fire. */
+    setTimeout(function(){
+      var vh = window.innerHeight;
+      document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)').forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if (r.top < vh && r.bottom > 0){
+          el.classList.add('visible');
+          gsap.set(el, { autoAlpha: 1, y: 0, x: 0, clearProps: 'transform,opacity,visibility' });
+        }
+      });
+    }, 2500);
+  }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+})();
+
+/* ============================================================
+   ANIMATION 1 — Machine à écrire sur le sous-titre "Matensach."
+   Vide l'élément, attend 1100 ms, puis ré-écrit le texte caractère
+   par caractère (90 ms entre chaque lettre) avec un curseur "|" qui
+   clignote pendant l'écriture et disparaît une fois terminé.
+   ============================================================ */
+(function(){
+  var el = document.querySelector('.h-darija');
+  if (!el) return;
+
+  // Si l'utilisateur préfère réduire les animations, on garde le texte
+  // tel quel et on n'enclenche pas la machine à écrire.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var text = (el.textContent || '').trim();
+  if (!text) return;
+
+  // Vide l'élément et insère un curseur clignotant en attente.
+  el.textContent = '';
+  var cursor = document.createElement('span');
+  cursor.className = 'darija-cursor';
+  cursor.textContent = '|';
+  el.appendChild(cursor);
+
+  // Écriture caractère par caractère, 90 ms entre chaque lettre,
+  // démarrage 1100 ms après le chargement.
+  setTimeout(function startTyping(){
+    var i = 0;
+    function step(){
+      if (i < text.length){
+        cursor.insertAdjacentText('beforebegin', text.charAt(i));
+        i++;
+        setTimeout(step, 90);
+      } else {
+        // Fin : on retire le curseur.
+        if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+      }
+    }
+    step();
+  }, 1100);
+})();
+
+/* ============================================================
+   FALLBACK — si GSAP/Lenis ne sont pas chargés au bout d'1.5s,
+   on rétablit l'IntersectionObserver des reveals + un mini scroll
+   handler pour le state .scrolled du nav.
+   ============================================================ */
+(function(){
+  function gsapReady(){ return window.gsap && window.ScrollTrigger; }
+  function activate(){
+    if (gsapReady()) return;
+    // Reveals
+    if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){ entry.target.classList.add('visible'); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){ io.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el){ el.classList.add('visible'); });
+    }
+    // Header scroll state
+    var navEl = document.querySelector('nav');
+    function onSc(){
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (navEl){ if (y > 80) navEl.classList.add('scrolled'); else navEl.classList.remove('scrolled'); }
+    }
+    onSc();
+    window.addEventListener('scroll', onSc, { passive: true });
+    // Lettres du titre : si pas splittées par GSAP, on les rend visibles
+    document.querySelectorAll('.h-h1 .blk').forEach(function(blk){ blk.style.opacity = '1'; });
+  }
+  setTimeout(activate, 1500);
+})();
+
+/* ============================================================
+   LOADER — disparaît après 1.5s minimum (ou après window.load).
+   ============================================================ */
+(function(){
+  var ldr = document.getElementById('ldr');
+  if (!ldr) return;
+  var minDelay = 1500, t0 = performance.now();
+  function hide(){
+    var elapsed = performance.now() - t0;
+    var wait = Math.max(0, minDelay - elapsed);
+    setTimeout(function(){
+      ldr.classList.add('is-done');
+      setTimeout(function(){ if (ldr.parentNode) ldr.parentNode.removeChild(ldr); }, 700);
+    }, wait);
+  }
+  if (document.readyState === 'complete') hide();
+  else window.addEventListener('load', hide);
+})();
+
+/* ============================================================
+   EXPÉRIENCE v2 — moteur des micro-interactions.
+   Attend que GSAP soit prêt (classe .gsap-ready posée par la
+   pile principale), puis branche :
+     1. Barre de progression de scroll
+     2. Marquee infini, vitesse et sens liés au scroll
+     3. Boutons magnétiques (desktop)
+     4. Split-text des titres de section (lettres qui montent)
+     5. Réveil "wipe" des bandes photo (clip-path + dézoom)
+     6. Tilt 3D sur la carte vidéo et les cartes fondateurs
+     7. Curseur "PLAY" au survol de la vidéo
+     8. Particules lumineuses dans le hero (canvas)
+   Tout est désactivé si prefers-reduced-motion.
+   ============================================================ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine    = window.matchMedia('(pointer: fine)').matches;
+
+  function ready(){
+    return window.gsap && window.ScrollTrigger &&
+           document.documentElement.classList.contains('gsap-ready');
+  }
+  var tries = 0;
+  function start(){
+    if (!ready()){
+      if (++tries > 120) return;           // GSAP absent : on abandonne proprement
+      return setTimeout(start, 60);
+    }
+    var gsap = window.gsap;
+
+    /* 1. BARRE DE PROGRESSION — scaleX 0→1 sur toute la page. */
+    if (!reduced){
+      gsap.to('#scrollProgress', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: { start: 0, end: 'max', scrub: 0.3, invalidateOnRefresh: true }
+      });
+    }
+
+    /* 2. MARQUEE — boucle infinie parfaite (le contenu est dupliqué
+       en nombre pair de sets, on translate de -50%). La vitesse
+       augmente avec la vélocité du scroll et le sens s'inverse
+       quand on remonte. */
+    var track = document.getElementById('mqTrack');
+    if (track && !reduced){
+      var setHTML = track.innerHTML;
+      var setW = track.scrollWidth;
+      var copies = Math.max(1, Math.ceil((window.innerWidth * 1.2) / setW));
+      var html = '';
+      for (var i = 0; i < copies * 2; i++) html += setHTML;
+      track.innerHTML = html;
+      var mqTween = gsap.to(track, { xPercent: -50, ease: 'none', duration: 26, repeat: -1 });
+      window.ScrollTrigger.create({
+        onUpdate: function(self){
+          var v = Math.min(Math.abs(self.getVelocity()) / 1400, 2.5);
+          var ts = (self.direction < 0 ? -1 : 1) * (1 + v);
+          gsap.to(mqTween, { timeScale: ts, duration: 0.45, ease: 'power1.out', overwrite: true });
+        }
+      });
+    }
+
+    /* 3. BOUTONS MAGNÉTIQUES — le bouton suit légèrement le curseur
+       puis revient avec un rebond élastique. Desktop uniquement. */
+    if (fine && !reduced){
+      document.querySelectorAll('.btn-p, .btn-g, .nav-cta, .drawer-cta').forEach(function(btn){
+        btn.classList.add('is-magnet');
+        btn.addEventListener('mousemove', function(e){
+          var r = btn.getBoundingClientRect();
+          var dx = (e.clientX - r.left - r.width  / 2) / r.width;
+          var dy = (e.clientY - r.top  - r.height / 2) / r.height;
+          gsap.to(btn, { x: dx * 12, y: dy * 8, duration: 0.35, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', function(){
+          gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.45)' });
+        });
+      });
+    }
+
+    /* 4. SPLIT-TEXT — chaque titre de section est découpé en mots
+       (clip overflow) puis en lettres qui glissent vers le haut en
+       cascade à l'entrée dans le viewport. Préserve les <br>. */
+    function splitChars(el){
+      var frag = document.createDocumentFragment();
+      Array.prototype.slice.call(el.childNodes).forEach(function(node){
+        if (node.nodeType === 3){
+          node.textContent.split(/(\s+)/).forEach(function(part){
+            if (!part) return;
+            if (/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'w';
+            part.split('').forEach(function(ch){
+              var c = document.createElement('span'); c.className = 'c'; c.textContent = ch;
+              w.appendChild(c);
+            });
+            frag.appendChild(w);
+          });
+        } else {
+          frag.appendChild(node.cloneNode(true));   // <br>, <span>…
+        }
+      });
+      el.innerHTML = '';
+      el.appendChild(frag);
+    }
+    if (!reduced){
+      document.querySelectorAll('.sh2, .cf-ttl').forEach(function(h){
+        splitChars(h);
+        var chars = h.querySelectorAll('.c');
+        if (!chars.length) return;
+        gsap.set(chars, { yPercent: 115 });
+        window.ScrollTrigger.create({
+          trigger: h, start: 'top 88%', once: true,
+          onEnter: function(){
+            gsap.to(chars, {
+              yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.016
+            });
+          }
+        });
+      });
+    }
+
+    /* 6. TILT 3D — carte vidéo et cartes fondateurs s'inclinent
+       subtilement vers le curseur. Desktop uniquement. */
+    if (fine && !reduced){
+      document.querySelectorAll('.vcard').forEach(function(card){
+        card.addEventListener('mousemove', function(e){
+          var r = card.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width  - 0.5;
+          var py = (e.clientY - r.top)  / r.height - 0.5;
+          gsap.to(card, { rotateY: px * 5, rotateX: -py * 5, transformPerspective: 900, duration: 0.5, ease: 'power2.out' });
+        });
+        card.addEventListener('mouseleave', function(){
+          gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.8, ease: 'power3.out' });
+        });
+      });
+    }
+
+  }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+
+/* ============================================================
+   STICKY CTA — glisse depuis le bas après le hero sur mobile
+   ============================================================ */
+(function(){
+  var cta=document.getElementById('stickyCta');
+  if(!cta)return;
+  var threshold=window.innerHeight*0.85;
+  function onScroll(){
+    var y=window.scrollY||window.pageYOffset;
+    var sel=document.getElementById('selection');
+    var inSel=sel&&sel.getBoundingClientRect().top<window.innerHeight*0.6&&sel.getBoundingClientRect().bottom>0;
+    if(y>threshold&&!inSel){
+      cta.classList.add('show');cta.setAttribute('aria-hidden','false');
+    }else{
+      cta.classList.remove('show');cta.setAttribute('aria-hidden','true');
+    }
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+
+  /* 8. PARTICULES HERO — poussière lumineuse qui monte lentement.
+     Canvas 2D léger (55 points), en pause hors viewport / onglet
+     caché. Desktop pointer:fine uniquement. */
+  (function(){
+    var cv = document.getElementById('heroFx');
+    if (!cv) return;
+    if (reduced || !fine || window.innerWidth < 820){ cv.remove(); return; }
+    var hero = document.querySelector('.hero');
+    if (!hero) return;
+    var ctx = cv.getContext('2d');
+    var W, H, parts = [], raf = null, heroVis = false;
+
+    function size(){ W = cv.width = hero.offsetWidth; H = cv.height = hero.offsetHeight; }
+    function spawn(anyY){
+      return {
+        x: Math.random() * W,
+        y: anyY ? Math.random() * H : H + 12,
+        r: 0.6 + Math.random() * 1.8,
+        s: 0.15 + Math.random() * 0.45,
+        ph: Math.random() * Math.PI * 2,
+        a: 0.05 + Math.random() * 0.22
+      };
+    }
+    size();
+    for (var i = 0; i < 55; i++) parts.push(spawn(true));
+
+    function frame(){
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < parts.length; i++){
+        var p = parts[i];
+        p.y -= p.s;
+        p.ph += 0.006;
+        p.x += Math.sin(p.ph) * 0.18;
+        if (p.y < -12) parts[i] = spawn(false);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+        ctx.fillStyle = 'rgba(232,135,63,' + p.a + ')';
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(frame);
+    }
+    function setRun(){
+      var should = heroVis && !document.hidden;
+      if (should && raf === null){ raf = requestAnimationFrame(frame); }
+      else if (!should && raf !== null){ cancelAnimationFrame(raf); raf = null; }
+    }
+    new IntersectionObserver(function(entries){
+      heroVis = entries[0].isIntersecting; setRun();
+    }, { threshold: 0 }).observe(hero);
+    document.addEventListener('visibilitychange', setRun);
+    var szT;
+    window.addEventListener('resize', function(){
+      clearTimeout(szT); szT = setTimeout(size, 150);
+    }, { passive: true });
+  })();
+})();
+
+
+/* Intermède "Le terrain s'allume" : allume les projecteurs à l'entrée dans l'écran. */
+(function(){
+  var sec = document.querySelector('.night-s');
+  if (!sec) return;
+  if (!('IntersectionObserver' in window)){ sec.classList.add('is-on'); return; }
+  var io = new IntersectionObserver(function(entries){
+    if (entries[0].isIntersecting){ sec.classList.add('is-on'); io.disconnect(); }
+  }, { threshold: 0.35 });
+  io.observe(sec);
+})();
+
+
+/* Vidéo d'ambiance du haut de page : en pause si "réduire les animations" est activé. */
+(function(){
+  var v = document.querySelector('.h-video');
+  if (!v) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ v.removeAttribute('autoplay'); v.pause(); }
+})();
+
+/* FAQ accordéon — global scope (appelé depuis onclick dans le HTML) */
+function toggleFaq(btn){
+  var item=btn.parentElement;
+  var isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(i){
+    i.classList.remove('open');
+    i.querySelector('.faq-q').setAttribute('aria-expanded','false');
+  });
+  if(!isOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');}
+}
+</script>
+</body>
+</html>
