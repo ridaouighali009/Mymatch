@@ -101,30 +101,27 @@ Le script `detect_and_record.py` devrait vérifier ce statut toutes les 5 min. N
 - Domaine : mymatch.ma acheté via Genious Communication (registrar marocain agréé ANRT), DNS configuré, HTTPS actif via Certbot/Let's Encrypt.
 - Firewall : UFW actif, ports 22/80/443 seulement.
 - Purge automatique : cron à 3h du matin, script `/var/www/mymatch/purge.py`, supprime les vidéos dont `date_expiration < NOW()`.
-- Déploiement du site : le dossier `/var/www/mymatch/static` est un clone git du repo GitHub. Mise à jour = `cd /var/www/mymatch/static && git pull`. Ce n'est pas automatique, il faut le faire manuellement à chaque fois que des changements sont poussés sur GitHub.
+- Déploiement du site : le dossier `/var/www/mymatch/static` est un clone git du repo GitHub, **sur la branche `main`**. Mise à jour = `cd /var/www/mymatch/static && git pull`. Ce n'est pas automatique, il faut le faire manuellement à chaque fois que des changements sont poussés sur `main`.
 
 Check de santé effectué le 26/11/2026 : les 3 services (mymatch, nginx, postgresql) sont actifs, l'API répond correctement, le serveur a tenu 2 mois sans supervision ni incident. Usage disque : 17.6% (30Go libres sur 40Go — attention, dès qu'un vrai terrain enverra des matchs régulièrement, ce sera insuffisant, cf. section stockage ci-dessus).
 
 ## État du repository GitHub (ridaouighali009/Mymatch)
 
-Important : il n'y a pas de branche `main` utilisée comme branche principale stable. Le travail s'est fait sur plusieurs branches `claude/...` créées automatiquement par des sessions Claude Code successives. Le serveur est actuellement figé sur le commit `3306a34` (branche `claude/install-ui-ux-skill-yTgfh`), choisi après un `git reset --hard` suite à des modifications non désirées d'une session Claude Code.
+✅ **Depuis le 27/11/2026, `main` est la branche de production et l'unique source de vérité.** Le serveur (`/var/www/mymatch/static`) suit `main` (bascule faite le 27/11/2026 sur le commit `72febe6`, vérifiée : site OK, « Aucune vidéo disponible » affiché comme attendu).
 
-Branches connues à la pause :
+- **Mise à jour du site** : `cd /var/www/mymatch/static && git pull` (sur `main`). Pas de redémarrage nécessaire : Nginx sert les fichiers directement. Le backend `app.py` n'est pas dans le repo et se met à jour séparément.
+- **Retour arrière** si besoin : `git checkout claude/install-ui-ux-skill-yTgfh` dans `/var/www/mymatch/static` (ancienne prod, commit `3306a34`).
+- Tout nouveau travail part de `main` et y revient ; ne plus laisser traîner de branches `claude/*` non mergées.
 
-- `claude/install-ui-ux-skill-yTgfh` (HEAD du serveur actuellement, commit 3306a34)
-- `claude/charming-planck-fvyavw` (contient des évolutions postérieures — sélection multi-clubs, créneaux locaux, et un merge plus tardif incluant un skill ui-ux-pro-max volumineux — jamais mergées proprement vers le serveur, à évaluer avant de reprendre dessus)
-- `claude/add-match-redirect-5Lfzo`
-- `claude/review-claude-md-es2dh`
+Branches restantes :
 
-Une nouvelle version de `Player.html` (lecteur vidéo avec sidebar créneaux, specs auto, bloc expiration animé, bloc Instagram "but du mois") a été écrite en dehors de Claude Code et donnée au fondateur en téléchargement mais il n'est pas confirmé qu'elle ait été déployée sur GitHub ni sur le serveur. À vérifier en priorité.
+- `main` — production.
+- `claude/install-ui-ux-skill-yTgfh` — ancienne prod (`3306a34`), gardée uniquement comme point de retour arrière ; supprimable une fois `main` éprouvé.
+- Supprimées le 27/11/2026 : `claude/charming-planck-fvyavw` (contenu intégré à `main`), `claude/add-match-redirect-5Lfzo`, `claude/review-claude-md-es2dh` (obsolètes).
 
-### Bloquants avant de basculer le serveur sur `main` (relevés le 26/11/2026 — tous résolus sur `main` au 27/11/2026, pas encore déployés)
+Ménage fait au 26-27/11/2026 : skill `ui-ux-pro-max` retiré du repo ; nouveau `Player.html` intégré et déployé ; sélection multi-clubs corrigée et déployée (créneaux réels via `/api/creneaux`, terrains « Terrain 1…N » → `terrain-N` sur les 3 clubs).
 
-- ~~`index.html` sur `main` affiche des créneaux fixes~~ → résolu le 27/11/2026 : la sélection multi-clubs rappelle `/api/creneaux` (club, terrain-N, date) et n'affiche que les créneaux réels ; si aucun, reste à l'étape « date » avec « Aucune vidéo disponible pour ce terrain à cette date. ».
-- ~~Noms de terrains incompatibles avec `terrain-N`~~ → résolu le 27/11/2026 : les 3 clubs affichent « Terrain 1…N » (13 / 9 / 6), envoyés à l'API en `terrain-N`.
-- ~~`Player.html` : format de `expire` / `heure_debut`~~ → résolu le 26/11/2026 d'après `app.py` : `/api/video` renvoie `{url, expire}` (`expire` = `date_expiration.isoformat()`), `/api/creneaux` renvoie `[{heure_debut, heure_fin, id}]`.
-
-Action recommandée à la reprise : faire le ménage dans les branches, merger ou abandonner explicitement chacune, et repartir d'une branche `main` propre comme unique source de vérité.
+⚠️ Nginx sert tout le dossier git : `/.git/` et les fichiers `.md` (dont ce fichier) sont accessibles publiquement sur mymatch.ma tant que le blocage Nginx n'est pas appliqué.
 
 ## Site web — pages existantes
 
@@ -136,8 +133,8 @@ Action recommandée à la reprise : faire le ménage dans les branches, merger o
 ## Outils de travail utilisés
 
 - Claude Code (web, sessions régulièrement instables/plantées — recréer une session consiste à reconnecter le repo GitHub et relire ce fichier).
-- Déploiement manuel : après chaque session Claude Code, il faut se connecter en SSH et faire `git pull` dans `/var/www/mymatch/static`.
-- Un skill ui-ux-pro-max a été installé dans une session Claude Code (fichiers volumineux visibles dans le repo sous `.claude/skills/`) — pertinence et usage réel incertains, à évaluer.
+- Déploiement manuel : après chaque session Claude Code, il faut se connecter en SSH et faire `git pull` dans `/var/www/mymatch/static` (branche `main`).
+- Le skill ui-ux-pro-max a été retiré du repo le 26/11/2026 (3,6 Mo inutiles, risque d'exposition via Nginx).
 
 ## Scripts Raspberry Pi — écrits mais jamais testés avec du vrai matériel
 
@@ -179,7 +176,7 @@ Commandes de déploiement déjà rédigées, jamais exécutées faute de matéri
 ## Priorités à la reprise (dans l'ordre recommandé)
 
 1. Racheter microSD + SSD en France (le kit RPi/caméra/injecteur PoE est à Casablanca, à rapatrier).
-2. Nettoyer le dépôt GitHub : choisir/créer une branche `main` unique, merger ou trancher le sort des branches `claude/*` en suspens, vérifier si la nouvelle version de Player.html a été déployée ou non.
+2. ~~Nettoyer le dépôt GitHub~~ → fait le 27/11/2026 : `main` est la branche de production, branches obsolètes supprimées, nouveau Player.html déployé.
 3. Reprendre le flashage et la configuration du RPi une fois le matériel réuni en France (via le PC disponible sur place, avec un adaptateur microSD compatible).
 4. Tester la chaîne complète en appartement : caméra → détection (seuil à recalibrer pour un petit espace) → enregistrement → upload → vidéo visible sur mymatch.ma, à répéter jusqu'à fiabilité sur plusieurs jours.
 5. Avant mai 2027 : si le temps le permet, tableau de bord admin, route de désactivation à distance d'un terrain, configuration Twilio pour les alertes SMS réelles, message d'attente sur le site si un joueur scanne juste après son match et que l'upload n'est pas encore terminé.
