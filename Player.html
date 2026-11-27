@@ -2,584 +2,413 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MyMatch — Ton match</title>
+<meta name="theme-color" content="#1F3B2D">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231F3B2D'/><path d='M5 45 C 19 51, 33 49, 41 39 L 40.5 45 C 31 55, 15 55, 5 45 Z' fill='%23E8873F'/><circle cx='42' cy='28' r='16' fill='%23CC5500'/><path d='M27 34 C 34 22, 50 18, 59 24' stroke='%23F2EAD7' stroke-width='2.6' fill='none' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --jaune: #C8FF00;
-  --noir: #080808;
-  --gris-fonce: #111111;
-  --gris-moyen: #1A1A1A;
-  --gris-texte: #888888;
-  --blanc: #FFFFFF;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--noir);
-  color: var(--blanc);
-  font-family: 'Barlow Condensed', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* ── HEADER ── */
-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 60px;
-  background: rgba(10,10,10,0.96);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(200,255,0,0.1);
-}
-/* Logo wordmark + 3 barres jaunes en cascade (aligné sur index.html) */
-.logo { display: flex; align-items: center; gap: 11px; text-decoration: none; transition: opacity .25s ease; }
-.logo:hover { opacity: .78; }
-.logo-mark { flex-shrink: 0; display: block; }
-.logo-mark rect { transition: opacity .25s ease; }
-.logo:hover .logo-mark rect:nth-child(2) { opacity: .8; }
-.logo:hover .logo-mark rect:nth-child(3) { opacity: .5; }
-.logo-t {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  letter-spacing: .16em;
-  color: var(--blanc);
-  line-height: 1;
-}
-.logo-t span { color: #C8FF00; }
-.btn-retour {
-  display: flex; align-items: center; gap: 8px;
-  background: transparent; border: 1px solid rgba(255,255,255,0.15);
-  color: var(--blanc); padding: 8px 16px; border-radius: 4px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
-  text-transform: uppercase; cursor: pointer; text-decoration: none; transition: all 0.2s;
-}
-.btn-retour:hover { border-color: var(--jaune); color: var(--jaune); }
-
-/* ── LAYOUT PRINCIPAL ── */
-main {
-  padding-top: 60px;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
-}
-
-/* ── INFOS MATCH ── */
-.match-infos {
-  padding: 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  grid-column: 1 / -1;
-}
-.match-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--jaune); margin-bottom: 10px;
-}
-.match-tag::before {
-  content: ''; width: 6px; height: 6px;
-  background: var(--jaune); border-radius: 50%; animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
-.match-titre {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900; font-size: clamp(32px, 6vw, 64px);
-  line-height: 0.9; text-transform: uppercase;
-  letter-spacing: -0.01em; margin-bottom: 10px;
-}
-.match-titre .accent { color: var(--jaune); font-style: italic; }
-/* Sous-titre jaune fluo italique : style identique au "Matensach"
-   d'index.html (.h-darija) */
-.match-sub-fluo {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(20px, 3.2vw, 34px);
-  color: rgba(212,255,0,0.6);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-style: italic;
-  margin-bottom: 20px;
-}
-.match-meta { display: flex; flex-wrap: wrap; gap: 24px; }
-.meta-item { display: flex; flex-direction: column; gap: 3px; }
-.meta-label {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--gris-texte);
-}
-.meta-value {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 17px; color: var(--blanc); letter-spacing: 0.02em;
-}
-
-/* ── PLAYER ── */
-.player-section { display: flex; flex-direction: column; }
-.player-wrapper {
-  position: relative; width: 100%; background: #000;
-  aspect-ratio: 16/9; overflow: hidden;
-}
-.player-placeholder {
-  width: 100%; height: 100%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #080808 0%, #111 50%, #080808 100%);
-  position: relative;
-}
-.terrain-grid {
-  position: absolute; inset: 0; opacity: 0.04;
-  background-image:
-    linear-gradient(rgba(200,255,0,0.5) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,255,0,0.5) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-.terrain-center {
-  position: absolute; width: 120px; height: 120px;
-  border: 1px solid rgba(200,255,0,0.08); border-radius: 50%;
-}
-.play-btn {
-  position: relative; z-index: 2;
-  width: 72px; height: 72px; background: var(--jaune);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s; border: none; margin-bottom: 20px;
-}
-.play-btn:hover { transform: scale(1.08); box-shadow: 0 0 40px rgba(200,255,0,0.3); }
-.play-btn svg { width: 28px; height: 28px; fill: var(--noir); margin-left: 4px; }
-.placeholder-text { position: relative; z-index: 2; text-align: center; }
-.placeholder-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800; font-size: 20px; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--blanc); margin-bottom: 6px;
-}
-.placeholder-sub { font-size: 13px; color: var(--gris-texte); letter-spacing: 0.05em; }
-
-.player-bar {
-  width: 100%; background: rgba(255,255,255,0.04);
-  padding: 12px 16px; display: flex; align-items: center; gap: 12px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-.progress-track {
-  flex: 1; height: 3px; background: rgba(255,255,255,0.1);
-  border-radius: 2px; position: relative; cursor: pointer;
-}
-.progress-fill {
-  position: absolute; left: 0; top: 0; height: 100%; width: 0%;
-  background: var(--jaune); border-radius: 2px; transition: width 0.1s;
-}
-.progress-dot {
-  position: absolute; top: 50%; left: 0%;
-  transform: translate(-50%, -50%);
-  width: 12px; height: 12px; background: var(--jaune);
-  border-radius: 50%; transition: left 0.1s;
-}
-.time-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 13px; font-weight: 600; color: var(--gris-texte);
-  white-space: nowrap; letter-spacing: 0.05em;
-}
-
-/* ── SIDEBAR / ACTIONS ── */
-.sidebar { display: flex; flex-direction: column; }
-.actions-section { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.btn-primary {
-  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: var(--jaune); color: var(--noir); border: none;
-  padding: 16px 24px; font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800; font-size: 16px; letter-spacing: 0.12em;
-  text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s;
-}
-.btn-primary:hover { background: #D6FF1A; transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(0); }
-.btn-secondary {
-  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: transparent; color: var(--blanc);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 14px 24px; font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700; font-size: 15px; letter-spacing: 0.1em;
-  text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s;
-}
-.btn-secondary:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.04); }
-.btn-whatsapp { border-color: rgba(37,211,102,0.3); color: #25D366; }
-.btn-whatsapp:hover { border-color: #25D366; background: rgba(37,211,102,0.06); }
-.btn-icon { width: 20px; height: 20px; flex-shrink: 0; }
-
-/* Bandeau fixe collé en bas de l'écran (n'est plus dans le flux
-   du contenu — toujours visible quel que soit le scroll). */
-.footer-info {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 90;
-  padding: 12px 24px;
-  margin: 0;
-  background: rgba(10,10,10,0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(200,255,0,0.18);
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-}
-.footer-info-icon { width: 18px; height: 18px; color: var(--jaune); flex-shrink: 0; }
-.footer-info-text { font-size: 13px; color: var(--gris-texte); line-height: 1.4; text-align: center; }
-.footer-info-text strong { color: var(--blanc); font-weight: 600; }
-/* Le divider n'est plus utile maintenant que le bandeau est fixé en bas */
-.divider { display: none; }
-/* Réserve de l'espace en bas du body pour que le contenu ne soit
-   pas masqué par le bandeau fixe (≈ 60px de hauteur) */
-body { padding-bottom: 60px; }
-
-/* ── ANIMATIONS ── */
-.fade-in { opacity: 0; transform: translateY(16px); animation: fadeIn 0.5s ease forwards; }
-.fade-in:nth-child(1) { animation-delay: 0.1s; }
-.fade-in:nth-child(2) { animation-delay: 0.2s; }
-.fade-in:nth-child(3) { animation-delay: 0.3s; }
-@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-
-/* ── TABLETTE 768px+ ── */
-@media(min-width:768px){
-  main {
-    grid-template-columns: 1fr 320px;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "infos infos"
-      "player sidebar";
+  :root{
+    --navy:#1F3B2D;--navy2:#152A20;--navy3:#2A4A3A;
+    --ice:#F2EAD7;--ice2:#F8F3E8;--ink-m:#5A6B5F;
+    --coral:#E8873F;--coral2:#F2B27A;--coral-d:#9A3F00;
+    --line:rgba(255,255,255,.1);--muted:#A3B3A5;--muted2:#D8DECF;
   }
-  .match-infos {
-    grid-area: infos;
-    padding: 32px 40px 28px;
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--navy);color:#fff;font-family:'Archivo',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .it{font-style:italic;font-weight:900;font-stretch:88%;letter-spacing:-.01em;text-transform:uppercase}
+  button,a{font-family:inherit}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+  /* ── Header ── */
+  header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:rgba(31,59,45,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+  .logo svg{height:26px;width:auto;display:block}
+  .logo span{font-style:italic;font-weight:900;font-size:24px;letter-spacing:-.01em}
+  .pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;text-decoration:none;font-weight:800;font-style:italic;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
+  .pill:hover{border-color:var(--ice);color:var(--ice);background:rgba(242,234,215,.06)}
+  .pill svg{width:17px;height:17px;flex-shrink:0}
+
+  /* ── Bandeau titre ── */
+  .top{position:relative;overflow:hidden;padding:36px 20px 30px;background:radial-gradient(ellipse 60% 120% at 88% 0%,rgba(242,234,215,.16),rgba(242,234,215,0) 60%),linear-gradient(120deg,#1F3B2D 0%,#2A4A3A 100%)}
+  .top::before{display:none;content:'';position:absolute;inset:0;background:url('images/hero-action.jpg') 85% 40%/cover no-repeat;opacity:.45;mix-blend-mode:normal;-webkit-mask-image:linear-gradient(to right,transparent 30%,#000 85%);mask-image:linear-gradient(to right,transparent 30%,#000 85%)}
+  .top > *{position:relative}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--coral);margin-bottom:14px}
+  .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--coral);animation:blink 1.4s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  h1{font-size:clamp(44px,8.4vw,104px);line-height:.86;margin-bottom:22px}
+  h1 em{font-style:inherit;color:var(--coral);display:block}
+  .meta{display:flex;flex-wrap:wrap;gap:8px}
+  .meta-item{display:flex;flex-direction:column;gap:2px;padding:9px 16px;border-radius:14px;background:var(--ice);color:var(--navy);min-width:104px}
+  .meta-lbl{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-m)}
+  .meta-val{font-size:18px;font-style:italic;font-weight:900;font-stretch:90%}
+
+  /* ── Mise en page ── */
+  .wrap{display:grid;grid-template-columns:1fr;gap:0}
+  @media(min-width:1024px){
+    .wrap{grid-template-columns:minmax(0,1fr) 360px}
+    .top{padding:52px 44px 40px}
+    header{padding:12px 44px}
   }
-  .match-titre { font-size: clamp(40px, 5vw, 64px); }
-  .player-section {
-    grid-area: player;
-    border-right: 1px solid rgba(255,255,255,0.06);
+  .col-main{min-width:0;padding:22px 20px 28px}
+  @media(min-width:1024px){.col-main{padding:34px 0 44px 44px}}
+
+  /* ── Lecteur ── */
+  .player-box{position:relative;border-radius:18px;overflow:hidden;background:#12251B;border:1px solid var(--line);box-shadow:0 40px 90px rgba(5,10,22,.55)}
+  .player-box video{display:block;width:100%;aspect-ratio:16/9;background:#000;object-fit:contain}
+  .etat{aspect-ratio:16/9;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;background:radial-gradient(ellipse at 50% 120%,rgba(242,234,215,.14),transparent 60%),linear-gradient(160deg,#2A4A3A,#152A20)}
+  .etat.on{display:flex}
+  .etat-titre{font-size:22px}
+  .etat-txt{font-size:14px;color:var(--muted2);max-width:360px;line-height:1.6}
+  /* Chargement : le ballon du logo file vers le filet */
+  .kick{width:220px;height:70px}
+  .kick .k-ball{transform-box:view-box;transform-origin:50px 14px}
+  .kick .k-move{animation:k-move 1.6s cubic-bezier(.5,0,.2,1) infinite}
+  .kick .k-spin{animation:k-spin 1.6s cubic-bezier(.5,0,.2,1) infinite;transform-box:view-box;transform-origin:18px 34px}
+  .kick .k-net{transform-box:fill-box;transform-origin:left center;animation:k-net 1.6s ease-out infinite}
+  .kick .k-trail{transform-box:fill-box;transform-origin:right center;animation:k-trail 1.6s cubic-bezier(.5,0,.2,1) infinite}
+  @keyframes k-move{0%,15%{transform:translateX(0)}60%,100%{transform:translateX(164px)}}
+  @keyframes k-spin{0%,15%{transform:rotate(0)}60%,100%{transform:rotate(540deg)}}
+  @keyframes k-net{0%,55%{transform:scaleX(1)}64%{transform:scaleX(1.7)}80%,100%{transform:scaleX(1)}}
+  @keyframes k-trail{0%,15%{transform:scaleX(0);opacity:0}45%{opacity:1}60%{transform:scaleX(1);opacity:.9}100%{transform:scaleX(1);opacity:0}}
+  .etat-ico{width:58px;height:58px;border-radius:50%;border:2px solid var(--ice);display:flex;align-items:center;justify-content:center}
+  .etat-ico svg{width:26px;height:26px;stroke:var(--ice)}
+
+  /* ── Barre technique (bleu glacier) ── */
+  .specs{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:18px;border-radius:16px;overflow:hidden;background:var(--ice)}
+  @media(min-width:640px){.specs{grid-template-columns:repeat(4,1fr)}}
+  .spec{padding:16px 12px;text-align:center;border-right:1px solid rgba(31,59,45,.1)}
+  .spec:last-child{border-right:none}
+  .spec-val{display:block;font-size:30px;line-height:1;color:var(--navy)}
+  .spec-lbl{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-m);margin-top:6px}
+
+  /* ── Actions ── */
+  .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}
+  @media(min-width:640px){.actions{grid-template-columns:1.5fr 1fr 1fr 1fr}}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:54px;padding:0 18px;border-radius:999px;cursor:pointer;border:1px solid transparent;font-weight:800;font-style:italic;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+  .btn svg{width:18px;height:18px;flex-shrink:0}
+  .btn-p{background:#BF5000;color:#FFF8EC}
+  .btn-p:hover{background:#A84600;transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,135,63,.35)}
+  .btn-g{background:transparent;border-color:rgba(255,255,255,.26);color:#fff}
+  .btn-g:hover{border-color:var(--ice);color:var(--ice);background:rgba(242,234,215,.06)}
+  .btn-wa:hover{border-color:#25D366;color:#25D366}
+
+  /* ── Disponibilité ── */
+  .expire{margin-top:16px;padding:18px 20px;border-radius:16px;background:var(--navy3);border:1px solid var(--line)}
+  .expire-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .expire-titre{font-size:17px}
+  .expire-jours{font-style:italic;font-weight:900;font-size:17px;color:var(--coral)}
+  .barre{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+  .barre span{display:block;height:100%;width:0;border-radius:3px;background:var(--ice);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+  .expire-txt{font-size:13px;color:var(--muted2);margin-top:10px;line-height:1.55}
+  .expire-txt b{color:#fff}
+
+  /* ── Colonne latérale ── */
+  .col-side{padding:0 20px 32px;display:flex;flex-direction:column;gap:16px}
+  @media(min-width:1024px){.col-side{padding:34px 44px 44px 28px}}
+  .bloc{border-radius:18px;overflow:hidden;background:var(--ice);color:var(--navy)}
+  .bloc-head{padding:16px 18px 6px;font-size:18px}
+  .bloc-sub{padding:0 18px 12px;font-size:13px;color:var(--ink-m)}
+  .bloc-body{padding:0 12px 14px}
+  .creneaux{display:flex;flex-direction:column;gap:8px}
+  .creneau{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:0 16px;border-radius:14px;background:#fff;border:1px solid rgba(31,59,45,.1);color:var(--navy);text-decoration:none;transition:transform .2s,border-color .2s}
+  .creneau:hover{transform:translateX(3px);border-color:var(--navy)}
+  .creneau.actif{background:var(--navy);border-color:var(--navy);color:#fff}
+  .creneau-h{font-style:italic;font-weight:900;font-size:22px;font-stretch:90%}
+  .creneau-tag{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-m)}
+  .creneau.actif .creneau-tag{color:var(--coral)}
+  .vide{font-size:14px;color:var(--ink-m);line-height:1.6;padding:6px 6px 4px}
+
+  /* Bloc Instagram façon affiche : photo de célébration en duotone */
+  .insta{position:relative;overflow:hidden;border-radius:18px;min-height:300px;padding:22px 20px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;background:linear-gradient(160deg,#2A4A3A,#152A20)}
+  .insta::before{content:'';position:absolute;inset:0;background:url('images/but.jpg') 70% center/cover no-repeat}
+  .insta::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(21,42,32,.96) 20%,rgba(21,42,32,.2) 75%)}
+  .insta > *{position:relative;z-index:1}
+  .insta-titre{font-size:34px;line-height:.88}
+  .insta-titre em{font-style:inherit;color:var(--coral);display:block}
+  .insta-txt{font-size:14px;color:var(--muted2);line-height:1.55;margin-bottom:6px}
+
+  footer{border-top:1px solid var(--line);padding:22px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);background:var(--navy2)}
+  @media(min-width:1024px){footer{padding:22px 44px}}
+  footer b{color:var(--coral)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,24px);background:#BF5000;color:#FFF8EC;padding:12px 24px;border-radius:999px;font-style:italic;font-weight:900;font-size:14px;letter-spacing:.08em;text-transform:uppercase;opacity:0;pointer-events:none;transition:.3s;z-index:300;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
   }
-  .player-wrapper { aspect-ratio: 16/9; }
-  .player-bar { padding: 14px 24px; }
-  .sidebar {
-    grid-area: sidebar;
-    border-left: none;
-  }
-  .actions-section { padding: 28px 24px; }
-  /* .footer-info reste fixed bottom — pas de margin */
-}
-
-/* ── DESKTOP 1100px+ ── */
-@media(min-width:1100px){
-  header { padding: 0 48px; }
-  main {
-    grid-template-columns: 1fr 380px;
-    grid-template-areas:
-      "infos infos"
-      "player sidebar";
-  }
-  .match-infos { padding: 40px 56px 32px; }
-  .match-titre { font-size: clamp(48px, 5vw, 72px); }
-  .match-meta { gap: 40px; }
-  .meta-value { font-size: 20px; }
-  .player-bar { padding: 16px 32px; }
-  .actions-section { padding: 36px 32px; }
-  /* .footer-info reste fixed bottom — pas de margin */
-  .btn-primary { font-size: 17px; padding: 18px 28px; }
-  .btn-secondary { font-size: 15px; padding: 15px 28px; }
-}
-
-/* ── GRAND ÉCRAN 1400px+ ── */
-@media(min-width:1400px){
-  main { grid-template-columns: 1fr 420px; }
-  .match-infos { padding: 48px 72px 36px; }
-  .player-bar { padding: 18px 40px; }
-}
-
-/* ── PLEIN ÉCRAN ── */
-.player-wrapper:-webkit-full-screen { width: 100%; height: 100%; }
-.player-wrapper:fullscreen { width: 100%; height: 100%; }
-
-/* Rideau d'entrée cinématique : présent au chargement (page noire +
-   wordmark MyMatch) puis se rétracte vers le haut pour révéler la
-   page. Côté pair avec la transition de sortie de index.html. */
-.enter-curtain{
-  position: fixed; inset: 0; z-index: 9999;
-  background: var(--noir);
-  display: flex; align-items: center; justify-content: center;
-  transform: translateY(0);
-  transition: transform .8s cubic-bezier(.85,0,.15,1) .2s;
-}
-.enter-curtain.is-done{ transform: translateY(-100%); pointer-events: none; }
-.ec-mark{ display: flex; align-items: center; gap: 14px; opacity: 1; transition: opacity .35s ease; }
-.enter-curtain.is-done .ec-mark{ opacity: 0; }
-.ec-mark span{
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900; font-size: 34px;
-  letter-spacing: .18em; color: var(--blanc); line-height: 1;
-}
-.ec-mark span .ac{ color: var(--jaune); }
-
-@media (prefers-reduced-motion: reduce){
-  .enter-curtain{ transition: none; }
-}
 </style>
 </head>
 <body>
-
-<!-- Rideau cinématique d'entrée : retiré par JS au load -->
-<div class="enter-curtain" id="enterCurtain">
-  <div class="ec-mark">
-    <svg width="22" height="24" viewBox="0 0 20 22" fill="none" aria-hidden="true">
-      <rect x="0" y="0" width="4" height="22" fill="#C8FF00"/>
-      <rect x="8" y="0" width="4" height="22" fill="#C8FF00" opacity=".55"/>
-      <rect x="16" y="0" width="4" height="22" fill="#C8FF00" opacity=".22"/>
-    </svg>
-    <span>MY<span class="ac">MATCH</span></span>
-  </div>
-</div>
-
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id="mm-ball-clip"><circle cx="50" cy="14" r="12"/></clipPath>
+    <radialGradient id="mm-ball-shade" cx=".34" cy=".28" r=".8">
+      <stop offset="0" stop-color="#FFF8EC" stop-opacity=".34"/>
+      <stop offset=".5" stop-color="#FFF8EC" stop-opacity="0"/>
+      <stop offset="1" stop-color="#152A20" stop-opacity=".38"/>
+    </radialGradient>
+    <symbol id="mm-ball" viewBox="0 0 64 28">
+      <circle cx="50" cy="14" r="12" fill="#CC5500"/>
+      <g clip-path="url(#mm-ball-clip)" fill="none" stroke="#F2EAD7" stroke-linecap="round">
+        <path d="M37.5 18.5 C 43.5 9.5, 55.5 7, 63 11.5" stroke-width="1.8"/>
+      </g>
+      <circle cx="50" cy="14" r="12" fill="url(#mm-ball-shade)"/>
+    </symbol>
+    <symbol id="mm-mark" viewBox="0 0 64 28">
+      <path d="M2 23 C 16 28, 31 26, 40 17 L 39.6 21.8 C 30 30, 14 30, 2 23 Z" fill="#E8873F"/>
+      <path d="M9 14.5 C 19 16.5, 28 15.5, 35.5 11.5 L 35.3 14 C 27.5 18.5, 18.5 18.5, 9 14.5 Z" fill="#F2B27A" opacity=".8"/>
+      <use href="#mm-ball" x="0" y="0" width="64" height="28"/>
+    </symbol>
+  </defs>
+</svg>
 <header>
-  <a href="index.html" class="logo" aria-label="MyMatch">
-    <svg class="logo-mark" width="20" height="22" viewBox="0 0 20 22" fill="none" aria-hidden="true">
-      <rect x="0" y="0" width="4" height="22" fill="#C8FF00"/>
-      <rect x="8" y="0" width="4" height="22" fill="#C8FF00" opacity=".55"/>
-      <rect x="16" y="0" width="4" height="22" fill="#C8FF00" opacity=".22"/>
-    </svg>
-    <span class="logo-t">MY<span>MATCH</span></span>
+  <a class="logo" href="index.html" aria-label="MyMatch, accueil">
+    <svg viewBox="0 0 64 28" aria-hidden="true"><use href="#mm-mark"/></svg>
+    <span>MyMatch</span>
   </a>
-  <a href="index.html" class="btn-retour">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="M19 12H5M5 12L12 19M5 12L12 5"/>
-    </svg>
+  <a class="pill" href="index.html" id="btn-retour">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Retour
   </a>
 </header>
 
-<main>
+<section class="top">
+  <div class="tag">Ton match</div>
+  <h1 class="it">Ton match.<em>Ta vidéo.</em></h1>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-lbl">Club</span><span class="meta-val" id="m-club">—</span></div>
+    <div class="meta-item"><span class="meta-lbl">Terrain</span><span class="meta-val" id="m-terrain">—</span></div>
+    <div class="meta-item"><span class="meta-lbl">Date</span><span class="meta-val" id="m-date">—</span></div>
+    <div class="meta-item"><span class="meta-lbl">Heure</span><span class="meta-val" id="m-heure">—</span></div>
+  </div>
+</section>
 
-  <div class="match-infos">
-    <h1 class="match-titre fade-in">TON MATCH.<br>TA VIDÉO.</h1>
-    <div class="match-sub-fluo fade-in">Disponible maintenant.</div>
-    <div class="match-meta fade-in">
-      <div class="meta-item">
-        <span class="meta-label">Club</span>
-        <span class="meta-value" id="meta-club">City Foot 5</span>
+<div class="wrap">
+  <div class="col-main">
+    <div class="player-box">
+      <div class="etat on" id="etat-load" role="status">
+        <svg class="kick" viewBox="0 0 220 70" aria-hidden="true">
+          <path d="M14 58 H206" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+          <g transform="translate(190 20)"><path class="k-net" d="M0 0 H16 V38 H0 M5.5 0 V38 M11 0 V38 M0 12.7 H16 M0 25.3 H16" stroke="#F2EAD7" stroke-width="2" fill="none"/></g>
+          <g class="k-move">
+            <path class="k-trail" d="M-120 40 C -80 44, -40 42, 18 36 L 18 40 C -40 48, -80 48, -120 40 Z" fill="#F2EAD7" opacity=".55"/>
+            <g class="k-spin"><svg x="6" y="22" width="24" height="24" viewBox="38 2 24 24"><use href="#mm-ball" x="0" y="0" width="64" height="28"/></svg></g>
+          </g>
+        </svg>
+        <div class="etat-titre it">On récupère ta vidéo</div>
+        <p class="etat-txt">Quelques secondes, le temps de la trouver.</p>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Terrain</span>
-        <span class="meta-value" id="meta-terrain">Terrain 3</span>
+      <div class="etat" id="etat-err" role="alert">
+        <div class="etat-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg></div>
+        <div class="etat-titre it">Vidéo indisponible</div>
+        <p class="etat-txt">Cette vidéo n'existe pas, ou elle a été supprimée 14 jours après le match. Vérifie le terrain et l'heure, ou choisis un autre match.</p>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Date</span>
-        <span class="meta-value" id="meta-date">Sam 9 mai</span>
+      <video id="video" controls playsinline preload="metadata" style="display:none"></video>
+    </div>
+
+    <div class="specs">
+      <div class="spec"><span class="spec-val it">HD</span><span class="spec-lbl">Qualité</span></div>
+      <div class="spec"><span class="spec-val it" id="s-duree">—</span><span class="spec-lbl">Durée</span></div>
+      <div class="spec"><span class="spec-val it" id="s-poids">—</span><span class="spec-lbl">Taille</span></div>
+      <div class="spec"><span class="spec-val it" id="s-jours">—</span><span class="spec-lbl">Jours restants</span></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-p" id="btn-dl" href="#" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Télécharger
+      </a>
+      <button class="btn btn-g btn-wa" type="button" onclick="partageWA()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/></svg>
+        WhatsApp
+      </button>
+      <button class="btn btn-g" type="button" onclick="copierLien()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        <span id="lbl-copie">Copier</span>
+      </button>
+      <a class="btn btn-g" id="btn-autre" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        Autre match
+      </a>
+    </div>
+
+    <div class="expire">
+      <div class="expire-head">
+        <span class="expire-titre it">Disponibilité</span>
+        <span class="expire-jours" id="exp-jours">—</span>
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Heure</span>
-        <span class="meta-value" id="meta-heure">21:00</span>
-      </div>
+      <div class="barre"><span id="exp-barre"></span></div>
+      <p class="expire-txt">Ta vidéo reste en ligne <b>14 jours</b> après le match. Télécharge-la avant qu'elle soit supprimée automatiquement.</p>
     </div>
   </div>
 
-  <div class="player-section">
-    <div class="player-wrapper" id="playerWrapper">
-      <div class="player-placeholder" id="playerPlaceholder">
-        <div class="terrain-grid"></div>
-        <div class="terrain-center"></div>
-        <button class="play-btn" onclick="simulatePlay()" aria-label="Lire la vidéo">
-          <svg viewBox="0 0 24 24"><path d="M5 3L19 12L5 21V3Z"/></svg>
-        </button>
-        <div class="placeholder-text">
-          <div class="placeholder-title">Chargement…</div>
-          <div class="placeholder-sub">Récupération de ta vidéo</div>
-        </div>
-      </div>
-      <video id="videoPlayer" style="display:none;position:absolute;inset:0;width:100%;height:100%;background:#000" controls playsinline></video>
-      <div id="videoError" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--noir);font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:.08em;color:var(--gris-texte);text-align:center;padding:24px"></div>
+  <aside class="col-side">
+    <div class="bloc">
+      <div class="bloc-head it">Autres matchs</div>
+      <div class="bloc-sub">Même terrain, même jour</div>
+      <div class="bloc-body"><div class="creneaux" id="liste-creneaux"><p class="vide">Chargement…</p></div></div>
     </div>
-    <div class="player-bar">
-      <span class="time-label">00:00</span>
-      <div class="progress-track" onclick="seekVideo(event)">
-        <div class="progress-fill" id="progressFill"></div>
-        <div class="progress-dot" id="progressDot"></div>
-      </div>
-      <span class="time-label">60:00</span>
-      <button onclick="toggleFullscreen()" style="background:none;border:none;cursor:pointer;color:var(--gris-texte);padding:4px;flex-shrink:0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>
-        </svg>
-      </button>
+    <div class="insta">
+      <div class="insta-titre it">T'as mis une<em>lucarne ?</em></div>
+      <p class="insta-txt">Envoie ton but sur notre Instagram. Le plus beau but du mois gagne son prochain match offert.</p>
+      <a class="btn btn-p" href="https://instagram.com" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Envoyer mon but
+      </a>
     </div>
-  </div>
-
-  <div class="sidebar">
-    <div class="actions-section">
-      <button class="btn-primary" onclick="telecharger()">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-        </svg>
-        Télécharger la vidéo
-      </button>
-      <button class="btn-secondary btn-whatsapp" onclick="partagerWhatsApp()">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.116 1.518 5.844L.057 23.272a.5.5 0 00.609.627l5.557-1.457A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.943 0-3.764-.528-5.321-1.444l-.38-.224-3.938 1.032 1.054-3.834-.247-.395A9.957 9.957 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
-        </svg>
-        Partager sur WhatsApp
-      </button>
-    </div>
-  </div>
-
-</main>
-
-<!-- Bandeau d'information fixe en bas de l'écran -->
-<div class="footer-info">
-  <svg class="footer-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="8" x2="12" y2="12"/>
-    <line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-  <p class="footer-info-text">
-    <strong>Vos vidéos sont disponibles pendant 14 jours</strong> après la date du match, puis supprimées automatiquement.
-  </p>
+  </aside>
 </div>
 
+<footer>
+  <span>Foot à 5 · <b>Casablanca</b></span>
+  <span>© 2026 MyMatch</span>
+</footer>
+
+<div class="toast" id="toast" role="status">Lien copié</div>
+
 <script>
-function getParams() {
-  const params = new URLSearchParams(window.location.search);
-  return {
-    club:    params.get('club')    || 'City Foot 5',
-    terrain: params.get('terrain') || 'Terrain 3',
-    date:    params.get('date')    || '',
-    heure:   params.get('heure')   || '21:00'
-  };
-}
+/* ═══════════ PARAMÈTRES URL ═══════════ */
+const P = new URLSearchParams(location.search);
+const clubTxt    = P.get('club')    || 'City Foot 5';
+const terrainTxt = P.get('terrain') || 'Terrain 1';
+const dateTxt    = P.get('date')    || '';
+const heureTxt   = P.get('heure')   || '';
 
-function formatDateNice(dateStr) {
-  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  const mois  = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
-  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-  return jours[d.getDay()] + ' ' + d.getDate() + ' ' + mois[d.getMonth()];
-}
-
-const p = getParams();
-document.getElementById('meta-club').textContent    = p.club;
-document.getElementById('meta-terrain').textContent = p.terrain;
-document.getElementById('meta-date').textContent    = p.date ? formatDateNice(p.date) : '—';
-document.getElementById('meta-heure').textContent   = p.heure;
-document.title = 'MyMatch — ' + p.club + ' · ' + p.terrain;
-
-const clubSlugs = {
-  'City Foot 5':     'city-foot-5',
-  'Arena Bouskoura': 'arena-bouskoura',
-  'Green Sports Park':'green-sports-park'
+const CLUBS = {
+  'city foot 5':'city-foot-5',
+  'arena bouskoura':'arena-bouskoura',
+  'green sports park':'green-sports-park'
 };
+const clubId = CLUBS[clubTxt.toLowerCase().trim()] || clubTxt.toLowerCase().trim().replace(/\s+/g,'-');
 
-async function fetchVideo() {
-  const clubSlug    = clubSlugs[p.club] || p.club.toLowerCase().replace(/\s+/g,'-');
-  const terrainSlug = p.terrain.toLowerCase().replace(/\s+/g,'-');
-  const heure       = decodeURIComponent(p.heure);
-  const url = 'https://mymatch.ma/api/video'
-    + '?club='    + clubSlug
-    + '&terrain=' + terrainSlug
-    + '&date='    + p.date
-    + '&heure='   + heure;
-  console.log('[MyMatch] fetchVideo →', url);
-  try {
-    const res  = await fetch(url);
-    const data = await res.json();
-    console.log('[MyMatch] réponse API video →', data);
-    if (!res.ok || !data || data.error || !data.url) {
-      showVideoError('Vidéo non disponible ou expirée.');
-      return;
+/* Terrain : « Terrain 3 », « terrain-3 » et « 3 » donnent tous terrain-3 */
+function terrainVersId(txt){
+  const reste = String(txt).toLowerCase().trim().replace(/^terrain[\s\-_]*/, '');
+  return 'terrain-' + reste.replace(/[^0-9a-z]/g, '');
+}
+const terrainId = terrainVersId(terrainTxt);
+
+/* Date au format AAAA-MM-JJ, en heure locale */
+function toISO(str){
+  if(/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  const d = new Date(str);
+  if(isNaN(d)) return new Date().toLocaleDateString('sv-SE');
+  return d.toLocaleDateString('sv-SE');
+}
+const dateISO = toISO(dateTxt);
+const hhmm = h => String(h || '').slice(0, 5);
+
+const $ = id => document.getElementById(id);
+$('m-club').textContent    = clubTxt;
+$('m-terrain').textContent = terrainTxt;
+$('m-date').textContent    = dateTxt || dateISO;
+$('m-heure').textContent   = hhmm(heureTxt) || '—';
+document.title = `MyMatch — ${clubTxt} · ${terrainTxt}`;
+$('btn-autre').href = `index.html?club=${encodeURIComponent(clubTxt)}`;
+
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2200);
+}
+function duree(sec){
+  if(!sec || !isFinite(sec)) return '—';
+  const m = Math.floor(sec / 60), s = Math.round(sec % 60);
+  return `${m}′${String(s).padStart(2, '0')}`;
+}
+/* Taille : en Mo sous 1 Go, en Go au-delà */
+function taille(octets){
+  const o = Number(octets);
+  if(!o) return '—';
+  if(o < 1073741824) return Math.round(o / 1048576) + ' Mo';
+  return (o / 1073741824).toFixed(1).replace('.', ',') + ' Go';
+}
+/* Expiration : la date Python isoformat() arrive avec des microsecondes,
+   qu'on retire pour que tous les navigateurs la lisent. */
+function lireDate(str){
+  if(!str) return null;
+  const d = new Date(String(str).replace(/(\.\d{3})\d+/, '$1'));
+  return isNaN(d) ? null : d;
+}
+
+/* ═══════════ CHARGER LA VIDÉO ═══════════ */
+async function chargerVideo(){
+  const url = `https://mymatch.ma/api/video?club=${encodeURIComponent(clubId)}&terrain=${encodeURIComponent(terrainId)}&date=${dateISO}&heure=${encodeURIComponent(heureTxt)}`;
+  try{
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    if(!d.url) throw new Error('pas d’url');
+
+    const v = $('video');
+    v.src = d.url;
+    v.style.display = 'block';
+    $('etat-load').classList.remove('on');
+    $('btn-dl').href = d.url;
+    $('btn-dl').setAttribute('download', d.url.split('/').pop());
+    v.addEventListener('loadedmetadata', () => { $('s-duree').textContent = duree(v.duration); });
+
+    fetch(d.url, { method: 'HEAD' }).then(h => {
+      const o = h.headers.get('content-length');
+      if(o) $('s-poids').textContent = taille(o);
+    }).catch(() => {});
+
+    const exp = lireDate(d.expire);
+    if(exp){
+      const reste = Math.max(0, Math.ceil((exp - new Date()) / 86400000));
+      $('s-jours').textContent = reste + 'J';
+      $('exp-jours').textContent = reste + (reste > 1 ? ' jours restants' : ' jour restant');
+      $('exp-barre').style.width = Math.min(100, (reste / 14) * 100) + '%';
     }
-    loadVideo(data.url);
-  } catch(e) {
-    console.error('[MyMatch] erreur fetchVideo:', e);
-    showVideoError('Vidéo non disponible ou expirée.');
+  }catch(e){
+    $('etat-load').classList.remove('on');
+    $('etat-err').classList.add('on');
   }
 }
 
-function loadVideo(videoUrl) {
-  const placeholder = document.getElementById('playerPlaceholder');
-  const videoEl     = document.getElementById('videoPlayer');
-  if (placeholder) placeholder.style.display = 'none';
-  videoEl.src = videoUrl;
-  videoEl.style.display = 'block';
-  videoEl.load();
+/* ═══════════ AUTRES CRÉNEAUX (construits sans innerHTML) ═══════════ */
+async function chargerCreneaux(){
+  const url = `https://mymatch.ma/api/creneaux?club=${encodeURIComponent(clubId)}&terrain=${encodeURIComponent(terrainId)}&date=${dateISO}`;
+  const box = $('liste-creneaux');
+  const message = txt => { box.textContent = ''; const p = document.createElement('p'); p.className = 'vide'; p.textContent = txt; box.appendChild(p); };
+  try{
+    const r = await fetch(url);
+    const list = await r.json();
+    if(!Array.isArray(list) || !list.length){ message('Aucun autre match enregistré sur ce terrain ce jour-là.'); return; }
+    box.textContent = '';
+    list.forEach(c => {
+      const brut = String(c.heure_debut || '');
+      const actif = hhmm(brut) === hhmm(heureTxt);
+      const a = document.createElement('a');
+      a.className = 'creneau' + (actif ? ' actif' : '');
+      a.href = `Player.html?club=${encodeURIComponent(clubTxt)}&terrain=${encodeURIComponent(terrainTxt)}&date=${dateISO}&heure=${encodeURIComponent(brut)}`;
+      if(actif) a.setAttribute('aria-current', 'page');
+      const h = document.createElement('span'); h.className = 'creneau-h'; h.textContent = hhmm(brut);
+      const t = document.createElement('span'); t.className = 'creneau-tag'; t.textContent = actif ? 'En lecture' : 'Voir';
+      a.append(h, t);
+      box.appendChild(a);
+    });
+  }catch(e){ message('Impossible de charger les autres matchs.'); }
 }
 
-function showVideoError(msg) {
-  const placeholder = document.getElementById('playerPlaceholder');
-  const errEl       = document.getElementById('videoError');
-  if (placeholder) placeholder.style.display = 'none';
-  errEl.textContent  = msg;
-  errEl.style.display = 'flex';
+/* ═══════════ PARTAGE ═══════════ */
+function partageWA(){
+  const txt = `Mon match à ${clubTxt}, ${terrainTxt}, ${dateTxt || dateISO} à ${hhmm(heureTxt)}. Regarde ça : ${location.href}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
+}
+function copierLien(){
+  navigator.clipboard.writeText(location.href).then(() => {
+    $('lbl-copie').textContent = 'Copié';
+    toast('Lien copié');
+    setTimeout(() => $('lbl-copie').textContent = 'Copier', 2200);
+  }).catch(() => toast('Copie impossible'));
 }
 
-fetchVideo();
-
-let isPlaying = false, progress = 0, interval;
-
-function simulatePlay() {
-  isPlaying = !isPlaying;
-  const btn = document.querySelector('.play-btn svg');
-  if (isPlaying) {
-    btn.innerHTML = '<rect x="6" y="4" width="4" height="16" fill="#080808"/><rect x="14" y="4" width="4" height="16" fill="#080808"/>';
-    interval = setInterval(() => {
-      progress = Math.min(progress + 0.037, 100);
-      document.getElementById('progressFill').style.width = progress + '%';
-      document.getElementById('progressDot').style.left  = progress + '%';
-      if (progress >= 100) { clearInterval(interval); isPlaying = false; }
-    }, 1000);
-  } else {
-    btn.innerHTML = '<path d="M5 3L19 12L5 21V3Z"/>';
-    clearInterval(interval);
-  }
-}
-
-function seekVideo(e) {
-  const rect = e.currentTarget.getBoundingClientRect();
-  progress = ((e.clientX - rect.left) / rect.width) * 100;
-  document.getElementById('progressFill').style.width = progress + '%';
-  document.getElementById('progressDot').style.left  = progress + '%';
-}
-
-function toggleFullscreen() {
-  const w = document.getElementById('playerWrapper');
-  if (!document.fullscreenElement) {
-    w.requestFullscreen?.() || w.webkitRequestFullscreen?.();
-  } else {
-    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
-  }
-}
-
-function telecharger() {
-  alert('La vidéo va être téléchargée sur votre appareil.');
-}
-
-function partagerWhatsApp() {
-  const text = 'Mon match à ' + p.club + ' — ' + p.terrain + ' — ' + p.date + ' à ' + p.heure + '\nRegarde ma vidéo sur MyMatch !';
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
-
-screen.orientation?.addEventListener('change', () => {
-  if (screen.orientation.type.includes('landscape')) {
-    document.getElementById('playerWrapper').requestFullscreen?.();
-  }
-});
-
-/* Retire le rideau d'entrée une fois la page chargée. */
-(function(){
-  const curtain = document.getElementById('enterCurtain');
-  if (!curtain) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    curtain.remove(); return;
-  }
-  window.addEventListener('load', function(){
-    setTimeout(function(){ curtain.classList.add('is-done'); }, 60);
-    setTimeout(function(){ curtain.remove(); }, 1200);
-  });
-})();
+chargerVideo();
+chargerCreneaux();
 </script>
 </body>
 </html>
